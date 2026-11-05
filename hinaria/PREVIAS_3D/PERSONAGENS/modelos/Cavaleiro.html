@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>HINÁRIA | Cavaleiro Low-Poly — Demo real em Three.js</title>
+<style>
+:root{color-scheme:dark;--bg:#090f1a;--panel:#111e30;--line:#304155;--txt:#f5f1e7;--muted:#91a5bd;--gold:#f1c76a;--blue:#6598f5}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--txt);font:14px/1.45 system-ui,-apple-system,Segoe UI,sans-serif;overflow:hidden}
+main{height:100dvh;min-height:560px;display:grid;grid-template-columns:minmax(0,1fr) 320px}
+#viewport{position:relative;min-width:0;min-height:0;overflow:hidden;background:radial-gradient(ellipse at 55% 40%,#25405b 0%,#101e30 45%,#070d16 92%)}
+#viewport canvas{display:block;width:100%;height:100%;touch-action:none}
+.brand{position:absolute;top:30px;left:36px;pointer-events:none;text-shadow:0 3px 15px #0008}.kicker{font-size:11px;letter-spacing:.28em;font-weight:850;color:var(--gold)}h1{font-family:Georgia,serif;font-size:clamp(29px,4vw,52px);line-height:1;letter-spacing:.04em;margin:12px 0 8px}small{color:var(--muted)}.brand p{color:#b8cee4;margin:0;max-width:380px}
+.label{position:absolute;bottom:29px;left:35px;background:#0b1424bb;backdrop-filter:blur(6px);border:1px solid #5267835c;padding:11px 17px;border-radius:11px;font-size:12px;color:#bcd0e6;pointer-events:none}.label b{color:var(--gold)}
+#loading{position:absolute;inset:0;display:grid;place-items:center;background:#0c1424ec;color:#f3dfab;font-size:18px;z-index:10;padding:40px;text-align:center}
+aside{background:linear-gradient(175deg,#142338,#0d1728);border-left:1px solid var(--line);padding:26px;display:flex;flex-direction:column;gap:20px;overflow:auto}
+.eyebrow{letter-spacing:.15em;color:var(--gold);font-weight:800;font-size:11px}.side-title{margin:6px 0 0;font-size:26px;font-family:Georgia,serif}.sub{margin:6px 0;color:var(--muted)}.divider{border:0;border-top:1px solid #314359;margin:2px 0}
+.section-title{font-weight:800;color:#d3ddec;letter-spacing:.08em;font-size:11px;margin-bottom:11px;text-transform:uppercase}
+.buttons{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}button{font:inherit;cursor:pointer;color:#c5d8f1;border:1px solid #364964;background:#172941;border-radius:9px;padding:11px 8px;font-size:12px;font-weight:700;transition:.15s}button:hover{background:#233a59;border-color:#6598f5}button.active{background:linear-gradient(120deg,#3b619c,#254374);border-color:#8eb4ff;color:#fff;box-shadow:0 0 0 1px #668fce3b inset}button:focus-visible,input:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+.option{display:flex;align-items:center;gap:8px;justify-content:space-between;padding:8px 0;font-size:12px}.option input[type=checkbox]{accent-color:#81aaff;width:17px;height:17px}.option input[type=range]{accent-color:#81aaff;width:130px}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:8px}.stat{background:#09152475;padding:10px;border-radius:9px;border:1px solid #2a3c54}.stat em{display:block;font-size:10px;font-style:normal;color:#96aac2}.stat strong{font-size:19px;color:#f1c76a;font-variant-numeric:tabular-nums}
+footer{font-size:11px;color:#8fa2b6;margin-top:auto}footer strong{color:#e8ca7e}
+@media(max-width:780px){main{grid-template-columns:1fr;grid-template-rows:minmax(360px,65dvh) auto;height:auto;min-height:100dvh}body{overflow:auto}aside{border-left:0;border-top:1px solid var(--line);padding:20px}.brand{top:20px;left:20px}.label{left:18px;bottom:16px}h1{font-size:32px}}
+</style>
+</head>
+<body>
+<main>
+<section id="viewport" aria-label="Visualizador tridimensional interativo do Cavaleiro de Hinária">
+ <div class="brand"><div class="kicker">HINÁRIA • CHARACTER LAB</div><h1>O CAVALEIRO</h1><p>Um personagem 3D de verdade, inteiramente construído com geometria Three.js.</p></div>
+ <div class="label">🖱️ <b>Arraste</b> para girar · <b>Scroll</b> para aproximar · Teclas <b>1–6</b> para animar</div>
+ <div id="loading">Preparando o Cavaleiro 3D…</div>
+</section>
+<aside>
+ <header><div class="eyebrow">DEMONSTRAÇÃO REAL</div><h2 class="side-title">Low-poly procedural</h2><p class="sub">Sem modelos prontos, GLB, texturas externas ou imagem gerada. Só geometria + iluminação + JavaScript.</p></header>
+ <hr class="divider" />
+ <section><div class="section-title">Animações interativas</div><div class="buttons">
+ <button type="button" data-anim="idle" class="active">✦ Parado</button><button type="button" data-anim="walk">↗ Caminhar</button>
+ <button type="button" data-anim="run">➤ Correr</button><button type="button" data-anim="attack">⚔ Ataque</button>
+ <button type="button" data-anim="hit">✹ Dano</button><button type="button" data-anim="death">☠ Morte</button>
+ </div></section>
+ <hr class="divider" />
+ <section><div class="section-title">Visualização</div>
+  <label class="option"><span>Girando automaticamente</span><input id="autorotate" type="checkbox" /></label>
+  <label class="option"><span>Mostrar aramado</span><input id="wireframe" type="checkbox" /></label>
+  <label class="option"><span>Velocidade</span><input id="speed" type="range" min="0.35" max="2" step="0.05" value="1" /></label>
+ </section>
+ <hr class="divider" />
+ <section><div class="section-title">Estatísticas reais do renderizador</div><div class="stats"><div class="stat"><em>Triângulos por frame</em><strong id="tris">—</strong></div><div class="stat"><em>Draw calls</em><strong id="calls">—</strong></div></div></section>
+ <footer><strong>Nota:</strong> Isto é arte procedural feita por código: demonstra o nível de um protótipo jogável, não o acabamento de um modelo profissional esculpido por artista. <br /><br />Three.js 0.160 • WebGL • Animações em tempo real. Precisa de internet para carregar a biblioteca Three.js.</footer>
+</aside>
+</main>
+<script type="module">
+import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js';
+const $=s=>document.querySelector(s), container=$('#viewport');
+const renderer=new THREE.WebGLRenderer({antialias:true,alpha:true,powerPreference:'high-performance'});
+renderer.setPixelRatio(Math.min(devicePixelRatio||1,2));
+renderer.outputColorSpace=THREE.SRGBColorSpace;
+renderer.toneMapping=THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure=1.58;
+renderer.shadowMap.enabled=true;
+renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+container.insertBefore(renderer.domElement,container.firstChild);
+const scene=new THREE.Scene();
+const camera=new THREE.PerspectiveCamera(35,1,0.1,100);
+const ambient=new THREE.HemisphereLight(0xcde7ff,0x3d2440,2.0);scene.add(ambient);
+const key=new THREE.DirectionalLight(0xffe6c0,3.2);key.position.set(-3,6,5);key.castShadow=true;key.shadow.mapSize.set(1024,1024);key.shadow.camera.left=-5;key.shadow.camera.right=5;key.shadow.camera.top=7;key.shadow.camera.bottom=-5;key.shadow.normalBias=0.035;scene.add(key);
+const rim=new THREE.DirectionalLight(0x83aeff,2.5);rim.position.set(4,3,-4);scene.add(rim);
+const fill=new THREE.PointLight(0x5c8bff,25,10);fill.position.set(2,1.9,3);scene.add(fill);
+const mat=(color,metalness=.0,roughness=.65)=>new THREE.MeshStandardMaterial({color,metalness,roughness,flatShading:true});
+const M={
+ silver:mat('#bdcbd8',.72,.34),silverLight:mat('#ebf4f0',.75,.28),silverDark:mat('#75889e',.72,.35),
+ gold:mat('#f1bd55',.65,.37),goldLight:mat('#ffe4a0',.55,.3),blue:mat('#315da3',.1,.7),blueLight:mat('#477dc2',.08,.78),blueDark:mat('#192f55',.12,.72),
+ leather:mat('#62412f',.02,.9),leatherLight:mat('#956446',0,.82),skin:mat('#e3a77e',0,.93),skinLight:mat('#f5c09a',0,.88),hair:mat('#6a372b',0,.9),hairLight:mat('#9d6036',0,.85),eye:mat('#1d2430',0,.7),
+ under:mat('#263c5c',0,.85),black:mat('#111c28',.1,.75),shieldBlue:mat('#254981',.45,.46),wood:mat('#6e5139',0,.9)
+};
+const sphere=new THREE.SphereGeometry(1,12,8);
+function mesh(parent,geom,material,x=0,y=0,z=0){const m=new THREE.Mesh(geom,material);m.position.set(x,y,z);m.castShadow=true;m.receiveShadow=true;parent.add(m);return m}
+function ell(parent,material,x,y,z,sx,sy,sz,segments){const g=segments?new THREE.SphereGeometry(1,segments,Math.max(5,Math.round(segments*.7))):sphere;const m=mesh(parent,g,material,x,y,z);m.scale.set(sx,sy,sz);return m}
+function cyl(parent,material,x,y,z,top,bottom,h,seg=10){return mesh(parent,new THREE.CylinderGeometry(top,bottom,h,seg,1),material,x,y,z)}
+function box(parent,material,x,y,z,sx,sy,sz){return mesh(parent,new THREE.BoxGeometry(sx,sy,sz),material,x,y,z)}
+function cone(parent,material,x,y,z,r,h,n=7){return mesh(parent,new THREE.ConeGeometry(r,h,n),material,x,y,z)}
+function rod(parent,material,a,b,r=0.045,r2=r){const av=new THREE.Vector3(...a),bv=new THREE.Vector3(...b),d=bv.clone().sub(av);const m=cyl(parent,material,...av.clone().add(bv).multiplyScalar(.5).toArray(),r,r2,d.length(),9);m.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),d.normalize());return m}
+function shieldShape(){let s=new THREE.Shape();s.moveTo(-.35,.34);s.quadraticCurveTo(0,.5,.35,.34);s.lineTo(.32,-.16);s.quadraticCurveTo(.19,-.43,0,-.58);s.quadraticCurveTo(-.19,-.43,-.32,-.16);s.closePath();return s}
+function makeShield(parent){const g=new THREE.Group();parent.add(g);
+ const edge=mesh(g,new THREE.ExtrudeGeometry(shieldShape(),{depth:.065,bevelEnabled:true,bevelThickness:.04,bevelSize:.046,bevelSegments:2,curveSegments:6}),M.gold,0,0,.0);
+ const inner=mesh(g,new THREE.ShapeGeometry(shieldShape(),14),M.shieldBlue,0,0,.117);inner.scale.set(.87,.86,1);
+ const band=box(g,M.silverLight,0,-.04,.135,.075,.65,.045);band.rotation.z=Math.PI/2;
+ const star=new THREE.Shape();for(let i=0;i<10;i++){const a=i*Math.PI/5+Math.PI/2;const r=i%2? .10:.235;let x=Math.cos(a)*r,y=Math.sin(a)*r-.09;i?star.lineTo(x,y):star.moveTo(x,y)}star.closePath();mesh(g,new THREE.ExtrudeGeometry(star,{depth:.025,bevelEnabled:true,bevelSize:.015,bevelThickness:.008,bevelSegments:1}),M.goldLight,0,0,.161);
+ for(const x of [-.25,.25])for(const y of [-.13,.2])ell(g,M.goldLight,x,y,.12,.027,.027,.025);
+ g.rotation.y=-.15;g.rotation.z=-.07;return g;
+}
+function sword(parent){const g=new THREE.Group();parent.add(g);
+ cyl(g,M.leather,-.0,.17,0,.063,.073,.38,8);
+ const pom=ell(g,M.gold,0,.40,0,.115,.09,.11,9);rod(g,M.gold,[-.22,-.035,0],[.22,-.035,0],.06);
+ const blade=mesh(g,new THREE.CylinderGeometry(.04,.11,.76,4,1),M.silverLight,0,-.46,0);blade.rotation.y=Math.PI/4;
+ const point=cone(g,M.silverLight,0,-.95,0,.095,.25,4);point.rotation.y=Math.PI/4;point.rotation.z=Math.PI;
+ rod(g,M.silverDark,[0,-.09,.095],[0,-.83,.02],.013);return g;
+}
+function armorSkirt(parent){for(let i=0;i<5;i++){const a=(i-2)*.43;const panel=box(parent,i%2===0?M.blueDark:M.blue,-.0+Math.sin(a)*.31,.87,Math.cos(a)*.18,.17,.37,.055);panel.rotation.y=-a}}
+function buildKnight(){const root=new THREE.Group(),body=new THREE.Group();root.add(body);
+ const core=new THREE.Group();body.add(core);
+ // Belt, tabard, chest.
+ ell(core,M.under,0,1.42,0,.40,.48,.25,12);
+ ell(core,M.silver,0,1.48,.105,.37,.38,.24,12);
+ ell(core,M.silverLight,0,1.51,.316,.20,.26,.025,10);
+ const chestSeam=box(core,M.gold,0,1.54,.342,.038,.40,.036);chestSeam.rotation.z=.06;
+ for(const x of [-.29,.29]){
+  const seam=ell(core,M.gold,x,1.57,.15,.025,.25,.045,9);seam.rotation.z=x<0?-.23:.23;
+  ell(core,M.silverDark,x,1.29,.185,.09,.17,.1,9);
+ }
+ ell(core,M.blue,0,1.12,.04,.38,.21,.23,11);
+ box(core,M.leather,0,1.095,.23,.75,.10,.14);
+ box(core,M.gold,0,1.10,.305,.17,.16,.04);box(core,M.silverDark,0,1.10,.348,.09,.09,.02);
+ armorSkirt(core);
+ // Tunic fabric hanging at front.
+ const tab=box(core,M.blueLight,0,.83,.21,.27,.46,.062);tab.rotation.x=.05;
+ box(core,M.gold,0,.79,.253,.045,.34,.023);
+ ell(core,M.gold,0,.91,.293,.082,.082,.027,8);
+ // Neck and ears.
+ cyl(core,M.leather,0,1.84,0,.17,.18,.18,10);
+ const head=new THREE.Group();head.position.y=1.97;body.add(head);
+ ell(head,M.skin,0,.1,.07,.305,.345,.286,14);
+ for(const x of [-.295,.295])ell(head,M.skin,x,.065,.07,.056,.095,.071,8);
+ ell(head,M.skinLight,0,-.015,.329,.075,.085,.095,10);
+ // Helmet crown and cheek guards, open face.
+ ell(head,M.silverDark,0,.31,.022,.341,.235,.302,12);
+ ell(head,M.silverLight,0,.35,.058,.312,.15,.273,12);
+ const ridge=ell(head,M.gold,0,.50,.045,.066,.11,.26,9);
+ for(const x of [-.296,.296]){
+  ell(head,M.silver,x,.00,.13,.075,.23,.13,10);
+  ell(head,M.gold,x,-.09,.22,.036,.09,.05,8);
+ }
+ const forehead=box(head,M.silverLight,0,.23,.281,.55,.09,.085);
+ // Face: olhos grandes e expressivos (esclera, íris, pupila, brilho, pálpebra), sobrancelhas, sorriso e bochechas.
+ M.eyeWhite=mat('#fff8ee',0,.5);M.iris=mat('#3f78c8',0,.4);M.irisDark=mat('#25508f',0,.45);M.lip=mat('#b8574a',0,.7);M.blush=mat('#f2a08e',0,.9);M.lash=mat('#2a1a1a',0,.8);
+ for(const x of [-.115,.115]){
+  const s=x>0?1:-1;
+  const brow=ell(head,M.hair,x,.128,.326,.112,.027,.028,8);brow.rotation.z=s*.16;
+  ell(head,M.eyeWhite,x,.052,.338,.058,.068,.02,12);
+  ell(head,M.iris,x+s*.004,.05,.352,.039,.049,.014,11);
+  ell(head,M.irisDark,x+s*.004,.034,.353,.034,.026,.012,9);
+  ell(head,M.eye,x+s*.004,.05,.361,.021,.027,.01,8);
+  ell(head,M.eyeWhite,x+s*.016,.07,.368,.013,.015,.008,6);
+  const lid=ell(head,M.lash,x,.103,.346,.066,.012,.02,8);lid.rotation.z=s*-.1;
+  ell(head,M.skinLight,x,.0,.34,.056,.014,.014,8);
+  ell(head,M.blush,x*1.02,-.085,.318,.082,.04,.014,9);
+ }
+ const smile=new THREE.Mesh(new THREE.TorusGeometry(.05,.0095,6,12,Math.PI),M.lip);smile.position.set(0,-.07,.341);smile.rotation.z=Math.PI;smile.castShadow=true;head.add(smile);
+ ell(head,M.lip,0,-.104,.332,.026,.008,.012,6);
+ // Cabelo: franja em camadas sob o elmo, cachos laterais e cabelo longo atrás com laço dourado.
+ for(let i=0;i<5;i++){const k=i-2,a=Math.abs(k);const tuft=cone(head,i%2?M.hair:M.hairLight,k*.1,.238-a*.016,.322-a*.012,.078-a*.004,.17-a*.022,6);tuft.rotation.z=-k*.3;tuft.rotation.x=-.38}
+ for(const x of [-.31,.31]){const lock=ell(head,M.hair,x,.0,-.04,.055,.2,.1,8);lock.rotation.z=x>0?-.12:.12;ell(head,M.hairLight,x*.99,-.07,.02,.04,.1,.06,7)}
+ ell(head,M.hair,0,-.03,-.21,.29,.3,.14,12);ell(head,M.hairLight,0,.02,-.27,.2,.22,.06,10);
+ for(let i=0;i<3;i++){const x=(i-1)*.12;const lk=cone(head,i===1?M.hair:M.hairLight,x,-.3,-.24,.085,.46-Math.abs(i-1)*.08,6);lk.rotation.x=Math.PI+.12;lk.rotation.z=(i-1)*.1}
+ const tie=new THREE.Mesh(new THREE.TorusGeometry(.13,.02,6,12),M.gold);tie.position.set(0,-.12,-.23);tie.rotation.x=Math.PI/2;tie.castShadow=true;head.add(tie);
+ // Cloth collar.
+ const collar=ell(core,M.blueDark,0,1.78,.032,.40,.16,.28,11);
+ // Arms with pivot points.
+ const arms=[];
+ for(const sign of [-1,1]){
+  const a=new THREE.Group();a.position.set(sign*.48,1.69,0);body.add(a);arms.push(a);
+  ell(a,M.under,0,-.25,0,.14,.28,.17,11);
+  ell(a,M.silver,sign*.055,-.11,.005,.25,.19,.24,12);
+  ell(a,M.gold,sign*.12,-.10,.13,.065,.12,.14,9);
+  cyl(a,M.silverDark,0,-.44,.02,.135,.165,.34,10);
+  ell(a,M.silverLight,0,-.48,.095,.17,.13,.16,11);
+  ell(a,M.leather,0,-.67,.05,.17,.16,.17,10);
+  ell(a,M.gold,0,-.69,.185,.085,.09,.06,8);
+  if(sign===-1){const blade=sword(a);blade.position.set(-.18,-.79,.18);blade.rotation.set(-.92,.05,.24);}
+  else{const shield=makeShield(a);shield.position.set(.09,-.57,.36);shield.scale.set(.83,.83,.83);}
+ }
+ // Leg pivots.
+ const legs=[];
+ for(const sign of [-1,1]){
+  const l=new THREE.Group();l.position.set(sign*.21,.97,0);body.add(l);legs.push(l);
+  ell(l,M.blueDark,0,-.18,0,.18,.30,.19,11);
+  cyl(l,M.silverDark,0,-.41,.015,.155,.12,.30,10);
+  ell(l,M.gold,0,-.53,.13,.16,.105,.10,9);
+  const boot=ell(l,M.silverDark,0,-.71,.082,.19,.22,.225,11);
+  ell(l,M.silverLight,0,-.79,.255,.20,.12,.25,10);
+  box(l,M.leather,0,-.79,.38,.26,.07,.05);
+ }
+ // Cape with hinged layered strips.
+ const cape=[];
+ for(let i=0;i<5;i++){
+  const strip=new THREE.Group();strip.position.set((i-2)*.152,1.76,-.235);body.add(strip);
+  const s=new THREE.Shape();s.moveTo(-.11,0);s.lineTo(.11,0);s.lineTo(.16,-1.07);s.quadraticCurveTo(.025,-1.21,-.15,-1.05);s.closePath();
+  const cl=mesh(strip,new THREE.ExtrudeGeometry(s,{depth:.028,bevelEnabled:true,bevelSize:.015,bevelThickness:.008,bevelSegments:1,curveSegments:5}),i%2?M.blueLight:M.blue);
+  cl.position.z=-.045;cl.rotation.x=-.1;
+  cape.push(strip);
+ }
+ for(const x of [-.3,.3])ell(core,M.gold,x,1.75,-.23,.085,.075,.09,9);
+ return{root,body,core,head,arms,legs,cape};
+}
+const knight=buildKnight();scene.add(knight.root);
+// Display stage with concentric stone podium and little golden accents.
+const stage=new THREE.Group();scene.add(stage);
+const podium=mesh(stage,new THREE.CylinderGeometry(1.60,1.80,.26,20),mat('#39485b',.18,.82),0,-.19,0);podium.castShadow=false;
+mesh(stage,new THREE.CylinderGeometry(1.54,1.65,.08,20),mat('#6f7b8e',.25,.75),0,-.03,0).castShadow=false;
+const base=mesh(stage,new THREE.CylinderGeometry(1.42,1.46,.055,20),mat('#24374a',.25,.8),0,.015,0);base.castShadow=false;
+for(let i=0;i<20;i++){const a=i*Math.PI/10;const tick=box(stage,M.gold,Math.cos(a)*1.55,.01,Math.sin(a)*1.55,.055,.035,.12);tick.rotation.y=-a;tick.castShadow=false}
+for(let i=0;i<20;i++){const a=i*Math.PI/10;const v=box(stage,mat(i%2?'#58687d':'#415269'),Math.cos(a)*1.70,-.17,Math.sin(a)*1.70,.27,.2,.08);v.rotation.y=-a;v.castShadow=false}
+const ground=mesh(stage,new THREE.PlaneGeometry(200,200),mat('#121d2a',0,1),0,-.33,0);ground.rotation.x=-Math.PI/2;ground.castShadow=false;
+// Floating ambient dust.
+const particles=[];for(let i=0;i<34;i++){const p=ell(scene,i%4?M.gold:M.goldLight,Math.sin(i*2.41)*2.8, .5+(i*.37)%2.8,Math.cos(i*3.07)*2.4,.013,.013,.013,6);p.castShadow=false;p.material=p.material.clone();p.material.transparent=true;p.material.opacity=.48;particles.push(p)}
+const animBtns=[...document.querySelectorAll('button[data-anim]')];let state='idle',stateStart=0,clockTime=0,speed=1,turn=false,wire=false;
+function select(s){state=s;stateStart=clockTime;animBtns.forEach(b=>b.classList.toggle('active',b.dataset.anim===s))}
+animBtns.forEach(b=>b.addEventListener('click',()=>select(b.dataset.anim)));
+$('#speed').addEventListener('input',e=>speed=+e.target.value);
+$('#autorotate').addEventListener('change',e=>turn=e.target.checked);
+$('#wireframe').addEventListener('change',e=>{wire=e.target.checked;scene.traverse(o=>{if(o.isMesh){o.material.wireframe=wire}})});
+window.addEventListener('keydown',e=>{if(/^[1-6]$/.test(e.key))select(['idle','walk','run','attack','hit','death'][+e.key-1]);});
+// Orbit without external controls dependency.
+let yaw=.38,pitch=.16,distance=6.0,targetYaw=yaw,targetPitch=pitch,targetDist=distance,dragging=false,lastX=0,lastY=0,spinBias=0;
+renderer.domElement.addEventListener('pointerdown',e=>{dragging=true;lastX=e.clientX;lastY=e.clientY;renderer.domElement.setPointerCapture(e.pointerId)});
+renderer.domElement.addEventListener('pointermove',e=>{if(!dragging)return;targetYaw+=(e.clientX-lastX)*.008;targetPitch=Math.max(-.2,Math.min(.65,targetPitch+(e.clientY-lastY)*.005));lastX=e.clientX;lastY=e.clientY});
+renderer.domElement.addEventListener('pointerup',()=>dragging=false);renderer.domElement.addEventListener('pointercancel',()=>dragging=false);
+renderer.domElement.addEventListener('wheel',e=>{e.preventDefault();targetDist=Math.max(3.3,Math.min(10.5,targetDist+Math.sign(e.deltaY)*.45))},{passive:false});
+function ease(a,b,t){return a+(b-a)*Math.min(1,Math.max(0,t))}
+function animate(dt){clockTime+=dt*speed;const elapsed=clockTime-stateStart,t=clockTime;
+ const moving=state==='walk'||state==='run',isRun=state==='run';const frequency=isRun?11:7;const stride=Math.sin(t*frequency)*(isRun?.75:.45);
+ // Smooth transition at each pose.
+ const blend=Math.min(1,elapsed*5);
+ const body=knight.body,head=knight.head;
+ const idleBob=Math.sin(t*2)*.025;
+ let leftLeg=moving?stride:0,rightLeg=moving?-stride:0;
+ let leftArm=moving?-stride*.75:-.09,rightArm=moving?stride*.75:.1;
+ let lean=moving?(isRun?.16:.055):0,bodyBob=moving?Math.abs(Math.sin(t*frequency))*.06:idleBob;
+ let lateral=0,yawTilt=0,face=0;
+ if(state==='attack'){
+  let phase=(elapsed*1.25)%1.0;const windup=phase<.35?phase/.35:phase<.7?1-(phase-.35)/.35:0;
+  leftArm=-.20+windup*1.95;rightArm=.15+windup*.3;lean=.07+windup*.22;
+  yawTilt=-windup*.18;leftLeg=.15;rightLeg=-.12;
+ }
+ if(state==='hit'){
+  const phase=Math.max(0,1-elapsed*.8);const shock=Math.sin(elapsed*17)*phase;
+  leftArm=-.15-shock*.7;rightArm=.15+shock*.45;lean=-phase*.32;bodyBob=-phase*.11;face=-shock*.07;
+ }
+ if(state==='death'){
+  const v=Math.min(1,elapsed*.7);const k=v*v*(3-2*v);
+  lateral=-k*1.24;leftArm=-k*.42;rightArm=k*.85;leftLeg=k*.5;rightLeg=-k*.18;bodyBob=-k*.29;lean=k*.19;
+ }
+ const apply=(o,k,v)=>o[k]=ease(o[k],v,Math.min(1,dt*15));
+ apply(body.position,'y',bodyBob);apply(body.rotation,'z',lateral);apply(body.rotation,'x',lean);
+ apply(body.rotation,'y',yawTilt+(moving?Math.sin(t*frequency*.5)*.042:0));
+ apply(head.rotation,'z',face+(state==='idle'?Math.sin(t*1.5)*.035:0));
+ apply(head.rotation,'y',Math.sin(t*.8)*.06);
+ apply(knight.legs[0].rotation,'x',leftLeg*blend);apply(knight.legs[1].rotation,'x',rightLeg*blend);
+ apply(knight.arms[0].rotation,'x',leftArm*blend);apply(knight.arms[1].rotation,'x',rightArm*blend);
+ apply(knight.arms[0].rotation,'z',-.08+(state==='attack'?-Math.sin(elapsed*7)*.22:0));
+ apply(knight.arms[1].rotation,'z',.12);
+ knight.cape.forEach((s,i)=>{apply(s.rotation,'x',-.08+(moving?.20:.05)+Math.sin(t*(moving?4:1.8)+i*.45)*.085);apply(s.rotation,'z',Math.sin(t*2+i*.3)*.045)});
+ particles.forEach((p,i)=>{p.position.y+=Math.sin(t*.7+i)*dt*.014;p.material.opacity=.3+.19*Math.sin(t*.9+i)});
+ if(turn&&!dragging)targetYaw+=dt*.26;
+ yaw=ease(yaw,targetYaw,Math.min(1,dt*7));pitch=ease(pitch,targetPitch,Math.min(1,dt*7));distance=ease(distance,targetDist,Math.min(1,dt*7));
+ const lookY=1.22;camera.position.set(Math.sin(yaw)*Math.cos(pitch)*distance,lookY+Math.sin(pitch)*distance,Math.cos(yaw)*Math.cos(pitch)*distance);
+ camera.lookAt(0,lookY,0);
+}
+function resize(){const w=container.clientWidth,h=container.clientHeight;camera.aspect=w/h;camera.updateProjectionMatrix();renderer.setSize(w,h,false)}
+new ResizeObserver(resize).observe(container);resize();
+const clock=new THREE.Clock();let sampled=0;
+function loop(){requestAnimationFrame(loop);const dt=Math.min(clock.getDelta(),.05);animate(dt);renderer.render(scene,camera);sampled+=dt;if(sampled>.3){sampled=0;$('#tris').textContent=renderer.info.render.triangles.toLocaleString('pt-BR');$('#calls').textContent=renderer.info.render.calls.toLocaleString('pt-BR')}}
+$('#loading').remove();loop();
+</script>
+</body>
+</html>

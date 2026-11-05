@@ -1,0 +1,234 @@
+{
+ "tamanho": 256,
+ "tileavel": true,
+ "texturas": {
+  "grass": {
+   "albedo": "texturas/grass.png",
+   "normal": "normais/grass_n.png",
+   "uso": "chão: campos e vila (G=0)",
+   "costura_ratio": 1.48
+  },
+  "forest_floor": {
+   "albedo": "texturas/forest_floor.png",
+   "normal": "normais/forest_floor_n.png",
+   "uso": "chão: floresta (G=5)",
+   "costura_ratio": 0.86
+  },
+  "danger_ground": {
+   "albedo": "texturas/danger_ground.png",
+   "normal": "normais/danger_ground_n.png",
+   "uso": "chão: terras perigosas (G=6)",
+   "costura_ratio": 2.31
+  },
+  "dirt_path": {
+   "albedo": "texturas/dirt_path.png",
+   "normal": "normais/dirt_path_n.png",
+   "uso": "caminho de terra (G=1)",
+   "costura_ratio": 0.72
+  },
+  "sand": {
+   "albedo": "texturas/sand.png",
+   "normal": "normais/sand_n.png",
+   "uso": "praia (G=9)",
+   "costura_ratio": 0.87
+  },
+  "cobblestone": {
+   "albedo": "texturas/cobblestone.png",
+   "normal": "normais/cobblestone_n.png",
+   "uso": "rua de pedra da vila (G=2)",
+   "costura_ratio": 1.73
+  },
+  "ruin_tiles": {
+   "albedo": "texturas/ruin_tiles.png",
+   "normal": "normais/ruin_tiles_n.png",
+   "uso": "piso das ruínas (G=7)",
+   "costura_ratio": 3.62
+  },
+  "cave_rock": {
+   "albedo": "texturas/cave_rock.png",
+   "normal": "normais/cave_rock_n.png",
+   "uso": "chão/paredes da caverna (G=8)",
+   "costura_ratio": 1.14
+  },
+  "rock": {
+   "albedo": "texturas/rock.png",
+   "normal": "normais/rock_n.png",
+   "uso": "pedras e penhascos (rock, cliff)",
+   "costura_ratio": 1.15
+  },
+  "water": {
+   "albedo": "texturas/water.png",
+   "normal": "normais/water_n.png",
+   "uso": "rio e lago (G=3)",
+   "costura_ratio": 1.2
+  },
+  "wood_planks": {
+   "albedo": "texturas/wood_planks.png",
+   "normal": "normais/wood_planks_n.png",
+   "uso": "madeira: cabanas, pontes, tábuas",
+   "costura_ratio": 1.42
+  },
+  "bark": {
+   "albedo": "texturas/bark.png",
+   "normal": "normais/bark_n.png",
+   "uso": "troncos (pine, oak, dead)",
+   "costura_ratio": 0.32
+  },
+  "foliage": {
+   "albedo": "texturas/foliage.png",
+   "normal": "normais/foliage_n.png",
+   "uso": "copas de árvores e arbustos",
+   "costura_ratio": 1.55
+  },
+  "leaf_pattern": {
+   "albedo": "texturas/leaf_pattern.png",
+   "normal": "normais/leaf_pattern_n.png",
+   "uso": "roupa/capa do druida (folhas)",
+   "costura_ratio": 2.15
+  },
+  "plaster": {
+   "albedo": "texturas/plaster.png",
+   "normal": "normais/plaster_n.png",
+   "uso": "paredes das casas",
+   "costura_ratio": 0.29
+  },
+  "roof_tiles": {
+   "albedo": "texturas/roof_tiles.png",
+   "normal": "normais/roof_tiles_n.png",
+   "uso": "telhados",
+   "costura_ratio": 15.39
+  },
+  "thatch": {
+   "albedo": "texturas/thatch.png",
+   "normal": "normais/thatch_n.png",
+   "uso": "palha / feno",
+   "costura_ratio": 0.29
+  },
+  "metal_silver": {
+   "albedo": "texturas/metal_silver.png",
+   "normal": "normais/metal_silver_n.png",
+   "uso": "armaduras de prata",
+   "costura_ratio": 1.33
+  },
+  "metal_gold": {
+   "albedo": "texturas/metal_gold.png",
+   "normal": "normais/metal_gold_n.png",
+   "uso": "detalhes dourados",
+   "costura_ratio": 0.8
+  },
+  "metal_iron": {
+   "albedo": "texturas/metal_iron.png",
+   "normal": "normais/metal_iron_n.png",
+   "uso": "ferro escuro (orc/esqueleto)",
+   "costura_ratio": 0.8
+  },
+  "metal_rust": {
+   "albedo": "texturas/metal_rust.png",
+   "normal": "normais/metal_rust_n.png",
+   "uso": "ferro enferrujado",
+   "costura_ratio": 1.48
+  },
+  "leather": {
+   "albedo": "texturas/leather.png",
+   "normal": "normais/leather_n.png",
+   "uso": "couro (cintos, botas, aventais)",
+   "costura_ratio": 1.05
+  },
+  "cloth_linen": {
+   "albedo": "texturas/cloth_linen.png",
+   "normal": "normais/cloth_linen_n.png",
+   "uso": "tecido simples (túnicas, Bram)",
+   "costura_ratio": 3.39
+  },
+  "cloth_white": {
+   "albedo": "texturas/cloth_white.png",
+   "normal": "normais/cloth_white_n.png",
+   "uso": "tecido branco (paladino)",
+   "costura_ratio": 3.39
+  },
+  "cloth_blue": {
+   "albedo": "texturas/cloth_blue.png",
+   "normal": "normais/cloth_blue_n.png",
+   "uso": "tecido azul (cavaleiro/paladino)",
+   "costura_ratio": 3.39
+  },
+  "cloth_violet": {
+   "albedo": "texturas/cloth_violet.png",
+   "normal": "normais/cloth_violet_n.png",
+   "uso": "manto roxo do feiticeiro",
+   "costura_ratio": 1.17
+  },
+  "cloth_crimson": {
+   "albedo": "texturas/cloth_crimson.png",
+   "normal": "normais/cloth_crimson_n.png",
+   "uso": "tecido carmesim (Rei dos Orcs)",
+   "costura_ratio": 1.16
+  },
+  "fur": {
+   "albedo": "texturas/fur.png",
+   "normal": "normais/fur_n.png",
+   "uso": "pele/peles (orc, troll, manto)",
+   "costura_ratio": 1.05
+  },
+  "skin_orc": {
+   "albedo": "texturas/skin_orc.png",
+   "normal": "normais/skin_orc_n.png",
+   "uso": "pele do orc",
+   "costura_ratio": 0.8
+  },
+  "skin_troll": {
+   "albedo": "texturas/skin_troll.png",
+   "normal": "normais/skin_troll_n.png",
+   "uso": "pele do troll (com musgo)",
+   "costura_ratio": 0.86
+  },
+  "bone": {
+   "albedo": "texturas/bone.png",
+   "normal": "normais/bone_n.png",
+   "uso": "ossos do esqueleto",
+   "costura_ratio": 0.22
+  },
+  "skin_human": {
+   "albedo": "texturas/skin_human.png",
+   "normal": "normais/skin_human_n.png",
+   "uso": "pele humana (rosto/mãos, suave)",
+   "costura_ratio": 0.21
+  },
+  "canopy_stripes": {
+   "albedo": "texturas/canopy_stripes.png",
+   "normal": "normais/canopy_stripes_n.png",
+   "uso": "toldos das barracas do mercado",
+   "costura_ratio": 33.5
+  },
+  "crate_wood": {
+   "albedo": "texturas/crate_wood.png",
+   "normal": "normais/crate_wood_n.png",
+   "uso": "caixas e barris",
+   "costura_ratio": 0.51
+  },
+  "crystal": {
+   "albedo": "texturas/crystal.png",
+   "normal": "normais/crystal_n.png",
+   "uso": "cristais mágicos (feiticeiro, Pedra-Selo)",
+   "costura_ratio": 1.55
+  },
+  "rune_stone": {
+   "albedo": "texturas/rune_stone.png",
+   "normal": "normais/rune_stone_n.png",
+   "uso": "pedra com veios/runas brilhantes (Troll Ancião, Pedra-Selo)",
+   "costura_ratio": 0.1
+  },
+  "mirror": {
+   "albedo": "texturas/mirror.png",
+   "normal": "normais/mirror_n.png",
+   "uso": "espelho de Yoki",
+   "costura_ratio": 1.04
+  },
+  "ember_fire": {
+   "albedo": "texturas/ember_fire.png",
+   "normal": "normais/ember_fire_n.png",
+   "uso": "fogueiras e tochas",
+   "costura_ratio": 0.39
+  }
+ }
+}

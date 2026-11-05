@@ -1,0 +1,28 @@
+{
+  "status": "PASS",
+  "version": "1.2.1",
+  "createdAt": "2026-11-05T22:29:18.805564+00:00",
+  "modelRigs": 12,
+  "nodeTestsPassed": 44,
+  "gameBrowserScenariosPassed": 9,
+  "gameplayRoundTripsPassed": 3,
+  "visualComparisonsPassed": 84,
+  "loadoutsChecked": 21,
+  "armorTiers": 4,
+  "classicRigsChecked": 10,
+  "offlineBuild": {
+    "version": "1.2.1-modelos-corrigidos",
+    "fingerprint": "948e43a90b38",
+    "created": "2026-11-05T22:16:48.895Z"
+  },
+  "physicalDeviceTested": false,
+  "sourceArchiveOmits": [
+    "node_modules",
+    "www",
+    "Gradle/build caches",
+    "generated Android public assets",
+    "APK outputs",
+    "previous qa-evidence generated outputs"
+  ],
+  "deliveredAs": "chat downloads; no GitHub publication"
+}

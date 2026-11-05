@@ -1,0 +1,21 @@
+{
+  "name": "hinaria-project",
+  "version": "1.2.1",
+  "private": true,
+  "description": "Projeto HINÁRIA completo: jogo, Android, modelos e laboratórios de animação",
+  "scripts": {
+    "setup": "npm --prefix hinaria ci",
+    "start": "npm --prefix hinaria run studio",
+    "game": "npm --prefix hinaria start",
+    "build": "npm --prefix hinaria run build:web",
+    "build:studio": "npm --prefix hinaria run build:studio",
+    "build:animations": "npm --prefix hinaria run build:animations",
+    "build:android": "npm --prefix hinaria run android:debug",
+    "verify": "npm --prefix hinaria run verify",
+    "test:studio": "npm --prefix hinaria run test:studio",
+    "test:browser": "npm --prefix hinaria run test:browser --"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

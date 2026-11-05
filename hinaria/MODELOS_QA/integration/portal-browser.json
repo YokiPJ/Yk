@@ -1,0 +1,10 @@
+{
+  "status": "PASS",
+  "desktop": "1440x1080",
+  "mobile": "390x844",
+  "labs": 4,
+  "sceneryImages": 6,
+  "downloadedApk": "HINARIA_MODELOS_CORRIGIDOS_1.2.1_DEBUG.apk",
+  "apkDownloadHashMatches": true,
+  "errors": []
+}

@@ -1,0 +1,47 @@
+import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
+import { AXE_POWERS, axeManaCost, awakenAxe, applyAxeImpact, AXE_DURATION, AXE_COOLDOWN } from '../src/combat/replayAxeRules.js';
+import { WEAPONS, ensureArsenal, equippedWeapon } from '../src/player/arsenal.js';
+const text=path=>readFileSync(new URL('../'+path,import.meta.url),'utf8');
+const roster=['kn','pa','so','dr','yo'];
+for(const cls of roster){
+ const P=ensureArsenal({cls,gold:0,mana:40,mm:100,hp:100,max:100,ownedWeapons:[],equippedWeapons:{},skillLevels:{}});
+ const axe=WEAPONS.find(w=>w.cls===cls && w.kind==='axe');
+ assert.ok(axe&&AXE_POWERS[cls],cls+' has own replay axe and power');
+ assert.ok(P.ownedWeapons.includes(axe.id),'equipped axe accessible without gold');
+ P.equippedWeapons[cls]=axe.id;
+ assert.equal(equippedWeapon(P).kind,'axe');
+ assert.equal(axeManaCost(P),1);
+ assert.equal(awakenAxe(P,axe,10).ok,true);
+ assert.equal(P.mana,39);
+ assert.equal(P.axeAwakeUntil,10+AXE_DURATION);
+ assert.equal(awakenAxe(P,axe,12).ok,false,'cannot spam activation');
+ assert.equal(awakenAxe(P,axe,10+AXE_DURATION+.01).ok,false,'cannot bypass cooldown');
+ assert.equal(awakenAxe(P,axe,10+AXE_COOLDOWN+.01).ok,true,'cooldown expires');
+ const mob={kind:'m',x:0,z:0,hp:50,max:50,st:{}},other={kind:'m',x:1,z:0,hp:40,max:40,st:{}};
+ const hit=(a,t,d)=>{assert.equal(a,P);t.hp-=d;};
+ let visuals=0;
+ const run=now=>applyAxeImpact({P,target:mob,weapon:axe,now,baseDamage:10,entities:[mob,other],dealDamage:hit,spawnEffect:()=>visuals++,showFloatingText:()=>{}});
+ assert.equal(run(10+AXE_COOLDOWN+.1),true);
+ assert.equal(run(10+AXE_COOLDOWN+.2),false,'proc throttled');
+ assert.equal(visuals,1);
+ if(cls==='yo'){
+  assert.ok(mob.st.burn>0,'Yoki ignites target');
+  assert.ok(other.hp<40,'Yoki flame explosion has limited splash');
+  assert.ok(other.st.burn>0);
+ }else if(cls==='kn')assert.ok(mob.st.stun>0);
+ else if(cls==='dr')assert.ok(mob.st.slow>0);
+ else if(cls==='so')assert.ok(other.hp<40);
+ else if(cls==='pa')assert.equal(P.hp,100,'paladin healing is capped');
+}
+assert.equal(awakenAxe({hp:10,mana:9,mm:100}, {kind:'sword'},0).ok,false,'only for the axe');
+assert.equal(axeManaCost({mm:201}),3,'ceil(1% of max mana)');
+const axe3d=text('src/player/replayAxeModel.js');
+assert.match(axe3d,/RightHandGrip/);
+assert.match(axe3d,/KnightDefaultSword/);
+assert.match(axe3d,/WeakMap/);
+assert.doesNotMatch(axe3d,/model\.userData\.replayAxe=/,'no circular userData pointers');
+assert.match(text('src/player/player.js'),/yo: \{/);
+assert.match(text('src/combat/combatV2Bridge.js'),/applyAxeImpact\(/);
+assert.match(text('src/player/controls.js'),/requestAxeAwakening\(\)/);
+console.log('PASS machado Replay: 5 portadores, mana 1%, recarga, efeitos, Yoki explodindo, sem proc duplicado');

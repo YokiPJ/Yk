@@ -1,0 +1,34 @@
+HINÁRIA V6 — Atualização dos controles e das skins
+==================================================
+Base: HINARIA_V6_PREVIA_JOGAVEL (sem substituir a lógica do game).
+
+CORRIGIDO
+- src/player/controls.js: remove o ReferenceError "Cannot access 'f' before initialization".
+- O analógico agora sincroniza jx/jz com gameState, efetivamente movimentando
+  o personagem. Zona morta de 14%, magnitude gradual e limite circular.
+- No fim do toque/cancelamento/troca de app: o movimento zera.
+- Input multi-touch: um segundo dedo não rouba o analógico.
+- Corrigida referência ao canvas no handler de toque para girar a câmera/clicar.
+- Ajustes visuais do joystick e da seleção de skin para tela pequena.
+
+TELAS INICIAIS E SKINS
+- Mantida a tela HINÁRIA V6, com os 3 retratos do HTML original enviado.
+- Reabilitadas 8 skins-retrato da versão antiga, além dos cinco tons/estilos
+  existentes. Os arquivos JPEG originais são idênticos aos já incluídos na V6
+  e continuam salvos em assets/ui/; não foi importado o motor do HTML antigo.
+- Corrigida declaração de CSS --ia da capa que tinha quebra de linha.
+
+TESTES
+- node tests/test_mobile_controls.cjs: input, diagonal, multitouch,
+  pointercancel, blur/visibilitychange, canvas pointerdown.
+- npm test: testes existentes de mapa, quests, modelos, animação e importação.
+
+COMO JOGAR NO NAVEGADOR
+- Instale Node.js. Execute INICIAR_HINARIA_V6.bat na pasta e abra
+  http://localhost:8080/ ou use node server.js.
+- Versão navegador ainda usa Three.js e fontes do CDN (requer internet).
+
+ANDROID
+- Para empacotar via Android Studio/Capacitor, use o ZIP separado
+  HINARIA_V6_ANDROID_CAPACITOR.zip e siga LEIA_COMO_GERAR_APK.txt.
+- Não foi compilado nem validado um APK neste ambiente.

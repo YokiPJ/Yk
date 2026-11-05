@@ -1,0 +1,50 @@
+/** Execute boss persistence/quest reconciliation against the real production functions. */
+import assert from 'node:assert/strict';
+import vm from 'node:vm';
+import {readFileSync} from 'node:fs';
+import {createQuestSystem} from '../src/quest/questSystem.js';
+import {QUESTS} from '../src/quest/questData.js';
+const read=p=>readFileSync(new URL('../'+p,import.meta.url),'utf8');
+const source=read('src/quest/questUI.js').replace(/^import .*;\s*$/gm,'').replace(/export function /g,'function ');
+const gameState={defeatedBosses:new Set(['troll_ancient','orc_king']),suspendLegacyPersistence:false};
+const Q=createQuestSystem(QUESTS,{level:()=>30,discovered:()=>true});
+const context={gameState,Q,QUESTS,Set,JSON};
+vm.runInNewContext(source+';this.reconcile=reconcileDefeatedBossQuests;',context);
+let rewards=0;
+Q.setHooks({changed:()=>context.reconcile(),reward:()=>rewards++});
+const q={c1_espelho:{s:'done',step:QUESTS.find(d=>d.id==='c1_espelho').steps.length,n:0}};
+gameState.suspendLegacyPersistence=true;
+assert.equal(Q.restore(JSON.stringify({v:1,q,items:{},flags:{}})),true);
+gameState.suspendLegacyPersistence=false;
+Q.start('boss_troll');
+assert.equal(JSON.parse(Q.serialize()).q.boss_troll.step,2,'historical victory satisfies the kill step after discovery');
+assert.equal(rewards,0,'accepting/advancing a historical boss does not grant duplicate rewards');
+Q.talk('yoki','hi');
+assert.equal(Q.status('boss_troll'),'done');
+assert.equal(rewards,1,'quest delivery grants its own reward exactly once');
+for(let i=0;i<3;i++)context.reconcile();
+Q.talk('yoki','hi');
+assert.equal(rewards,1);
+Q.start('boss_orc');
+assert.equal(JSON.parse(Q.serialize()).q.boss_orc.step,2);
+Q.talk('bram','hi');
+assert.equal(Q.status('boss_orc'),'done');assert.equal(rewards,2);
+
+const combat=read('src/combat/combat.js');
+const start=combat.indexOf('export function killEnemy(enemy) {');
+const end=combat.indexOf('/**\n * Player death',start);
+const body=combat.slice(start,end).replace('export ','');
+const state={P:{gold:0,xp:0,lv:1},ents:[],dead:[],t:42,enemyRespawns:[],defeatedBosses:new Set()};
+let emissions=0;
+const sandbox={gameState:state,Q:{emit(){emissions++;}},ri:()=>1,say(){},updateHUD(){},notifyBossVictory(){},levelUp(){},Set,
+  setTimeout(){throw new Error('Respawn must use simulation time, never wall-clock time');}};
+vm.runInNewContext(body+';this.kill=killEnemy;',sandbox);
+const enemy=(boss=false)=>({kind:'m',k:boss?'troll':'rat',isBoss:boss,bossId:boss?'troll_ancient':null,
+  K:{gold:[1,1],xp:1,rs:30,name:'test'},zd:{k:boss?'troll':'rat'},mesh:{},tag:{remove(){}}});
+const rat=enemy();state.ents.push(rat);sandbox.kill(rat);
+assert.equal(state.enemyRespawns.length,1);assert.equal(state.enemyRespawns[0].due,72);
+const boss=enemy(true);state.ents.push(boss);sandbox.kill(boss);
+assert.equal(state.defeatedBosses.has('troll_ancient'),true);
+assert.equal(state.enemyRespawns.length,1,'boss is never enqueued to respawn');
+const gold=state.P.gold;sandbox.kill(boss);assert.equal(state.P.gold,gold);assert.equal(emissions,2);
+console.log('PASS boss persistence: historical quest victories, exactly-once quest/combat rewards and simulation-time respawn queue.');

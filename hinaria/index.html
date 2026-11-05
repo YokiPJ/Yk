@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Crect width='48' height='48' rx='12' fill='%2316202d'/%3E%3Cpath d='M24 4 38 24 24 44 10 24Z' fill='%23d7ab60'/%3E%3Cpath d='M24 10 30 24 24 38 18 24Z' fill='%234c8570'/%3E%3C/svg%3E">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#15130f">
+<title>HINÁRIA — Um Mundo Além dos Sonhos</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Cinzel:wght@500;700&family=Pixelify+Sans:wght@400;600&display=swap">
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+    "three/": "https://unpkg.com/three@0.160.0/build/",
+    "animejs": "https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.es.js",
+    "pixi.js": "https://cdn.jsdelivr.net/npm/pixi.js@8.6.6/dist/pixi.min.mjs"
+  }
+}
+</script>
+<style>
+:root{
+  --bg:#cdc4ab;--panel:#ddd3b8;--edge:#6f6650;--ink:#2a2418;--gold:#7a5c0a;--hp:#3f9a3a;--hpbg:#5a2a24;--xp:#c9a227;color-scheme:light;
+  box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1b1a17;--panel:#2d2b26;--edge:#5a554a;--ink:#e8dcc0;--gold:#e0b93f;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#1b1a17;--panel:#2d2b26;--edge:#5a554a;--ink:#e8dcc0;--gold:#e0b93f;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+html,body{height:100%;margin:0;overflow:hidden}
+body{position:relative;background:var(--bg);color:var(--ink);font:15px/1.35 "Pixelify Sans",ui-monospace,Menlo,Consolas,monospace}
+#wrap,#ov{position:absolute;inset:0}
+#ov{pointer-events:none;overflow:hidden}
+canvas{display:block;width:100%;height:100%;touch-action:none}
+.panel{background:var(--panel);border:2px solid var(--edge);border-radius:2px;box-shadow:inset 1px 1px 0 rgba(255,255,255,.18),inset -1px -1px 0 rgba(0,0,0,.35)}
+#hud{position:absolute;left:8px;top:8px;width:min(210px,52vw);padding:7px 9px}
+#hud b{color:var(--gold)}
+.row{display:flex;justify-content:space-between}
+.bar{height:12px;background:var(--hpbg);border:1px solid var(--edge);margin:3px 0 6px}
+.bar i{display:block;height:100%;width:100%;background:var(--hp)}
+.bar.xp{height:7px;background:#2a2417;margin-bottom:0}.bar.xp i{background:var(--xp);width:0}
+#con{position:absolute;left:8px;right:8px;bottom:8px;max-width:560px;padding:6px}
+#log{height:7.6em;overflow:auto;padding:2px 4px;font-size:14px}
+#log p{margin:0 0 2px}.npc{color:var(--gold)}.sys{opacity:.75}.dmg{color:#b5372e}
+#say{width:100%;box-sizing:border-box;margin-top:4px;padding:6px;font:inherit;background:rgba(0,0,0,.14);color:var(--ink);border:1px solid var(--edge)}
+.tag{position:absolute;transform:translate(-50%,-100%);font-size:12px;text-align:center;white-space:nowrap;color:#fff;text-shadow:0 1px 2px #000}
+.tag u{display:block;width:34px;height:4px;margin:1px auto 0;background:#4a1d19;text-decoration:none}
+.tag s{display:block;height:100%;background:#4cc24a;text-decoration:none}
+/* V7 mobile fix: labels use CSS pixels, proper hierarchy and touch-friendly contrast. */
+.tag{z-index:4;pointer-events:none;line-height:1.2;font-size:12px;font-weight:700;
+     padding:3px 6px 4px;border-radius:7px;background:rgba(13,18,18,.78);
+     border:1px solid rgba(255,255,255,.23);box-shadow:0 2px 5px #0006;
+     max-width:min(230px,70vw);overflow:visible;}
+.tag-npc{color:#ffe3a2;border-color:rgba(241,195,94,.7);}
+.tag-monster{color:#fff0da;}
+.tag .tag-name{display:block;text-decoration:none;white-space:nowrap;}
+.tag u.tag-health-track{display:block;width:58px;height:6px;margin:4px auto 0;
+     background:#471d1d;border:1px solid rgba(0,0,0,.7);border-radius:4px;
+     text-decoration:none;overflow:hidden;box-sizing:border-box;}
+.tag s.tag-health-fill{display:block;width:100%;height:100%;background:#54d773;
+     border-radius:3px;text-decoration:none;transition:width .13s linear,background-color .13s linear;}
+@media(pointer:coarse){.tag{font-size:12px;padding:3px 6px 4px}}
+
+.fl{position:absolute;transform:translate(-50%,-50%);font-weight:600;text-shadow:0 1px 2px #000}
+button{font:inherit;color:var(--ink);background:rgba(0,0,0,.12);border:1px solid var(--edge);padding:6px 8px;cursor:pointer}
+button.on{border-color:var(--gold);box-shadow:0 0 0 1px var(--gold)}
+#ccw{position:absolute;inset:0;display:flex;align-items:flex-end;justify-content:center;padding:8px;z-index:5;pointer-events:none}
+#cc{pointer-events:auto;width:min(420px,100%);padding:10px}
+#cls{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:8px 0}
+#cls button{text-align:left;font-size:13px}
+#skn{display:flex;gap:8px;margin-bottom:8px}
+.sw{width:34px;height:34px;border-radius:50%;padding:0}
+#go{width:100%}
+.bar.mp{height:8px;background:#1d2a4a}.bar.mp i{background:#3a7bd5}
+#hot{position:absolute;right:8px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:6px;z-index:2}
+#hot button{min-width:118px;text-align:left;font-size:13px}
+#chips{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:4px;max-height:5.5em;overflow:auto}#chips:empty{display:none}#chips button{padding:3px 8px;font-size:12px}
+#joy{position:absolute;left:max(16px,env(safe-area-inset-left,0px));bottom:max(22px,env(safe-area-inset-bottom,0px));width:clamp(104px,28vmin,156px);height:clamp(104px,28vmin,156px);border-radius:50%;background:radial-gradient(circle,rgba(0,0,0,.18) 0 55%,rgba(0,0,0,.34) 100%);border:2px solid var(--edge);display:none;touch-action:none;z-index:3;transition:background .12s,border-color .12s}
+#joy::before{content:'';position:absolute;inset:-20px}
+#joy.on{background:radial-gradient(circle,rgba(255,255,255,.08) 0 55%,rgba(0,0,0,.42) 100%);border-color:rgba(255,255,255,.7)}
+#knob{position:absolute;left:50%;top:50%;width:42%;height:42%;margin:-21% 0 0 -21%;border-radius:50%;background:rgba(255,255,255,.55);border:2px solid var(--edge);pointer-events:none;will-change:transform;box-shadow:0 2px 8px rgba(0,0,0,.4)}
+#joy.on #knob{background:rgba(255,255,255,.8)}
+#wrap,#hud,#hot,#joy,#chips{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
+html,body{overscroll-behavior:none}
+#mmw{position:absolute;right:max(8px,env(safe-area-inset-right,0px));top:8px;z-index:3;border:2px solid var(--edge);border-radius:8px;background:rgba(0,0,0,.4);overflow:hidden;-webkit-user-select:none;user-select:none}
+#mm{display:block;touch-action:manipulation}
+#mmx{position:absolute;left:2px;top:2px;width:22px;height:22px;padding:0;font-size:13px;line-height:1;border-radius:50%;opacity:.85}
+#mmw.off{border:0;background:none;overflow:visible}#mmw.off #mm{display:none}#mmw.off #mmx{position:static;width:34px;height:34px}
+@media (pointer:coarse){#mmw{top:auto;bottom:calc(22px + 134px + 10px);right:max(14px,env(safe-area-inset-right,0px))}}
+@media (pointer:coarse){
+  :root{padding-left:env(safe-area-inset-left,0px);padding-right:env(safe-area-inset-right,0px)}
+  #joy{display:block}
+  #hud{width:min(168px,44vw);font-size:13px}
+  #con{left:calc(min(168px,44vw) + 16px);right:8px;top:8px;bottom:auto;max-width:none;padding:4px;opacity:.88}
+  #log{height:6em;font-size:12px}
+  #say{display:none}
+  #hot{right:14px;bottom:22px;top:auto;transform:none;display:grid;grid-template-columns:repeat(3,58px);gap:8px}
+  #hot button{min-width:0;width:58px;height:58px;border-radius:50%;padding:2px;font-size:9px;line-height:1.1;text-align:center;white-space:normal;overflow:hidden}
+  #cc{max-height:58vh;overflow:auto}
+}
+#hud .row button{flex:1;font-size:13px;padding:4px 6px}
+
+:root{--ib:url("assets/ui/cover_02.jpg");--ic:url("assets/ui/cover_03.jpg");--ia:url("assets/ui/cover_01.jpg")}
+#cover{position:absolute;inset:0;z-index:20;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2.2vh;padding:10px;box-sizing:border-box;text-align:center;color:#e8dcc0;background:radial-gradient(ellipse at 50% 30%,#3b3358 0%,#15130f 72%);transition:opacity .5s}
+#cover.out{opacity:0;pointer-events:none}
+#cover h1{margin:0;font-size:clamp(26px,7.5vh,54px);letter-spacing:.1em;text-transform:uppercase;color:#e0b93f;text-shadow:0 3px 0 #5a4410,0 6px 18px rgba(0,0,0,.6)}
+#cover p{margin:0;opacity:.8;font-size:clamp(12px,2.6vh,16px)}
+#cover small{opacity:.55;font-size:11px;max-width:90vw}
+#cv{display:flex;align-items:center;justify-content:center;gap:2.2vw}
+.cd{--w:min(27vw,29vh);width:var(--w);aspect-ratio:3/4;border:3px solid #e8dcc0;border-radius:8px;background-color:#fff;background-size:cover;background-repeat:no-repeat;box-shadow:0 10px 26px rgba(0,0,0,.55)}
+.cd.a{background-image:var(--ia);background-position:50% 18%;transform:rotate(-5deg)}
+.cd.b{--w:min(33vw,35vh);background-image:var(--ib);background-position:22% 20%;z-index:1}
+.cd.c{background-image:var(--ic);background-position:50% 25%;transform:rotate(5deg)}
+#play{font-size:clamp(16px,3.6vh,22px);padding:.5em 2.2em;background:#e0b93f;color:#15130f;border:3px solid #5a4410;border-radius:4px;letter-spacing:.08em}
+.cch{display:flex;align-items:center;gap:6px}
+.th{flex:none;width:34px;height:34px;border-radius:50%;border:2px solid var(--edge);background-size:cover}
+.t1{background-image:var(--ia);background-position:50% 18%}.t2{background-image:var(--ib);background-position:22% 15%}.t3{background-image:var(--ic);background-position:50% 22%}
+#hot button{position:relative;overflow:hidden}
+#hot button::after{content:'';position:absolute;left:0;right:0;bottom:0;height:calc(var(--cd,0)*100%);background:rgba(0,0,0,.55);pointer-events:none}
+#hot button.nm{opacity:.55}
+#chatb{position:absolute;z-index:4;left:8px;bottom:8px;padding:6px 12px}
+#chatb.on{border-color:var(--gold);box-shadow:0 0 0 1px var(--gold)}
+#con{bottom:50px}
+#con.off{display:none}
+#toast{position:absolute;z-index:4;left:50%;top:8px;transform:translateX(-50%);max-width:min(60vw,420px);padding:4px 10px;background:rgba(0,0,0,.6);color:#fff;font-size:12px;border-radius:4px;pointer-events:none;opacity:0;transition:opacity .3s;text-align:center}
+@media (pointer:coarse){#chatb{left:auto;right:8px;top:8px;bottom:auto}#con{top:52px;bottom:auto}#toast{left:calc(min(168px,44vw) + 16px);right:76px;transform:none;max-width:none}#log{height:4.8em}}
+#cover{overflow:auto;justify-content:flex-start;gap:calc(var(--vh,1vh)*2);padding:calc(var(--vh,1vh)*3) 10px 96px}
+#cover>*{flex:none}
+#cover h1{margin-top:auto;font-size:clamp(22px,calc(var(--vh,1vh)*7),50px)}
+#cover p{font-size:clamp(11px,calc(var(--vh,1vh)*2.6),15px)}
+#cover small{margin-bottom:auto}
+.cd{--w:min(26vw,calc(var(--vh,1vh)*25));height:calc(var(--w)*4/3)}
+.cd.b{--w:min(32vw,calc(var(--vh,1vh)*31))}
+#play{position:fixed;left:50%;bottom:max(14px,env(safe-area-inset-bottom));transform:translateX(-50%);z-index:21;white-space:nowrap;font-size:clamp(16px,calc(var(--vh,1vh)*4),22px);animation:pl 1.4s ease-in-out infinite}
+@keyframes pl{50%{transform:translateX(-50%) scale(1.06)}}
+#cc{display:flex;flex-direction:column}
+#cc>*{flex:none}
+#go{position:sticky;bottom:0;z-index:2;background:#e0b93f;color:#15130f;border:2px solid #5a4410;font-weight:600;letter-spacing:.06em;padding:10px;box-shadow:0 -8px 8px var(--panel)}
+@media (pointer:coarse){#cc{max-height:calc(var(--vh,1vh)*62)}}
+@media (max-height:430px){#cls{gap:4px;margin:4px 0}#cls button{padding:3px 6px;font-size:12px}}
+#skn{flex-wrap:wrap}
+#cc{padding-bottom:72px}
+#go{position:fixed;left:50%;bottom:max(14px,env(safe-area-inset-bottom));transform:translateX(-50%);width:min(280px,72vw);z-index:22;box-shadow:0 4px 14px rgba(0,0,0,.5)}
+
+/* V6 mobile: responsive title/skin menu and reliable touch zones. */
+#joy { touch-action:none; -webkit-user-select:none; user-select:none; }
+#knob { box-sizing:border-box; }
+#skn { display:flex; flex-wrap:wrap; max-height:min(20vh,140px); overflow-y:auto; padding:5px 2px; align-content:flex-start; }
+#skn .sw { flex:0 0 38px; width:38px; height:38px; background-size:cover; background-position:center; }
+#skn .sw:focus-visible, #cls button:focus-visible { outline:3px solid #e0b93f; outline-offset:2px; }
+#cc .cch { min-height:36px; }
+#cover { background:radial-gradient(ellipse at 50% 30%,#3b3358 0%,#15130f 72%); }
+@media (pointer:coarse) {
+  #joy { bottom:max(20px,env(safe-area-inset-bottom,0px)); left:max(16px,env(safe-area-inset-left,0px)); }
+  #cc { width:min(420px,calc(100vw - 20px)); max-height:calc(var(--vh,1vh)*70); }
+  #skn { max-height:calc(var(--vh,1vh)*17); }
+  #hot { bottom:max(24px,env(safe-area-inset-bottom,0px)); }
+}
+@media (max-width:450px) and (max-height:850px) {
+  #hud { padding:5px 7px; }
+  #con { left:calc(min(168px,44vw) + 12px); right:5px; padding:3px; }
+  #cover h1 { letter-spacing:.04em; }
+}
+#arsenal-modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;z-index:45;background:#05070cc9;padding:max(8px,env(safe-area-inset-top)) max(8px,env(safe-area-inset-right)) max(8px,env(safe-area-inset-bottom)) max(8px,env(safe-area-inset-left));box-sizing:border-box}
+#arsenal-modal.on{display:flex}
+#arsenal-panel{width:min(590px,95vw);height:min(82vh,580px);min-height:240px;display:flex;flex-direction:column;background:#262723;border:2px solid #bc9858;border-radius:12px;box-shadow:0 12px 45px #000a;color:#f1e6cf;overflow:hidden}
+#arsenal-head{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 12px;border-bottom:1px solid #736341;font-weight:700}
+#arsenal-close{min-width:42px;min-height:40px;font-size:21px}
+#arsenal-tabs{display:flex;gap:6px;padding:8px 10px}
+#arsenal-tabs button{flex:1;min-height:36px;color:#fff}
+#arsenal-tabs button.on{background:#9b753a;color:#fff}
+#arsenal-items{overflow:auto;padding:5px 12px 14px;flex:1;overscroll-behavior:contain;touch-action:pan-y}
+.ars-item{display:flex;align-items:center;gap:10px;border-bottom:1px solid #655e4d;padding:9px 0}
+.ars-item .desc{flex:1;min-width:0}.ars-item small{display:block;color:#c6b899;font-size:12px;margin-top:4px}.ars-item button{flex:none;min-width:88px;min-height:42px;color:#ffe9be;border-color:#a88b50}
+.ars-item button[disabled]{opacity:.55;cursor:default}
+#arsenal-msg{min-height:22px;padding:5px 12px;color:#f8d47b;font-size:12px}
+@media(pointer:coarse){#arsenal-panel{height:min(87vh,540px)}#arsenal-head{padding:5px 10px}#arsenal-items{padding:2px 8px}#arsenal-btn{font-size:11px}#hot{grid-template-columns:repeat(3,58px)}}
+#perf-open{position:absolute;right:clamp(136px,16vw,220px);top:8px;z-index:8;
+  width:38px;height:38px;border:1px solid #d7b66c;border-radius:10px;color:#f3db9d;
+  background:rgba(22,26,21,.88);font-size:23px;padding:0;touch-action:manipulation}
+#fps-tag{position:absolute;right:8px;top:58px;z-index:9;background:#122018dc;border:1px solid #58795e;
+  border-radius:5px;padding:3px 7px;color:#c6f0b0;font-size:12px;pointer-events:none}
+#perf-panel{position:absolute;z-index:22;top:52px;right:max(10px,env(safe-area-inset-right));
+  width:min(310px,calc(100vw - 25px));max-height:calc(100dvh - 65px);overflow:auto;
+  background:#20251f;box-shadow:0 8px 40px #000a;border:2px solid #bc9858;border-radius:12px;
+  color:#eee7d0;padding:13px;box-sizing:border-box;font:14px/1.4 system-ui,sans-serif}
+#perf-panel[hidden]{display:none!important}
+#perf-panel label{display:flex;justify-content:space-between;gap:12px;align-items:center;margin:12px 0;min-height:32px}
+#perf-panel select{max-width:68%;background:#343d32;color:#f5eac9;border:1px solid #8f865c;
+  padding:7px;border-radius:5px;font-size:13px}
+#perf-panel input[type=range]{max-width:50%;accent-color:#dbb45f}
+#perf-panel input[type=checkbox]{width:19px;height:19px;accent-color:#dbb45f}
+#perf-panel p{font-size:12px;opacity:.8;margin:12px 0 0}
+.perf-header{display:flex;justify-content:space-between;align-items:center;gap:10px}
+#perf-close{font-size:23px;color:#f5d8a3;min-height:38px;min-width:42px}
+.tag-boss{background:rgba(65,14,19,.92);border-color:#ffa77c;color:#ffe8c4;font-weight:800}
+.tag-boss .tag-health-track{width:100px!important;height:8px!important}
+@media(max-width:760px){#perf-open{right:175px;top:6px;width:34px;height:34px}}
+/* Combate 2.0 isolado; controles existentes permanecem nas posições antigas. */
+#combat-v2-actions[hidden]{display:none!important}
+#combat-v2-buttons button[hidden],#combat-v2-stamina-wrap[hidden]{display:none!important}
+#combat-v2-actions{position:absolute;right:max(14px,env(safe-area-inset-right,0px));bottom:214px;z-index:6;width:196px;padding:7px;background:rgba(16,21,28,.89);border:1px solid #a68e59;border-radius:11px;box-sizing:border-box;touch-action:manipulation;user-select:none}
+#combat-v2-label{font:600 11px system-ui,sans-serif;color:#ffe9b4;text-align:center;margin-bottom:4px}
+#combat-v2-track{height:5px;background:#39414a;border-radius:9px;overflow:hidden;margin-bottom:5px}
+#combat-v2-stamina{display:block;width:100%;height:100%;background:linear-gradient(90deg,#49ab8e,#a4f9bb);transition:width .1s linear}
+#combat-v2-buttons{display:flex;gap:5px}
+#combat-v2-buttons button{flex:1;min-height:46px;padding:3px;border-radius:9px;background:#293b46;color:#fff2d0;font-weight:700;font-size:12px;touch-action:manipulation}
+#combat-v2-dodge:disabled{opacity:.48}
+#combat-v2-toggle{margin:8px 0;min-height:40px;min-width:230px;border-color:#a68e59}
+/* Comandos de combate em primeiro plano, sem deslocar joystick nem hotbar. */
+#combat-v2-quick{margin-top:6px;display:flex;flex-direction:column;gap:2px}
+#combat-v2-quick-toggle{width:100%;min-height:36px;padding:5px 8px;border:1px solid #d8a956;background:#283b32;color:#fff0c8;border-radius:8px;font:700 12px system-ui,sans-serif;touch-action:manipulation}
+#combat-v2-quick-toggle[data-enabled="false"]{background:#3b3030;border-color:#90604b;color:#efc7b3}
+#combat-v2-hint{font:10px/1.2 system-ui,sans-serif;color:#d7cfb9;opacity:.95;text-align:center}
+@media(max-width:760px){#combat-v2-quick-toggle{min-height:32px;font-size:11px;padding:4px}#combat-v2-hint{font-size:9px}}
+
+@media(pointer:coarse){#combat-v2-actions{bottom:max(210px,calc(210px + env(safe-area-inset-bottom,0px)));width:166px;padding:6px}#combat-v2-buttons button{font-size:11px;min-height:44px}/* Minimapa sempre ancorado no topo: top+bottom esticava a faixa escura quando Combate 2.0 estava ativo. */body.combat-v2-active #mmw{top:calc(env(safe-area-inset-top,0px) + 8px);bottom:auto;}}
+@media(max-height:540px) and (min-width:550px){#combat-v2-actions{right:202px;bottom:max(12px,env(safe-area-inset-bottom,0px));width:142px}body.combat-v2-active #mmw{bottom:unset;top:6px}}
+</style>
+<link rel="stylesheet" href="assets/ui/mobile-v74.css">
+<link rel="stylesheet" href="assets/ui/dialogue-v78.css">
+<link rel="stylesheet" href="assets/ui/hud-overhaul-v1.css">
+<link rel="stylesheet" href="assets/ui/title-three.css">
+<link rel="stylesheet" href="assets/ui/hud-pixi-v2.css">
+<link rel="stylesheet" href="assets/ui/hud-upgrade.css">
+<link rel="stylesheet" href="assets/ui/upgrade-menu.css">
+</head>
+<body>
+<div id="wrap"></div>
+<button type="button" id="perf-open" title="Qualidade gráfica e som" aria-label="Configurações gráficas e som">⚙</button>
+<div id="fps-tag" role="status">-- FPS</div>
+<section id="perf-panel" hidden aria-label="Configurações da HINÁRIA">
+  <div class="perf-header"><strong>⚙ Gráficos & Som</strong><button id="perf-close" type="button" aria-label="Fechar configurações">×</button></div>
+  <button id="combat-v2-toggle" type="button" aria-label="Alternar Combate 2.0 do Cavaleiro">Combate 2.0 (Cavaleiro): LIGADO</button>
+  <label>Qualidade <select id="perf-quality"><option value="auto">Automático (recomendado)</option><option value="low">Batata 🥔</option><option value="medium">Equilibrado</option><option value="high">Bonitão ✨</option></select></label>
+  <label><input type="checkbox" id="perf-fps"> Mostrar FPS real</label>
+  <label title="Partículas suaves no mundo, um draw call e sem download externo"><input type="checkbox" id="perf-atmosphere-v3" checked> ✨ Atmosfera V3 (poeira mágica leve)</label>
+  <label><input type="checkbox" id="perf-sound" checked> Música e efeitos sonoros</label>
+  <label>Volume <input type="range" id="perf-volume" min="0" max="100" value="35"></label>
+  <p>O modo automático reduz a resolução após quedas persistentes de FPS.</p>
+</section>
+<div id="ov"></div>
+<div id="hud" class="panel">
+  <div class="row"><span>Vida</span><b id="hpt"></b></div><div class="bar"><i id="hpb"></i></div><div class="bar mp"><i id="mpb"></i></div>
+  <div class="row"><span>Nível <b id="lv"></b></span><span>Ouro <b id="gd"></b></span></div>
+  <div class="bar xp" style="margin-top:4px"><i id="xpb"></i></div>
+  <div class="row" style="margin-top:5px"><span>Armadura</span><b id="arm"></b></div>
+  <div class="row" style="margin-top:6px;gap:6px"><button id="chr">Visual</button><button id="arsenal-btn">⚔ Arsenal</button></div>
+  <div id="combat-v2-quick"><button id="combat-v2-quick-toggle" type="button" aria-label="Ligar ou desligar Combate 2.0">⚔ Combate 2.0: LIGADO</button><small id="combat-v2-hint">Ataque manual (J/Espaço)</small></div>
+  <div id="hinaria-build" style="font:10px monospace;color:#e0b93f;opacity:.85;margin-top:5px;text-align:right">1.1.0 · COMBATE MANUAL + VFX/SFX V2 · STORY</div>
+</div>
+<div id="toast" role="status" aria-live="polite"></div>
+<button id="interact-npc" type="button">✦ Conversar (F)</button>
+<div id="house-hint" aria-live="polite"></div>
+<div id="dialog-shade"></div>
+<section id="dialog-panel" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="dialog-title">
+  <header id="dialog-head"><span id="dialog-title">Conversar</span><button id="dialog-close-top" aria-label="Fechar diálogo" type="button">×</button></header>
+  <div id="dialog-text"></div>
+  <div id="dialog-options"></div>
+</section>
+<div id='joy'><i id='knob'></i></div>
+<div id='mmw'><canvas id='mm'></canvas><button id='mmx' title='Minimapa'>&#9678;</button></div>
+<div id='hot'><button id='s0'></button><button id='s1'></button><button id='s2'></button><button id='s3' style='display:none'></button><button id='s4' title="Habilidade comprável"></button></div>
+<div id="combat-v2-actions" hidden aria-label="Botões de ataque e esquiva">
+  <div id="combat-v2-stamina-wrap"><div id="combat-v2-label" aria-live="off">Pronto · STA 100/100</div>
+  <div id="combat-v2-track"><i id="combat-v2-stamina"></i></div></div>
+  <div id="combat-v2-buttons"><button id="combat-v2-attack" type="button" aria-label="Golpe, tecla J">⚔ Golpe</button><button id="combat-v2-dodge" type="button" aria-label="Esquiva, tecla K">↪ Esquiva</button></div>
+  <button id="replay-axe-awaken" type="button" hidden aria-label="Despertar o machado do Replay, tecla R">🔥 Despertar · R</button>
+</div>
+<div id="arsenal-modal"><div id="arsenal-panel" role="dialog" aria-modal="true" aria-label="Arsenal"><div id="arsenal-head"><span>⚔ Arsenal & Treinamento</span><span id="arsenal-gold"></span><button id="arsenal-close" aria-label="Fechar">×</button></div><div id="arsenal-tabs"><button data-tab="weapons" class="on">Armas</button><button data-tab="skills">Habilidades</button></div><div id="arsenal-items"></div><div id="arsenal-msg"></div></div></div><div id="ccw"><div id="cc" class="panel"><div class='cch'><span class='th t1'></span><span class='th t2'></span><span class='th t3'></span><b>Escolha sua classe e seu visual</b></div><div id="cls"></div><div id="skn"></div><button id="go">Jogar</button></div></div>
+<section id="cover" role="dialog" aria-modal="true" aria-labelledby="title-heading" class="t3-css">
+  <div class="title-kicker">UMA CRÔNICA DE VILARRUBRA</div>
+  <h1 id="title-heading">HINÁRIA</h1>
+  <div id="cv" aria-hidden="true"></div>
+  <p class="title-subtitle">Um Mundo Além dos Sonhos</p>
+  <div class="title-rule" aria-hidden="true">◆</div>
+  <nav id="title-actions" aria-label="Menu principal">
+    <button id="title-continue" type="button" hidden>Continuar <span id="title-save-caption"></span></button>
+    <button id="play" type="button" disabled>Novo Jogo</button>
+    <button id="title-settings" type="button" disabled>Configurações</button>
+    <button id="title-credits" type="button" disabled>Créditos</button>
+  </nav>
+  <div id="title-status" role="status" aria-live="polite">Preparando Vilarrubra…</div>
+  <small>HINÁRIA · RPG 3D · 1.2.0</small>
+</section>
+<script>(function(){function vh(){var h=innerHeight||document.documentElement.clientHeight;if(h)document.documentElement.style.setProperty('--vh',h/100+'px')}vh();addEventListener('resize',vh)})()</script>
+<script type="module" src="src/main.js"></script>
+</body>
+</html>

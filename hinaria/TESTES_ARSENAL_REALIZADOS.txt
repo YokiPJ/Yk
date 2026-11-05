@@ -1,0 +1,48 @@
+$ node tests/test_arsenal_v7.mjs
+PASS HINÁRIA Arsenal: 16 weapons / 4 classes; buy, equip, skill unlock, persistence, visible rat and arrows, UI elements
+EXIT 0
+
+$ node tests/test_mobile_controls.cjs
+PASS mobile controls: no TDZ, movement state, dead zone, multitouch, pointer release, background, canvas
+EXIT 0
+
+$ node tests/test_entity_tags.mjs
+PASS V7 Android labels: HiDPI CSS projection, NPC names, health fill, damage, hidden offscreen
+EXIT 0
+
+$ node test_quest.mjs
+test_quest: todos os cenários passaram ( 3 recompensas )
+EXIT 0
+
+$ node test_v7_village.mjs
+[World] World generated successfully
+PASS V7 Vilarrubra: 79 organized props, 11 new lanterns, 2 market stalls, no old torches, all quest routes and stats OK
+EXIT 0
+
+$ node test_v6_upgrade.mjs
+PASS V6: 21 rebuilt instanced environmental types, 11 extracted JPEGs, houses, forge, batching, collision integration
+EXIT 0
+
+$ node test_v3_animation.mjs
+PASS: idle, run, stop, attack once, damage, death, respawn, rig rebind, enemy movement
+EXIT 0
+
+$ node test_v3_models.mjs
+OK: knight       (86 scene nodes)
+OK: ranger       (71 scene nodes)
+OK: mage         (67 scene nodes)
+OK: druid        (67 scene nodes)
+OK: blacksmith   (62 scene nodes)
+OK: sage         (62 scene nodes)
+OK: bandit       (62 scene nodes)
+OK: skeleton     (75 scene nodes)
+OK: troll        (76 scene nodes)
+OK: orc          (82 scene nodes)
+PASS: 10 humanoid roles + 7 weapon factories build usable rigs
+EXIT 0
+
+$ node tools/test-package.mjs
+OK: projeto V7 + configuração Android + referências de assets.
+EXIT 0
+
+Nota: teste visual real em Android/WebGL não executado; compilar no Codespaces. test_world_regression requer dependência Playwright não disponível aqui.
