@@ -2,7 +2,7 @@
 
 RPG 3D em Three.js/PixiJS com projeto Android Capacitor, controles touch, saves e laboratórios de animação Java/HTML.
 
-[**Baixar APK e projeto na release 1.2.2**](https://github.com/yorimiguel727-eng/Yk/releases/tag/v1.2.2)
+[**Baixar APK e projeto na release 1.2.2**](https://github.com/YokiPJ/Yk/releases/tag/v1.2.2)
 
 ```bash
 npm run setup
@@ -26,7 +26,7 @@ Abra **http://localhost:8080/studio/** para o projeto completo ou **http://local
 | `hinaria/downloads/` | JAR pronto e destino local do APK compilado |
 | `.github/` | Build contínuo e publicação de anexos verificados |
 
-APKs e ZIPs de distribuição ficam nas Releases. As distribuições antigas continuam disponíveis na [release 1.2.0](https://github.com/yorimiguel727-eng/Yk/releases/tag/v1.2.0) e no histórico Git. As cópias HTML duplicadas dos geradores são reconstruídas por `build:studio`.
+APKs e ZIPs de distribuição ficam nas Releases. As distribuições antigas continuam disponíveis na [release 1.2.0](https://github.com/YokiPJ/Yk/releases/tag/v1.2.0) e no histórico Git. As cópias HTML duplicadas dos geradores são reconstruídas por `build:studio`.
 
 ## Mobile
 

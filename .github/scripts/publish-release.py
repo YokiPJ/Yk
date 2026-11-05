@@ -4,7 +4,7 @@ import hashlib, json, os, re, subprocess, tempfile
 
 manifest = json.loads(Path('release-manifest.json').read_text(encoding='utf-8'))
 repository, tag, source = manifest['repository'], manifest['tag'], manifest['source_commit']
-if repository != 'yorimiguel727-eng/Yk' or os.environ.get('GITHUB_REPOSITORY') != repository:
+if repository != 'YokiPJ/Yk' or os.environ.get('GITHUB_REPOSITORY') != repository:
     raise RuntimeError('Repositório inesperado')
 if not re.fullmatch(r'v\d+\.\d+\.\d+', tag) or not re.fullmatch(r'[0-9a-f]{40}', source):
     raise RuntimeError('Tag ou commit inválido')

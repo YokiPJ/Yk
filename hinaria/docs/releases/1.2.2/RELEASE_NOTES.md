@@ -24,12 +24,12 @@ O APK é debug para testes, assinado com o mesmo certificado usado nas versões 
 
 ### Cenários de Hinária
 
-![Vilarrubra — imagem principal](https://github.com/yorimiguel727-eng/Yk/releases/download/v1.2.2/01-vilarrubra.png)
+![Vilarrubra — imagem principal](https://github.com/YokiPJ/Yk/releases/download/v1.2.2/01-vilarrubra.png)
 
 | Ponte Velha | Clareira |
 | --- | --- |
-| ![Ponte Velha](https://github.com/yorimiguel727-eng/Yk/releases/download/v1.2.2/02-ponte-velha.png) | ![Clareira](https://github.com/yorimiguel727-eng/Yk/releases/download/v1.2.2/03-clareira.png) |
+| ![Ponte Velha](https://github.com/YokiPJ/Yk/releases/download/v1.2.2/02-ponte-velha.png) | ![Clareira](https://github.com/YokiPJ/Yk/releases/download/v1.2.2/03-clareira.png) |
 
 | Ruínas de Ardu | Caverna Sombria | Acampamento |
 | --- | --- | --- |
-| ![Ruínas de Ardu](https://github.com/yorimiguel727-eng/Yk/releases/download/v1.2.2/04-ruinas-ardu.png) | ![Caverna Sombria](https://github.com/yorimiguel727-eng/Yk/releases/download/v1.2.2/05-caverna-sombria.png) | ![Acampamento](https://github.com/yorimiguel727-eng/Yk/releases/download/v1.2.2/06-acampamento.png) |
+| ![Ruínas de Ardu](https://github.com/YokiPJ/Yk/releases/download/v1.2.2/04-ruinas-ardu.png) | ![Caverna Sombria](https://github.com/YokiPJ/Yk/releases/download/v1.2.2/05-caverna-sombria.png) | ![Acampamento](https://github.com/YokiPJ/Yk/releases/download/v1.2.2/06-acampamento.png) |
