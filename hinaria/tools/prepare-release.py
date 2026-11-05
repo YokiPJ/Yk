@@ -1,10 +1,15 @@
 """Prepare a delivery branch without publishing or touching existing releases."""
 from pathlib import Path
-import hashlib, json, re, shutil, subprocess
+import hashlib, json, re, shutil, subprocess, argparse
 
 GAME = Path(__file__).resolve().parent.parent
 ROOT = GAME.parent
 RELEASE = json.loads((GAME / 'release.json').read_text(encoding='utf-8'))
+parser=argparse.ArgumentParser()
+parser.add_argument('--adopt-draft-source',help='Commit exato de um draft criado por esta preparação anteriormente')
+options=parser.parse_args()
+if options.adopt_draft_source and not re.fullmatch(r'[0-9a-f]{40}',options.adopt_draft_source):
+    raise RuntimeError('Commit anterior inválido')
 
 def run(*args):
     return subprocess.run(args, cwd=ROOT, check=True, capture_output=True, text=True).stdout.strip()
@@ -34,6 +39,9 @@ files = sorted(path for path in target.iterdir() if path.is_file())
 manifest = {'schemaVersion':1, 'repository':RELEASE['repository'], 'tag':RELEASE['tag'],
             'title':RELEASE['title'], 'source_commit':source,
             'assets':[{'name':path.name,'bytes':path.stat().st_size,'sha256':checksum(path)} for path in files]}
+if options.adopt_draft_source:
+    run('git','merge-base','--is-ancestor',options.adopt_draft_source,source)
+    manifest['adopt_draft_markers']=['<!-- hinaria-release:'+RELEASE['tag']+':'+options.adopt_draft_source+' -->']
 (target / 'release-manifest.json').write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
 for relative in ['.github/workflows/publish-release.yml', '.github/scripts/publish-release.py']:
     destination = target / relative

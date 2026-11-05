@@ -1,6 +1,7 @@
 """Publish only the exact reviewed files prepared by tools/prepare-release.py."""
 from pathlib import Path
 import hashlib, json, os, re, subprocess, tempfile
+from urllib.parse import quote
 
 manifest = json.loads(Path('release-manifest.json').read_text(encoding='utf-8'))
 repository, tag, source = manifest['repository'], manifest['tag'], manifest['source_commit']
@@ -11,6 +12,9 @@ if not re.fullmatch(r'v\d+\.\d+\.\d+', tag) or not re.fullmatch(r'[0-9a-f]{40}',
 if os.environ.get('GITHUB_REF_NAME') != 'releases/' + tag:
     raise RuntimeError('Ramo de distribuição inesperado')
 marker = '<!-- hinaria-release:' + tag + ':' + source + ' -->'
+owned_markers={marker,*manifest.get('adopt_draft_markers',[])}
+if any(not re.fullmatch(r'<!-- hinaria-release:'+re.escape(tag)+r':[0-9a-f]{40} -->',item) for item in owned_markers):
+    raise RuntimeError('Marcador de adoção inválido')
 stage = 'validate artifacts'
 
 def run(*args, check=True):
@@ -37,10 +41,24 @@ def validate(folder):
 
 def release():
     results = json.loads(run('gh', 'api', f'repos/{repository}/releases?per_page=100').stdout)
-    matches = [item for item in results if item['tag_name'] == tag]
+    matches = [item for item in results if item['tag_name'] == tag or any(value in (item.get('body') or '') for value in owned_markers)]
     if len(matches) > 1:
         raise RuntimeError('Mais de uma release usa a tag')
     return matches[0] if matches else None
+
+def api_json(method,path,payload):
+    with tempfile.NamedTemporaryFile(mode='w',suffix='.json',encoding='utf-8') as file:
+        json.dump(payload,file,ensure_ascii=False);file.flush()
+        return json.loads(run('gh','api','--method',method,path,'--input',file.name).stdout)
+
+def read_release(release_id):
+    return json.loads(run('gh','api',f'repos/{repository}/releases/{release_id}').stdout)
+
+def download_asset(asset,path):
+    with path.open('wb') as stream:
+        result=subprocess.run(['gh','api',f"repos/{repository}/releases/assets/{asset['id']}",'-H','Accept: application/octet-stream'],stdout=stream,stderr=subprocess.PIPE)
+    if result.returncode:
+        raise RuntimeError('Download do anexo falhou: '+result.stderr.decode(errors='replace')[-700:])
 
 def tag_commit():
     response = run('gh', 'api', f'repos/{repository}/git/ref/tags/{tag}', check=False)
@@ -73,31 +91,50 @@ try:
     if existing_tag is not None and existing_tag != source:
         raise RuntimeError('Tag existente aponta para outro commit; preservada')
     current = release()
-    if current and marker not in (current.get('body') or ''):
+    if current and not any(value in (current.get('body') or '') for value in owned_markers):
         raise RuntimeError('Já existe uma release de outra publicação nesta tag; preservada')
+    payload={'tag_name':tag,'target_commitish':source,'name':manifest['title'],'body':notes,'draft':True,'prerelease':False}
     if current is None:
-        stage = 'create draft'
-        run('gh', 'release', 'create', tag, '--repo', repository, '--draft', '--target', source,
-            '--title', manifest['title'], '--notes-file', 'RELEASE_NOTES.md')
-        current = release()
+        stage='create draft'
+        current=api_json('POST',f'repos/{repository}/releases',payload)
+    elif current['draft']:
+        stage='resume owned draft'
+        current=api_json('PATCH',f"repos/{repository}/releases/{current['id']}",payload)
+    elif marker not in (current.get('body') or ''):
+        raise RuntimeError('Uma versão anterior já está publicada; preservada')
+    if not isinstance(current,dict) or not isinstance(current.get('id'),int):
+        raise RuntimeError('GitHub não retornou um ID de release válido')
+    release_id=current['id']
     if current['draft']:
-        stage = 'upload verified files'
-        run('gh', 'release', 'upload', tag, *expected.keys(), '--repo', repository, '--clobber')
-    stage = 'download and verify uploaded files'
+        stage='upload verified files by release ID'
+        existing={asset['name']:asset for asset in current.get('assets',[])}
+        for name in expected:
+            if name in existing:
+                run('gh','api','--method','DELETE',f"repos/{repository}/releases/assets/{existing[name]['id']}")
+            upload=current['upload_url'].split('{',1)[0]+'?name='+quote(name,safe='')
+            response=json.loads(run('gh','api','--method','POST',upload,'-H','Content-Type: application/octet-stream','--input',name).stdout)
+            if response.get('name')!=name or response.get('size')!=Path(name).stat().st_size:
+                raise RuntimeError('Upload incompleto: '+name)
+    stage='download and verify uploaded files by asset ID'
+    current=read_release(release_id)
+    uploaded={asset['name']:asset for asset in current['assets']}
+    if not set(expected).issubset(uploaded):
+        raise RuntimeError('GitHub não retornou todos os anexos enviados')
     with tempfile.TemporaryDirectory(prefix='hinaria-release-') as directory:
-        run('gh', 'release', 'download', tag, '--repo', repository, '--dir', directory)
-        if validate(Path(directory)) != expected:
+        for name in expected:
+            download_asset(uploaded[name],Path(directory)/name)
+        if validate(Path(directory))!=expected:
             raise RuntimeError('Anexos enviados divergem da preparação')
     if current['draft']:
-        stage = 'publish'
-        run('gh', 'release', 'edit', tag, '--repo', repository, '--draft=false', '--latest')
-    current = release()
-    if current['draft'] or tag_commit() != source:
+        stage='publish by release ID'
+        current=api_json('PATCH',f'repos/{repository}/releases/{release_id}',{'draft':False,'make_latest':'true'})
+    current=read_release(release_id)
+    if current['draft'] or current['tag_name']!=tag or tag_commit()!=source:
         raise RuntimeError('Publicação/tag não confirmada')
     published = {asset['name']: asset for asset in current['assets']}
     if not set(expected).issubset(published):
         raise RuntimeError('Release publicada sem todos os anexos')
-    proof = {'status':'published', 'tag':tag, 'source_commit':source, 'tag_commit':tag_commit(),
+    proof = {'status':'published', 'release_id':release_id, 'tag':tag, 'source_commit':source, 'tag_commit':tag_commit(),
         'url':current['html_url'], 'run_url':f"https://github.com/{repository}/actions/runs/{os.environ['GITHUB_RUN_ID']}",
         'assets':[{'name':name,'sha256':digest,'bytes':published[name]['size'],
                    'download_url':published[name]['browser_download_url']} for name,digest in expected.items()]}
