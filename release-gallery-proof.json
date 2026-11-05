@@ -1,0 +1,59 @@
+{
+  "status": "published",
+  "release_url": "https://github.com/yorimiguel727-eng/Yk/releases/tag/v1.2.0",
+  "image_count": 6,
+  "rendered_img_elements": 6,
+  "rendered_image_hosts": [
+    "github.com"
+  ],
+  "gallery_commit": "6daa66ad9d8aa7f272b14a93687c14e7905de4e6",
+  "preserved_build_assets": [
+    "HINARIA_UPGRADE_1.2.0.zip",
+    "HINARIA_UPGRADE_DEBUG_1.2.0.apk"
+  ],
+  "images": [
+    {
+      "name": "HINARIA_TITULO.png",
+      "sha256": "eb62fe284c82dc9447fbd54f1d8a74b66774680318ead058786d2df5747c6d06",
+      "width": 1280,
+      "height": 720,
+      "url": "https://github.com/yorimiguel727-eng/Yk/releases/download/v1.2.0/HINARIA_TITULO.png"
+    },
+    {
+      "name": "HINARIA_VILARRUBRA.png",
+      "sha256": "fb6f5c3f4f67ffe14009eb5b41b0300be359110f8087f718b08ffaa2172f1384",
+      "width": 1280,
+      "height": 720,
+      "url": "https://github.com/yorimiguel727-eng/Yk/releases/download/v1.2.0/HINARIA_VILARRUBRA.png"
+    },
+    {
+      "name": "HINARIA_HUD_MOBILE.png",
+      "sha256": "9cd0e0887da1743b60873accde5e6f2f071aeb6b5ab8c22d17f75c5eef72b62c",
+      "width": 390,
+      "height": 844,
+      "url": "https://github.com/yorimiguel727-eng/Yk/releases/download/v1.2.0/HINARIA_HUD_MOBILE.png"
+    },
+    {
+      "name": "HINARIA_INTERIOR.png",
+      "sha256": "52b89b30ef0db21de129e50158fabe44e41515e6f0fb48bd6a3919f96c71d6de",
+      "width": 900,
+      "height": 600,
+      "url": "https://github.com/yorimiguel727-eng/Yk/releases/download/v1.2.0/HINARIA_INTERIOR.png"
+    },
+    {
+      "name": "HINARIA_CURA_DRUIDA.png",
+      "sha256": "68d761c7dc3858eaf5388313262cd21829fd93caf78d79ca886ef9c2a6daea4c",
+      "width": 1280,
+      "height": 720,
+      "url": "https://github.com/yorimiguel727-eng/Yk/releases/download/v1.2.0/HINARIA_CURA_DRUIDA.png"
+    },
+    {
+      "name": "HINARIA_MAGIA_CAJADO.png",
+      "sha256": "2f26eea9ddacd83623d12a03c867126826d262c6f2e53d824ac7f72220f27d32",
+      "width": 1280,
+      "height": 720,
+      "url": "https://github.com/yorimiguel727-eng/Yk/releases/download/v1.2.0/HINARIA_MAGIA_CAJADO.png"
+    }
+  ],
+  "run_url": "https://github.com/yorimiguel727-eng/Yk/actions/runs/42080320994"
+}
