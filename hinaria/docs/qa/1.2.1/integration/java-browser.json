@@ -1,0 +1,442 @@
+{
+  "status": "PASS",
+  "browser": "155.0.8059.79",
+  "renderer": "WebGL / SwiftShader test renderer",
+  "combinations": [
+    {
+      "model": "cavaleiro",
+      "clip": "Idle",
+      "tracks": 13,
+      "triangles": 10030
+    },
+    {
+      "model": "cavaleiro",
+      "clip": "Walk",
+      "tracks": 13,
+      "triangles": 10030
+    },
+    {
+      "model": "cavaleiro",
+      "clip": "Run",
+      "tracks": 13,
+      "triangles": 10030
+    },
+    {
+      "model": "cavaleiro",
+      "clip": "Attack",
+      "tracks": 13,
+      "triangles": 10030
+    },
+    {
+      "model": "cavaleiro",
+      "clip": "AttackHeavy",
+      "tracks": 13,
+      "triangles": 10030
+    },
+    {
+      "model": "cavaleiro",
+      "clip": "Hit",
+      "tracks": 13,
+      "triangles": 10030
+    },
+    {
+      "model": "cavaleiro",
+      "clip": "Block",
+      "tracks": 13,
+      "triangles": 10030
+    },
+    {
+      "model": "cavaleiro",
+      "clip": "Dodge",
+      "tracks": 13,
+      "triangles": 10030
+    },
+    {
+      "model": "cavaleiro",
+      "clip": "Jump",
+      "tracks": 13,
+      "triangles": 10030
+    },
+    {
+      "model": "cavaleiro",
+      "clip": "Death",
+      "tracks": 13,
+      "triangles": 10030
+    },
+    {
+      "model": "paladino",
+      "clip": "Idle",
+      "tracks": 13,
+      "triangles": 8054
+    },
+    {
+      "model": "paladino",
+      "clip": "Walk",
+      "tracks": 13,
+      "triangles": 8054
+    },
+    {
+      "model": "paladino",
+      "clip": "Run",
+      "tracks": 13,
+      "triangles": 8054
+    },
+    {
+      "model": "paladino",
+      "clip": "Attack",
+      "tracks": 13,
+      "triangles": 8054
+    },
+    {
+      "model": "paladino",
+      "clip": "AttackHeavy",
+      "tracks": 13,
+      "triangles": 8054
+    },
+    {
+      "model": "paladino",
+      "clip": "Hit",
+      "tracks": 13,
+      "triangles": 8054
+    },
+    {
+      "model": "paladino",
+      "clip": "Block",
+      "tracks": 13,
+      "triangles": 8054
+    },
+    {
+      "model": "paladino",
+      "clip": "Dodge",
+      "tracks": 13,
+      "triangles": 8054
+    },
+    {
+      "model": "paladino",
+      "clip": "Jump",
+      "tracks": 13,
+      "triangles": 8054
+    },
+    {
+      "model": "paladino",
+      "clip": "Death",
+      "tracks": 13,
+      "triangles": 8054
+    },
+    {
+      "model": "feiticeiro",
+      "clip": "Idle",
+      "tracks": 13,
+      "triangles": 8320
+    },
+    {
+      "model": "feiticeiro",
+      "clip": "Walk",
+      "tracks": 13,
+      "triangles": 8320
+    },
+    {
+      "model": "feiticeiro",
+      "clip": "Run",
+      "tracks": 13,
+      "triangles": 8320
+    },
+    {
+      "model": "feiticeiro",
+      "clip": "Attack",
+      "tracks": 13,
+      "triangles": 8320
+    },
+    {
+      "model": "feiticeiro",
+      "clip": "AttackHeavy",
+      "tracks": 13,
+      "triangles": 8320
+    },
+    {
+      "model": "feiticeiro",
+      "clip": "Hit",
+      "tracks": 13,
+      "triangles": 8320
+    },
+    {
+      "model": "feiticeiro",
+      "clip": "Block",
+      "tracks": 13,
+      "triangles": 8320
+    },
+    {
+      "model": "feiticeiro",
+      "clip": "Dodge",
+      "tracks": 13,
+      "triangles": 8320
+    },
+    {
+      "model": "feiticeiro",
+      "clip": "Jump",
+      "tracks": 13,
+      "triangles": 8320
+    },
+    {
+      "model": "feiticeiro",
+      "clip": "Death",
+      "tracks": 13,
+      "triangles": 8320
+    },
+    {
+      "model": "druida",
+      "clip": "Idle",
+      "tracks": 13,
+      "triangles": 9904
+    },
+    {
+      "model": "druida",
+      "clip": "Walk",
+      "tracks": 13,
+      "triangles": 9904
+    },
+    {
+      "model": "druida",
+      "clip": "Run",
+      "tracks": 13,
+      "triangles": 9904
+    },
+    {
+      "model": "druida",
+      "clip": "Attack",
+      "tracks": 13,
+      "triangles": 9904
+    },
+    {
+      "model": "druida",
+      "clip": "AttackHeavy",
+      "tracks": 13,
+      "triangles": 9904
+    },
+    {
+      "model": "druida",
+      "clip": "Hit",
+      "tracks": 13,
+      "triangles": 9904
+    },
+    {
+      "model": "druida",
+      "clip": "Block",
+      "tracks": 13,
+      "triangles": 9904
+    },
+    {
+      "model": "druida",
+      "clip": "Dodge",
+      "tracks": 13,
+      "triangles": 9904
+    },
+    {
+      "model": "druida",
+      "clip": "Jump",
+      "tracks": 13,
+      "triangles": 9904
+    },
+    {
+      "model": "druida",
+      "clip": "Death",
+      "tracks": 13,
+      "triangles": 9904
+    },
+    {
+      "model": "bandido",
+      "clip": "Idle",
+      "tracks": 13,
+      "triangles": 8012
+    },
+    {
+      "model": "bandido",
+      "clip": "Walk",
+      "tracks": 13,
+      "triangles": 8012
+    },
+    {
+      "model": "bandido",
+      "clip": "Run",
+      "tracks": 13,
+      "triangles": 8012
+    },
+    {
+      "model": "bandido",
+      "clip": "Attack",
+      "tracks": 13,
+      "triangles": 8012
+    },
+    {
+      "model": "bandido",
+      "clip": "AttackHeavy",
+      "tracks": 13,
+      "triangles": 8012
+    },
+    {
+      "model": "bandido",
+      "clip": "Hit",
+      "tracks": 13,
+      "triangles": 8012
+    },
+    {
+      "model": "bandido",
+      "clip": "Block",
+      "tracks": 13,
+      "triangles": 8012
+    },
+    {
+      "model": "bandido",
+      "clip": "Dodge",
+      "tracks": 13,
+      "triangles": 8012
+    },
+    {
+      "model": "bandido",
+      "clip": "Jump",
+      "tracks": 13,
+      "triangles": 8012
+    },
+    {
+      "model": "bandido",
+      "clip": "Death",
+      "tracks": 13,
+      "triangles": 8012
+    },
+    {
+      "model": "esqueleto",
+      "clip": "Idle",
+      "tracks": 8,
+      "triangles": 5032
+    },
+    {
+      "model": "esqueleto",
+      "clip": "Walk",
+      "tracks": 8,
+      "triangles": 5032
+    },
+    {
+      "model": "esqueleto",
+      "clip": "Run",
+      "tracks": 8,
+      "triangles": 5032
+    },
+    {
+      "model": "esqueleto",
+      "clip": "Attack",
+      "tracks": 8,
+      "triangles": 5032
+    },
+    {
+      "model": "esqueleto",
+      "clip": "AttackHeavy",
+      "tracks": 8,
+      "triangles": 5032
+    },
+    {
+      "model": "esqueleto",
+      "clip": "Hit",
+      "tracks": 8,
+      "triangles": 5032
+    },
+    {
+      "model": "esqueleto",
+      "clip": "Block",
+      "tracks": 8,
+      "triangles": 5032
+    },
+    {
+      "model": "esqueleto",
+      "clip": "Dodge",
+      "tracks": 8,
+      "triangles": 5032
+    },
+    {
+      "model": "esqueleto",
+      "clip": "Jump",
+      "tracks": 8,
+      "triangles": 5032
+    },
+    {
+      "model": "esqueleto",
+      "clip": "Death",
+      "tracks": 8,
+      "triangles": 5032
+    },
+    {
+      "model": "orc",
+      "clip": "Idle",
+      "tracks": 13,
+      "triangles": 7142
+    },
+    {
+      "model": "orc",
+      "clip": "Walk",
+      "tracks": 13,
+      "triangles": 7142
+    },
+    {
+      "model": "orc",
+      "clip": "Run",
+      "tracks": 13,
+      "triangles": 7142
+    },
+    {
+      "model": "orc",
+      "clip": "Attack",
+      "tracks": 13,
+      "triangles": 7142
+    },
+    {
+      "model": "orc",
+      "clip": "AttackHeavy",
+      "tracks": 13,
+      "triangles": 7142
+    },
+    {
+      "model": "orc",
+      "clip": "Hit",
+      "tracks": 13,
+      "triangles": 7142
+    },
+    {
+      "model": "orc",
+      "clip": "Block",
+      "tracks": 13,
+      "triangles": 7142
+    },
+    {
+      "model": "orc",
+      "clip": "Dodge",
+      "tracks": 13,
+      "triangles": 7142
+    },
+    {
+      "model": "orc",
+      "clip": "Jump",
+      "tracks": 13,
+      "triangles": 7142
+    },
+    {
+      "model": "orc",
+      "clip": "Death",
+      "tracks": 13,
+      "triangles": 7142
+    }
+  ],
+  "checks": [
+    "70 GLB model/clip pairs imported with official Three.js GLTFLoader",
+    "Finite transforms, animation changes and actual rendered triangles",
+    "Pause, seek, one-shot Hit and Walk loop",
+    "Model swaps release GPU geometries",
+    "Camera drag and reset",
+    "Wireframe, shadows, quality, search and category filters",
+    "Downloaded GLB equals Java output SHA-256",
+    "Offline HTML download and re-open",
+    "Mobile viewport 390x844; reduced motion starts paused",
+    "No page errors, console errors or external requests"
+  ],
+  "errors": [],
+  "consoleErrors": [],
+  "externalRequests": []
+}

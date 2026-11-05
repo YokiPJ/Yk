@@ -34,4 +34,4 @@ O APK é debug para testes, assinado com o mesmo certificado usado nas versões 
 | --- | --- | --- |
 | ![Ruínas de Ardu](https://github.com/YokiPJ/Yk/releases/download/v1.2.2/04-ruinas-ardu.png) | ![Caverna Sombria](https://github.com/YokiPJ/Yk/releases/download/v1.2.2/05-caverna-sombria.png) | ![Acampamento](https://github.com/YokiPJ/Yk/releases/download/v1.2.2/06-acampamento.png) |
 
-<!-- hinaria-release:v1.2.2:775089e21efb73585c4cfd450205b25dcc4b21a2 -->
+<!-- hinaria-release:v1.2.2:969d646cac29efc6d2413c9fd03fb62082f7013a -->

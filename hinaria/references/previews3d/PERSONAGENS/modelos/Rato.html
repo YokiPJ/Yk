@@ -1,0 +1,76 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>HINÁRIA | RATO — Estúdio 3D</title><style>
+:root{color-scheme:dark;--line:#304353;--gold:#efc775;--text:#f4f1e7}*{box-sizing:border-box}body{margin:0;background:#0b1320;color:var(--text);font:13px/1.5 system-ui,Arial,sans-serif}main{height:100dvh;min-height:530px;display:grid;grid-template-columns:minmax(0,1fr) 306px}#viewport{position:relative;min-width:0;overflow:hidden;background:radial-gradient(circle at 52% 30%,#284452,#132432 67%,#0a111b)}#viewport>canvas{display:block;width:100%;height:100%;touch-action:none}.brand{pointer-events:none;position:absolute;top:25px;left:30px;text-shadow:0 3px 12px #0009}.brand small{letter-spacing:.25em;font-weight:800;color:var(--gold)}h1{font-family:Georgia,serif;font-size:clamp(25px,3.6vw,47px);margin:8px 0 3px}.brand p{margin:0;color:#b4c7d4}.help{position:absolute;bottom:18px;left:24px;background:#0b1724c7;border:1px solid #425368;border-radius:9px;padding:9px;color:#bfd1e2;font-size:11px;pointer-events:none}aside{padding:21px 18px;background:linear-gradient(170deg,#15273a,#111c2b);border-left:1px solid var(--line);overflow:auto;display:flex;flex-direction:column;gap:15px}.cap{font-size:11px;color:var(--gold);font-weight:800;letter-spacing:.14em}h2{font:26px Georgia,serif;margin:7px 0 0}.muted{color:#99adc3}hr{border:0;border-top:1px solid var(--line);width:100%;margin:0}.buttons{display:grid;grid-template-columns:1fr 1fr;gap:7px}button{cursor:pointer;border:1px solid #425e7b;border-radius:8px;background:#1a3349;color:#d9e5ed;font-weight:700;padding:10px 5px}button:hover{background:#294b60}button.active{background:#425d58;border-color:#b6c985;color:#fff}#capture{width:100%;background:#62502c;border-color:#c4a65a;color:#fff}.opt{display:flex;justify-content:space-between;gap:15px;align-items:center;padding:6px 0}.opt input{accent-color:#e4ba67}.opt input[type=range]{width:105px}.stats{display:grid;grid-template-columns:1fr 1fr;gap:8px}.stat{background:#0f1c29;border:1px solid var(--line);padding:9px;border-radius:9px;font-size:11px;color:#a9bfd2}.stat strong{display:block;font-size:19px;color:var(--gold)}#preview{width:100%;border:1px solid var(--line);border-radius:8px}#loading{position:absolute;inset:0;z-index:8;background:#0c1b2aee;display:grid;place-items:center;text-align:center;padding:30px;color:var(--gold)}footer{font-size:10px;color:#90a6b5;margin-top:auto}@media(max-width:750px){main{height:auto;display:flex;flex-direction:column}#viewport{height:65dvh;min-height:390px}aside{border-left:none;border-top:1px solid var(--line)}.brand{top:16px;left:18px}.help{left:8px;bottom:10px}}
+</style></head><body><main><section id="viewport"><div class="brand"><small>HINÁRIA • CHARACTER LAB</small><h1>RATO</h1><p>Criatura original do jogo</p></div><div class="help">🖱️ Arraste para girar • Scroll para zoom • 1–6 para animar</div><div id="loading">Carregando modelo 3D…</div></section><aside><header><div class="cap">DEMONSTRAÇÃO PROCEDURAL</div><h2>RATO</h2><p class="muted">O mesmo construtor de malha buildRat() extraído de combat.js. Nenhuma mudança na geometria.</p></header><hr/><section><div class="cap">ANIMAÇÕES INTERATIVAS</div><div class="buttons" style="margin-top:8px"><button data-anim="idle" class="active">✦ Parado</button><button data-anim="walk">↗ Caminhar</button><button data-anim="run">➤ Correr</button><button data-anim="attack">⚔ Ataque</button><button data-anim="hit">✹ Dano</button><button data-anim="death">☠ Morte</button></div></section><hr/><section><div class="cap">INSPEÇÃO</div><div style="margin:9px 0"><button id="capture">📸 Capturar 4 ângulos • PNG</button></div><img id="preview" hidden alt="Prévia das quatro vistas capturadas"></section><hr/><section><div class="cap">VISUALIZAÇÃO</div><label class="opt">Girar automaticamente <input id="autorotate" type="checkbox"></label><label class="opt">Modo argila <input id="clay" type="checkbox"></label><label class="opt">Aramado <input id="wireframe" type="checkbox"></label><label class="opt">Velocidade <input id="speed" type="range" value="1" min="0.35" max="2" step="0.05"></label></section><hr/><section><div class="cap">ESTATÍSTICAS DO RENDERER</div><div class="stats"><div class="stat">Triângulos/frame<strong id="tris">—</strong></div><div class="stat">Draw calls<strong id="calls">—</strong></div></div></section><footer>Three.js 0.160 • Modelo independente • Precisa de internet para carregar Three.js • Não está instalado no jogo.</footer></aside></main><script type="module">
+import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js';
+function buildRat() {
+    const group = new THREE.Group();
+    const unit = new THREE.Group();
+    const rig = {unit, legs:[], amp:.55, tail:null, head:null};
+    group.userData.r=rig; group.add(unit);
+    // Mobile visibility: taller silhouette and higher contrast fur to distinguish from dirt.
+    group.scale.setScalar(1.5);
+    const fur=new THREE.MeshLambertMaterial({color:0xb79b78,emissive:0x23150a,emissiveIntensity:.22});
+    const furLight=new THREE.MeshLambertMaterial({color:0xe1c49e});
+    const pink=new THREE.MeshLambertMaterial({color:0xc98d90});
+    const black=new THREE.MeshBasicMaterial({color:0x1b1715});
+    const white=new THREE.MeshBasicMaterial({color:0xffffff});
+    function ell(parent, material, x,y,z, sx,sy,sz,seg=10) {
+        const m=new THREE.Mesh(new THREE.SphereGeometry(1,seg,8),material);
+        m.position.set(x,y,z);m.scale.set(sx,sy,sz);parent.add(m);return m;
+    }
+    // V6 mouse: teardrop torso, lifted snout, oversized expressive ears.
+    ell(unit,fur,0,.22,-.04,.205,.18,.34,12);
+    ell(unit,furLight,0,.133,.075,.15,.065,.24);
+    const head=rig.head=new THREE.Group();head.position.set(0,.24,.24);unit.add(head);
+    ell(head,fur,0,0,0,.145,.13,.155);
+    ell(head,furLight,0,-.045,.125,.102,.065,.132);
+    ell(head,pink,0,-.026,.247,.039,.031,.041,8);
+    for(const s of [-1,1]) {
+        const ear=ell(head,fur,s*.108,.15,-.033,.084,.115,.045);
+        ear.rotation.z=-s*.27;
+        const inner=ell(head,pink,s*.108,.16,.006,.059,.083,.02);
+        inner.rotation.z=-s*.27;
+        ell(head,black,s*.102,.028,.133,.034,.034,.023,8);
+        ell(head,white,s*.093,.041,.15,.009,.009,.009,6);
+        for(let j=-1;j<=1;j++) {
+            const whisker=new THREE.Mesh(new THREE.CylinderGeometry(.003,.003,.20,4),furLight);
+            whisker.position.set(s*(.105+.075),-.042+j*.024,.186);
+            whisker.rotation.z=s*(Math.PI/2+j*.14);head.add(whisker);
+        }
+    }
+    // 4 animated paws, placed below and to the sides of the body.
+    for(const [x,z,phase] of [[-.15,.17,0],[.15,.17,Math.PI],[-.15,-.19,Math.PI],[.15,-.19,0]]) {
+        const leg=new THREE.Group();leg.position.set(x,.13,z);leg.userData.p=phase;
+        ell(leg,fur,0,-.044,0,.055,.085,.055,8);
+        ell(leg,pink,0,-.114,.055,.06,.026,.09,8);
+        unit.add(leg);rig.legs.push(leg);
+    }
+    const tail=rig.tail=new THREE.Group();tail.position.set(0,.20,-.33);unit.add(tail);
+    const tailMat=new THREE.MeshLambertMaterial({color:0xb58c87});
+    for(let i=0;i<5;i++) {
+        const seg=new THREE.Mesh(new THREE.CylinderGeometry(.023-i*.003,.027-i*.003,.18,7),tailMat);
+        seg.rotation.x=Math.PI/2+(i*.14);seg.position.set(.03*Math.sin(i*.65),.025*i,-.09-i*.155);
+        tail.add(seg);
+    }
+    const blob=new THREE.Mesh(new THREE.CircleGeometry(.38,12),new THREE.MeshBasicMaterial({color:0x000000,transparent:true,opacity:.25}));
+    blob.rotation.x=-Math.PI/2;blob.position.y=.018;group.add(blob);
+    group.traverse(o=>{if(o.isMesh)o.frustumCulled=false;});
+    return group;
+}
+const $=s=>document.querySelector(s),view=$('#viewport');const scene=new THREE.Scene();scene.background=new THREE.Color('#172833');
+const renderer=new THREE.WebGLRenderer({antialias:true});renderer.setPixelRatio(Math.min(devicePixelRatio||1,2));renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.38;view.insertBefore(renderer.domElement,view.firstChild);
+scene.add(new THREE.HemisphereLight(0xdff2ff,0x615044,2.5));const key=new THREE.DirectionalLight(0xffdfad,3);key.position.set(-2,5,4);scene.add(key);const rim=new THREE.DirectionalLight(0x8cb6ff,2);rim.position.set(2,3,-3);scene.add(rim);
+const camera=new THREE.PerspectiveCamera(40,1,.08,100);const rat=buildRat();scene.add(rat);const r=rat.userData.r;
+const stone=new THREE.Mesh(new THREE.CylinderGeometry(.92,1.04,.13,18),new THREE.MeshStandardMaterial({color:'#3f5450',roughness:.9}));stone.position.y=-.10;scene.add(stone);
+const original=[];rat.traverse(o=>{if(o.isMesh)original.push([o,o.material])});const clay=new THREE.MeshStandardMaterial({color:'#b5b9b2',roughness:1});let useClay=false,wire=false;
+function applyMat(){for(const [o,m] of original){if(useClay){o.material=clay}else{o.material=m}o.material.wireframe=wire}}$('#clay').onchange=e=>{useClay=e.target.checked;applyMat()};$('#wireframe').onchange=e=>{wire=e.target.checked;applyMat()};
+let anim='idle',t=0,elapsed=0,speed=1,turn=false,yaw=.30,pitch=.20,dist=2.7,ty=yaw,tp=pitch,td=dist,drag=false,lx=0,ly=0;
+const names=['idle','walk','run','attack','hit','death'];function setAnim(s){anim=s;elapsed=0;document.querySelectorAll('[data-anim]').forEach(b=>b.classList.toggle('active',b.dataset.anim===s))}document.querySelectorAll('[data-anim]').forEach(b=>b.onclick=()=>setAnim(b.dataset.anim));window.addEventListener('keydown',e=>{if(/^[1-6]$/.test(e.key))setAnim(names[Number(e.key)-1])});$('#speed').oninput=e=>speed=Number(e.target.value);$('#autorotate').onchange=e=>turn=e.target.checked;
+renderer.domElement.addEventListener('pointerdown',e=>{drag=true;lx=e.clientX;ly=e.clientY;renderer.domElement.setPointerCapture(e.pointerId)});renderer.domElement.addEventListener('pointermove',e=>{if(!drag)return;ty+=(e.clientX-lx)*.007;tp=Math.max(-.4,Math.min(.8,tp+(e.clientY-ly)*.005));lx=e.clientX;ly=e.clientY});renderer.domElement.addEventListener('pointerup',()=>drag=false);renderer.domElement.addEventListener('pointercancel',()=>drag=false);renderer.domElement.addEventListener('wheel',e=>{e.preventDefault();td=Math.max(1.4,Math.min(6.5,td+Math.sign(e.deltaY)*.18))},{passive:false});
+function updateCam(){camera.position.set(Math.sin(yaw)*dist*Math.cos(pitch),.4+Math.sin(pitch)*dist,Math.cos(yaw)*dist*Math.cos(pitch));camera.lookAt(0,.38,0)}
+function resize(){camera.aspect=view.clientWidth/Math.max(1,view.clientHeight);camera.updateProjectionMatrix();renderer.setSize(view.clientWidth,view.clientHeight,false)}new ResizeObserver(resize).observe(view);resize();
+function animate(dt){dt=Math.min(dt,.05);t+=dt*speed;elapsed+=dt*speed;const amp=(anim==='walk'?.30:anim==='run'?.58:0);for(let i=0;i<r.legs.length;i++){r.legs[i].rotation.x=Math.sin(t*(anim==='run'?11:7)+r.legs[i].userData.p)*amp}r.head.rotation.y=Math.sin(t*.7)*.05;r.tail.rotation.x=.13*Math.sin(t*4);if(anim==='attack')r.head.rotation.x=Math.sin(elapsed*12)*.12;else if(anim==='hit')r.head.rotation.x=Math.sin(elapsed*15)*.15*Math.max(0,1-elapsed);else r.head.rotation.x*=.85;if(anim==='death'){r.unit.rotation.z=Math.min(1,elapsed)*1.1;r.unit.position.y=-Math.min(1,elapsed)*.10}else{r.unit.rotation.z*=.8;r.unit.position.y=Math.sin(t*2)*.018}if(turn&&!drag)ty+=dt*.26;yaw+=(ty-yaw)*Math.min(1,dt*6);pitch+=(tp-pitch)*Math.min(1,dt*6);dist+=(td-dist)*Math.min(1,dt*6);updateCam()}
+const cameraSaved=new THREE.Vector3();$('#capture').onclick=()=>{const w=440,h=385,p=document.createElement('canvas');p.width=w*2;p.height=h*2+54;const cx=p.getContext('2d');cx.fillStyle='#152332';cx.fillRect(0,0,p.width,p.height);cx.fillStyle='#eec678';cx.font='bold 22px system-ui';cx.fillText('HINÁRIA • RATO ORIGINAL • 4 ÂNGULOS',15,36);const rt=new THREE.WebGLRenderTarget(w,h);const arr=new Uint8Array(w*h*4),c=document.createElement('canvas');c.width=w;c.height=h;const x=c.getContext('2d');const pos=camera.position.clone(),quat=camera.quaternion.clone(),aspect=camera.aspect,old=renderer.getRenderTarget(),sz=new THREE.Vector2();renderer.getSize(sz);try{for(let i=0;i<4;i++){const label=['FRENTE','LATERAL','COSTAS','ROSTO'][i],a=[0,Math.PI/2,Math.PI,0][i],d=i===3?1.0:2.5,at=i===3?.51:.4;camera.aspect=w/h;camera.updateProjectionMatrix();camera.position.set(Math.sin(a)*d,at+.42,Math.cos(a)*d);camera.lookAt(0,at,0);renderer.setRenderTarget(rt);renderer.setViewport(0,0,w,h);renderer.render(scene,camera);renderer.readRenderTargetPixels(rt,0,0,w,h,arr);const im=x.createImageData(w,h);for(let y=0;y<h;y++)im.data.set(arr.subarray((h-y-1)*w*4,(h-y)*w*4),y*w*4);x.putImageData(im,0,0);const X=(i%2)*w,Y=Math.floor(i/2)*h+54;cx.drawImage(c,X,Y);cx.fillStyle='#efcb80';cx.fillRect(X,Y,w,28);cx.fillStyle='#13212b';cx.font='bold 14px system-ui';cx.fillText(label,X+12,Y+19)}}finally{renderer.setRenderTarget(old);renderer.setViewport(0,0,sz.x,sz.y);camera.position.copy(pos);camera.quaternion.copy(quat);camera.aspect=aspect;camera.updateProjectionMatrix();rt.dispose()}const url=p.toDataURL('image/png'),link=document.createElement('a');link.href=url;link.download='HINARIA_Rato_original.png';link.click();$('#preview').src=url;$('#preview').hidden=false};
+const clock=new THREE.Clock();let s=0;function frame(){requestAnimationFrame(frame);const dt=clock.getDelta();animate(dt);renderer.render(scene,camera);s+=dt;if(s>.4){s=0;$('#tris').textContent=renderer.info.render.triangles.toLocaleString('pt-BR');$('#calls').textContent=renderer.info.render.calls.toLocaleString('pt-BR')}}$('#loading').remove();frame();
+
+</script></body></html>

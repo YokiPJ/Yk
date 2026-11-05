@@ -1,0 +1,114 @@
+{
+  "status": "PASS",
+  "environment": "Chromium headless / SwiftShader; emulated 844x390 touch device, deterministic random fixture; not a physical phone benchmark",
+  "titleReadyMs": 4403,
+  "device": {
+    "viewport": [
+      844,
+      390
+    ],
+    "dpr": 2.75,
+    "touch": 1,
+    "cores": 4,
+    "memoryGiB": 4
+  },
+  "position": [
+    13,
+    15
+  ],
+  "requestedRatio": 0.6799999999999999,
+  "camera": [
+    21,
+    11,
+    24
+  ],
+  "pixelRatio": 1,
+  "drawingBuffer": [
+    844,
+    390
+  ],
+  "scene": {
+    "objects": 3108,
+    "meshes": 2189,
+    "autoMatrices": 1353,
+    "geometries": 670,
+    "textures": 37
+  },
+  "hud": {
+    "backend": "canvas2d",
+    "width": 844,
+    "height": 390,
+    "maxFPS": 30
+  },
+  "graphics": {
+    "mode": "auto",
+    "fps": 0,
+    "fpsVisible": false,
+    "pixelRatio": 1,
+    "frameLimit": 30,
+    "deviceProfile": {
+      "mobile": true,
+      "economy": true,
+      "initialRatio": 0.82,
+      "maxRatio": 1.12,
+      "pixelBudget": 1000000,
+      "targetFPS": 30,
+      "hudBackend": "canvas2d"
+    },
+    "hud": {
+      "backend": "canvas2d",
+      "width": 844,
+      "height": 390,
+      "maxFPS": 30
+    },
+    "contextState": "ready",
+    "measuredFlow": "PAUSED",
+    "frameTiming": {
+      "samples": 1,
+      "meanMs": 226.7,
+      "p50Ms": 226.7,
+      "p95Ms": 226.7,
+      "maxMs": 226.7
+    },
+    "sampleAgeMs": 83
+  },
+  "runs": [
+    {
+      "cpuSubmissionMs": 6.899999998509884,
+      "localMatrixUpdates": 1354,
+      "calls": 670,
+      "triangles": 209794
+    },
+    {
+      "cpuSubmissionMs": 13.100000001490116,
+      "localMatrixUpdates": 1354,
+      "calls": 670,
+      "triangles": 209794
+    },
+    {
+      "cpuSubmissionMs": 9.299999997019768,
+      "localMatrixUpdates": 1354,
+      "calls": 670,
+      "triangles": 209794
+    },
+    {
+      "cpuSubmissionMs": 21.100000001490116,
+      "localMatrixUpdates": 1354,
+      "calls": 670,
+      "triangles": 209794
+    },
+    {
+      "cpuSubmissionMs": 17.5,
+      "localMatrixUpdates": 1354,
+      "calls": 670,
+      "triangles": 209794
+    },
+    {
+      "cpuSubmissionMs": 9.100000001490116,
+      "localMatrixUpdates": 1354,
+      "calls": 670,
+      "triangles": 209794
+    }
+  ],
+  "errors": []
+}

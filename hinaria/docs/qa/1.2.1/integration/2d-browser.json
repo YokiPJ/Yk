@@ -1,0 +1,407 @@
+{
+  "status": "PASS",
+  "browser": "155.0.8059.79",
+  "protocol": "HTTP local (navegação file:// bloqueada pela política do Chromium deste ambiente)",
+  "demos": [
+    {
+      "id": "portal",
+      "title": "Portal dimensional",
+      "frames": [
+        0,
+        0.08,
+        0.61,
+        1
+      ],
+      "geometry": "valid",
+      "visualChange": true
+    },
+    {
+      "id": "walk",
+      "title": "Caminhada",
+      "frames": [
+        0,
+        0.08,
+        0.61,
+        1
+      ],
+      "geometry": "valid",
+      "visualChange": true
+    },
+    {
+      "id": "wind",
+      "title": "Vento na floresta",
+      "frames": [
+        0,
+        0.08,
+        0.61,
+        1
+      ],
+      "geometry": "valid",
+      "visualChange": true
+    },
+    {
+      "id": "modal",
+      "title": "Janela elástica",
+      "frames": [
+        0,
+        0.08,
+        0.61,
+        1
+      ],
+      "geometry": "valid",
+      "visualChange": true
+    },
+    {
+      "id": "heal",
+      "title": "Pulso de cura",
+      "frames": [
+        0,
+        0.08,
+        0.61,
+        1
+      ],
+      "geometry": "valid",
+      "visualChange": true
+    },
+    {
+      "id": "idle",
+      "title": "Respiração / idle",
+      "frames": [
+        0,
+        0.08,
+        0.61,
+        1
+      ],
+      "geometry": "valid",
+      "visualChange": true
+    },
+    {
+      "id": "rain",
+      "title": "Chuva e respingos",
+      "frames": [
+        0,
+        0.08,
+        0.61,
+        1
+      ],
+      "geometry": "valid",
+      "visualChange": true
+    },
+    {
+      "id": "toast",
+      "title": "Notificações",
+      "frames": [
+        0,
+        0.08,
+        0.61,
+        1
+      ],
+      "geometry": "valid",
+      "visualChange": true
+    },
+    {
+      "id": "run",
+      "title": "Corrida",
+      "frames": [
+        0,
+        0.08,
+        0.61,
+        1
+      ],
+      "geometry": "valid",
+      "visualChange": true
+    },
+    {
+      "id": "fire",
+      "title": "Fogueira",
+      "frames": [
+        0,
+        0.08,
+        0.61,
+        1
+      ],
+      "geometry": "valid",
+      "visualChange": true
+    },
+    {
+      "id": "projectile",
+      "title": "Projétil de energia",
+      "frames": [
+        0,
+        0.08,
+        0.61,
+        1
+      ],
+      "geometry": "valid",
+      "visualChange": true
+    },
+    {
+      "id": "typewriter",
+      "title": "Máquina de escrever",
+      "frames": [
+        0,
+        0.08,
+        0.61,
+        1
+      ],
+      "geometry": "valid",
+      "visualChange": true
+    },
+    {
+      "id": "cards",
+      "title": "Cartas em leque",
+      "frames": [
+        0,
+        0.08,
+        0.61,
+        1
+      ],
+      "geometry": "valid",
+      "visualChange": true
+    },
+    {
+      "id": "water",
+      "title": "Água e ondulações",
+      "frames": [
+        0,
+        0.08,
+        0.61,
+        1
+      ],
+      "geometry": "valid",
+      "visualChange": true
+    },
+    {
+      "id": "jump",
+      "title": "Salto e aterrissagem",
+      "frames": [
+        0,
+        0.08,
+        0.61,
+        1
+      ],
+      "geometry": "valid",
+      "visualChange": true
+    },
+    {
+      "id": "explosion",
+      "title": "Explosão radial",
+      "frames": [
+        0,
+        0.08,
+        0.61,
+        1
+      ],
+      "geometry": "valid",
+      "visualChange": true
+    },
+    {
+      "id": "orbit",
+      "title": "Órbitas sincronizadas",
+      "frames": [
+        0,
+        0.08,
+        0.61,
+        1
+      ],
+      "geometry": "valid",
+      "visualChange": true
+    },
+    {
+      "id": "nav",
+      "title": "Navegação fluida",
+      "frames": [
+        0,
+        0.08,
+        0.61,
+        1
+      ],
+      "geometry": "valid",
+      "visualChange": true
+    },
+    {
+      "id": "daynight",
+      "title": "Dia e noite",
+      "frames": [
+        0,
+        0.08,
+        0.61,
+        1
+      ],
+      "geometry": "valid",
+      "visualChange": true
+    },
+    {
+      "id": "wave",
+      "title": "Letras em onda",
+      "frames": [
+        0,
+        0.08,
+        0.61,
+        1
+      ],
+      "geometry": "valid",
+      "visualChange": true
+    },
+    {
+      "id": "dodge",
+      "title": "Esquiva / rolamento",
+      "frames": [
+        0,
+        0.08,
+        0.61,
+        1
+      ],
+      "geometry": "valid",
+      "visualChange": true
+    },
+    {
+      "id": "shield",
+      "title": "Escudo energético",
+      "frames": [
+        0,
+        0.08,
+        0.61,
+        1
+      ],
+      "geometry": "valid",
+      "visualChange": true
+    },
+    {
+      "id": "counter",
+      "title": "Contador e gráfico",
+      "frames": [
+        0,
+        0.08,
+        0.61,
+        1
+      ],
+      "geometry": "valid",
+      "visualChange": true
+    },
+    {
+      "id": "liquid",
+      "title": "Preenchimento líquido",
+      "frames": [
+        0,
+        0.08,
+        0.61,
+        1
+      ],
+      "geometry": "valid",
+      "visualChange": true
+    },
+    {
+      "id": "fog",
+      "title": "Névoa em camadas",
+      "frames": [
+        0,
+        0.08,
+        0.61,
+        1
+      ],
+      "geometry": "valid",
+      "visualChange": true
+    },
+    {
+      "id": "attack",
+      "title": "Golpe de espada",
+      "frames": [
+        0,
+        0.08,
+        0.61,
+        1
+      ],
+      "geometry": "valid",
+      "visualChange": true
+    },
+    {
+      "id": "lightning",
+      "title": "Raio elétrico",
+      "frames": [
+        0,
+        0.08,
+        0.61,
+        1
+      ],
+      "geometry": "valid",
+      "visualChange": true
+    },
+    {
+      "id": "cta",
+      "title": "Botão / microinteração",
+      "frames": [
+        0,
+        0.08,
+        0.61,
+        1
+      ],
+      "geometry": "valid",
+      "visualChange": true
+    },
+    {
+      "id": "glitch",
+      "title": "Glitch tipográfico",
+      "frames": [
+        0,
+        0.08,
+        0.61,
+        1
+      ],
+      "geometry": "valid",
+      "visualChange": true
+    },
+    {
+      "id": "skeleton",
+      "title": "Skeleton / shimmer",
+      "frames": [
+        0,
+        0.08,
+        0.61,
+        1
+      ],
+      "geometry": "valid",
+      "visualChange": true
+    },
+    {
+      "id": "reveal",
+      "title": "Revelação editorial",
+      "frames": [
+        0,
+        0.08,
+        0.61,
+        1
+      ],
+      "geometry": "valid",
+      "visualChange": true
+    },
+    {
+      "id": "dots",
+      "title": "Pontos sequenciais",
+      "frames": [
+        0,
+        0.08,
+        0.61,
+        1
+      ],
+      "geometry": "valid",
+      "visualChange": true
+    }
+  ],
+  "checks": [
+    "32 animações em quatro posições de tempo",
+    "Geometria sem NaN, Infinity ou referências indefinidas",
+    "Mudança visual real entre dois quadros de cada cena",
+    "Pausa congela a cena",
+    "Busca sem acentos, filtros e estado vazio",
+    "Repetição, fim de ciclo, duração e velocidade",
+    "Atalhos sem interferir na edição de campos",
+    "Download e reabertura do HTML",
+    "Mobile 390×844 sem rolagem horizontal",
+    "Movimento reduzido inicia pausado",
+    "Zero erros JavaScript",
+    "Zero solicitações externas"
+  ],
+  "errors": [],
+  "externalRequests": []
+}

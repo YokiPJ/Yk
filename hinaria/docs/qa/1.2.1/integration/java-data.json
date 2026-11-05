@@ -1,0 +1,94 @@
+{
+  "status": "PASS",
+  "javaRuntime": "openjdk version \"21.0.12.1\" 2026-08-18",
+  "classTarget": "Java 17 (--release 17)",
+  "models": [
+    {
+      "model": "cavaleiro",
+      "clips": 10,
+      "channels": 130,
+      "loopSeams": "continuous",
+      "quaternions": "normalized",
+      "rootMotion": "in-place"
+    },
+    {
+      "model": "paladino",
+      "clips": 10,
+      "channels": 130,
+      "loopSeams": "continuous",
+      "quaternions": "normalized",
+      "rootMotion": "in-place"
+    },
+    {
+      "model": "feiticeiro",
+      "clips": 10,
+      "channels": 130,
+      "loopSeams": "continuous",
+      "quaternions": "normalized",
+      "rootMotion": "in-place"
+    },
+    {
+      "model": "druida",
+      "clips": 10,
+      "channels": 130,
+      "loopSeams": "continuous",
+      "quaternions": "normalized",
+      "rootMotion": "in-place"
+    },
+    {
+      "model": "bandido",
+      "clips": 10,
+      "channels": 130,
+      "loopSeams": "continuous",
+      "quaternions": "normalized",
+      "rootMotion": "in-place"
+    },
+    {
+      "model": "esqueleto",
+      "clips": 10,
+      "channels": 80,
+      "loopSeams": "continuous",
+      "quaternions": "normalized",
+      "rootMotion": "in-place"
+    },
+    {
+      "model": "orc",
+      "clips": 10,
+      "channels": 130,
+      "loopSeams": "continuous",
+      "quaternions": "normalized",
+      "rootMotion": "in-place"
+    }
+  ],
+  "standaloneJar": "All seven GLBs reproduced byte-for-byte outside project cwd, using bundled reference data",
+  "cliErrorCases": [
+    {
+      "args": [
+        "--fps",
+        "5"
+      ],
+      "handled": true
+    },
+    {
+      "args": [
+        "--model",
+        "unknown"
+      ],
+      "handled": true
+    },
+    {
+      "args": [
+        "--unknown",
+        "x"
+      ],
+      "handled": true
+    },
+    {
+      "args": [
+        "--input",
+        "invalid JSON"
+      ],
+      "handled": true
+    }
+  ]
+}

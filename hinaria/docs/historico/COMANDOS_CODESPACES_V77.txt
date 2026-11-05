@@ -1,0 +1,3 @@
+cd /workspaces/Apk
+unzip -o HINARIA_V7_7_VILARRUBRA_COMPLETA.zip
+bash INSTALAR_V77_CODESPACES.sh

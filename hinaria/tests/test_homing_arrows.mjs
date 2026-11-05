@@ -1,0 +1,42 @@
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+import vm from 'node:vm';
+import {hasLineOfSight} from '../src/combat/forwardHit.js';
+const txt=readFileSync(new URL('../src/combat/combat.js',import.meta.url),'utf8');
+const start=txt.indexOf('export function updateProjectiles(dt)');
+const end=txt.indexOf('/**\n * Update effects',start);
+assert.ok(start>0&&end>start);
+const code=txt.slice(start,end).replace('export function ','function ');
+const P={x:2,z:2}, enemy={x:5,z:2,hp:30,kind:'m'};
+let hits=0,removes=0;
+const fakeMesh=()=>({position:{x:2,y:1,z:2,set(x,y,z){Object.assign(this,{x,y,z});}},rotation:{y:0}});
+const state={P,B:[],getHeightAt:()=>0,pr:[],scene:{remove(){removes++;}}};
+const ctx={gameState:state,hasLineOfSight,Math};
+vm.runInNewContext(code+'\nthis.tick=updateProjectiles;',ctx);
+state.pr.push({m:fakeMesh(),a:[2,2],startY:1,b:enemy,t:0,f:()=>hits++,range:5});
+ctx.tick(.09);
+const initialX=state.pr[0].m.position.x;
+enemy.x=5.8;enemy.z=2.8;
+ctx.tick(.09);
+assert.ok(state.pr[0].m.position.x>initialX,'arrow moves toward updated enemy location');
+ctx.tick(.09);ctx.tick(.09);
+assert.equal(hits,1,'arrow callback exactly once');
+assert.equal(state.pr.length,0);
+
+// Mid-flight death: no hit and no stuck projectile.
+enemy.hp=20;enemy.x=4;enemy.z=2;
+state.pr.push({m:fakeMesh(),a:[2,2],startY:1,b:enemy,t:0,f:()=>hits++,range:5});
+ctx.tick(.10);enemy.hp=0;ctx.tick(.05);
+assert.equal(hits,1);
+assert.equal(state.pr.length,0);
+// Enemy moves behind a wall: no wall piercing and no hit.
+enemy.hp=30;enemy.x=4;enemy.z=2;
+state.pr.push({m:fakeMesh(),a:[2,2],startY:1,b:enemy,t:0,f:()=>hits++,range:6});
+ctx.tick(.05);
+state.B[4]=[];state.B[4][3]=1;
+enemy.x=5;enemy.z=4;
+ctx.tick(.05);
+assert.equal(hits,1,'guided arrows do not travel through walls');
+assert.equal(state.pr.length,0);
+assert.ok(removes>=3);
+console.log('PASS guided arrows: moving target, exactly-once hit, death and wall cancellation');

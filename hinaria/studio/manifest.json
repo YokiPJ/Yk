@@ -1,0 +1,22 @@
+{
+  "ui-motion": {
+    "path": "ui-motion/index.html",
+    "bytes": 62702,
+    "sha256": "cc94d7fdeceaeade0899e1b676d4c74147b83e57f78a68a0fcf770b48017f522"
+  },
+  "three-motion": {
+    "path": "three-motion/index.html",
+    "bytes": 761781,
+    "sha256": "f3f4e1b131b2883cd1230cbb1c63dc786bca9793a8d4c99b40e78b34d6d1fcce"
+  },
+  "java-motion": {
+    "path": "java-motion/index.html",
+    "bytes": 9497250,
+    "sha256": "dad078cf6ed78dee6e8d8f8a2a5ae5d39d073e91836389bb19edde334be6c2bd"
+  },
+  "modelos": {
+    "path": "modelos/index.html",
+    "bytes": 1169294,
+    "sha256": "333b8453ad994cb63fcf9bc31e8855ff1d9ccfce530123c998c77b24a3300c89"
+  }
+}

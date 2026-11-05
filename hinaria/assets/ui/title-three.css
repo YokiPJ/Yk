@@ -1,0 +1,57 @@
+/* HINÁRIA — cinema monocromático, com arte local e fallback sem WebGL. */
+#cover[hidden], #cover [hidden] { display:none!important; }
+#cover {
+  --title-ink:#ededef; --title-steel:#a5a6ac; --title-dim:#a4a0a2;
+  position:fixed;inset:0;z-index:80;box-sizing:border-box;overflow:auto;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:clamp(10px,2vh,22px);padding:max(24px,env(safe-area-inset-top)) max(20px,env(safe-area-inset-right)) max(24px,env(safe-area-inset-bottom)) max(20px,env(safe-area-inset-left));
+  color:var(--title-ink);font-family:Georgia,'Times New Roman',serif;text-align:center;
+  background:#050506 url('title-reference-01.jpg') center 36% / contain no-repeat;
+  isolation:isolate;cursor:default;
+}
+#cover::before { content:"";position:fixed;inset:0;z-index:1;pointer-events:none;background:linear-gradient(180deg,#05050677,transparent 20%,#05050644 45%,#050506e8 84%,#050506),radial-gradient(ellipse at center,transparent 5%,#020204c7 90%); }
+#cover > :not(#title-three) { position:relative;z-index:2;flex:none; }
+#title-three { position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none; }
+#cover #cv { display:none; }
+#cover .title-kicker { margin-top:clamp(0px,12vh,140px);font:10px/1.3 system-ui,sans-serif;letter-spacing:.38em;color:#aaa5a5;text-shadow:0 2px 10px #000; }
+#cover h1 { margin:0;line-height:1.07;font:700 clamp(44px,min(12vw,11vh),104px)/1.07 Georgia,serif;letter-spacing:.17em;padding-left:.17em;text-shadow:0 3px 18px #000; }
+#cover h1 { background:linear-gradient(#fff 2%,#e4e5e8 40%,#8d9097 55%,#f5f5f6 73%,#a0a0a8);background-clip:text;-webkit-background-clip:text;color:transparent; }
+#cover .title-subtitle { margin:0;color:#c8c4c5;text-transform:uppercase;font:clamp(9px,2.3vw,12px)/1.8 Georgia,serif;letter-spacing:.3em;opacity:1; }
+#cover .title-rule { width:min(270px,66vw);display:flex;align-items:center;gap:18px;color:#9e393f;font-size:9px; }
+#cover .title-rule::before,#cover .title-rule::after { content:"";height:1px;flex:1;background:linear-gradient(90deg,transparent,#7f7577); }
+#cover .title-rule::after { transform:scaleX(-1); }
+#cover #title-actions { display:flex;flex-direction:column;gap:9px;width:min(310px,84vw); }
+#cover #title-actions button { box-sizing:border-box;display:block;position:static;transform:none;animation:none;width:100%;min-height:46px;padding:12px 22px;border:1px solid #777279;border-radius:2px;background:#09090ce3;color:#e2e0e3;font:600 12px/1.4 system-ui,sans-serif;letter-spacing:.18em;text-transform:uppercase;box-shadow:inset 0 0 0 3px #09090c;cursor:pointer;transition:background .2s,border-color .2s,transform .2s; }
+#cover #title-actions #play { border-color:#b0a7ac;background:linear-gradient(100deg,#291317e8,#170d11e8);font-size:13px; }
+#cover #title-actions button:hover,#cover #title-actions button:focus-visible { background:#40191fe8;border-color:#dd7e85;transform:translateY(-1px);outline:2px solid #d4b0b4;outline-offset:3px; }
+#cover #title-actions button:disabled { opacity:.45;cursor:wait; }
+#cover #title-continue { border-color:#cbafb2; }
+#title-save-caption { display:block;margin-top:4px;color:#aaa4a9;font:10px/1.3 system-ui;letter-spacing:.02em;text-transform:none; }
+#cover #title-status { min-height:16px;max-width:350px;font:11px/1.5 system-ui,sans-serif;color:#aca4aa;letter-spacing:.02em; }
+#cover small { margin:0;color:#948b92;font:9px/1.5 system-ui,sans-serif;text-transform:uppercase;letter-spacing:.2em;opacity:1; }
+#cover.t3-css .title-kicker,#cover.t3-css h1,#cover.t3-css .title-subtitle,#cover.t3-css #title-actions { animation:title-reveal 1s both; }
+#cover.t3-css h1 { animation-delay:.12s; }
+#cover.t3-css .title-subtitle { animation-delay:.24s; }
+#cover.t3-css #title-actions { animation-delay:.36s; }
+@keyframes title-reveal { from{opacity:0;translate:0 12px}to{opacity:1;translate:0 0} }
+@media (min-width:1000px) and (min-height:620px) { #cover { padding-top:10vh; } #cover .title-kicker { margin-top:12vh; } }
+@media (max-height:540px) and (min-width:560px) {
+  #cover { gap:7px;padding:14px 20px; }
+  #cover .title-kicker { margin:0;font-size:8px; }
+  #cover h1 { font-size:40px; }
+  #cover .title-subtitle { font-size:9px; }
+  #cover .title-rule { display:none; }
+  #cover #title-actions { display:grid;grid-template-columns:1fr 1fr;width:min(520px,80vw);gap:8px; }
+  #cover #title-actions button { min-height:44px;padding:9px 12px; }
+  #cover #title-actions #play { grid-column:1;grid-row:1; }
+  #cover #title-continue:not([hidden]) { grid-column:2;grid-row:1; }
+  #cover #title-status { font-size:10px;min-height:12px; }
+}
+@media (prefers-reduced-motion:reduce) { #cover * { animation:none!important;transition:none!important; } }
+.reduce-motion #cover * { animation:none!important;transition:none!important; }
+#cover h1 .title-letter { display:inline-block;background:linear-gradient(#fff 2%,#e4e5e8 40%,#8d9097 55%,#f5f5f6 73%,#a0a0a8);background-clip:text;-webkit-background-clip:text;color:transparent;animation:title-letter-in 1s both;animation-delay:calc(.12s + var(--letter)*.065s); }
+@keyframes title-letter-in { from {opacity:0;transform:translateY(14px);filter:blur(3px)}to{opacity:1;transform:none;filter:none} }
+@media(prefers-reduced-motion:reduce){#cover h1 .title-letter{animation:none;}}
+.reduce-motion #cover h1 .title-letter{animation:none;}
+/* Each glyph owns its silver fill; a second clipped parent fill creates ghosts. */
+#cover h1 {background:none;color:var(--title-ink);}

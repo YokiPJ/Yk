@@ -1,0 +1,40 @@
+HINÁRIA — MELHORIAS DE MODELOS 3D (rodada baseada nas referências Three.js / FreeFrontend)
+
+Arquivos principais alterados:
+- src/world/v6Architecture.js
+- src/world/houseInteriors.js
+- src/assets/environmentV2.js
+
+O que foi melhorado:
+1) Casas e prédios do vilarejo
+- Mais identidade visual por distrito (taverna, oficina, fazenda, capela, ferraria).
+- Toldos, lanternas, floreiras, ornamentos e detalhes de fachada.
+- Silhuetas mais fortes e mais “diorama”, lembrando cenas low-poly estilizadas.
+- Taverna recebeu visual mais marcante, com varanda/toldo e detalhes extras.
+- Capela recebeu vitral frontal estilizado e reforço visual.
+- Ferraria ganhou bancada externa, toldo e detalhes de oficina.
+
+2) Interiores das casas
+- Interior com mais cara de diorama/isométrico.
+- Vigas extras no teto, prateleiras, vasos/plantas e pontos de luz suave.
+- Mais variação por distrito:
+  - Taverna: mesa de convidado / ambiente mais acolhedor.
+  - Capela: bancos/pews e destaque de altar/vitral.
+  - Oficina/quarteirão do ferreiro/artesão: bancada, prateleiras e itens de trabalho.
+  - Cabana abandonada: clima mais desgastado.
+
+3) Pré-visualizações / modelos de ambiente V2
+- Casas V2 mais detalhadas.
+- Poço e mercado com extras decorativos.
+- Ferraria V2 com props adicionais.
+
+Validação:
+- Todos os testes existentes passaram com sucesso.
+- Sem alterar a base de colisão principal nem quebrar sistemas de casas/interiores.
+
+Observação:
+Se quiser, a próxima rodada eu posso focar em:
+- melhorar os personagens/jogadores e NPCs;
+- melhorar monstros/inimigos;
+- refazer árvores/vegetação para um estilo ainda mais bonito;
+- dar um estilo visual único pra Hinária inteira (mais anime, mais medieval, mais low-poly bonito etc).

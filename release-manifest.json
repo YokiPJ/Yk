@@ -3,7 +3,7 @@
   "repository": "YokiPJ/Yk",
   "tag": "v1.2.2",
   "title": "HINÁRIA 1.2.2 · Mobile",
-  "source_commit": "775089e21efb73585c4cfd450205b25dcc4b21a2",
+  "source_commit": "969d646cac29efc6d2413c9fd03fb62082f7013a",
   "assets": [
     {
       "name": "01-vilarrubra.png",
@@ -42,8 +42,8 @@
     },
     {
       "name": "HINARIA_PROJETO_1.2.2.zip",
-      "bytes": 35081724,
-      "sha256": "c902eee61691871965f281a3490d9b8d6cb2648922bdec1858dfd5e1f505ba25"
+      "bytes": 35082672,
+      "sha256": "02feb081cd97f023682775433ba9d5155fc9f622e2148478e6db891b20fc7040"
     },
     {
       "name": "HinariaMotion.jar",
@@ -58,12 +58,15 @@
     {
       "name": "RELEASE_NOTES.md",
       "bytes": 2410,
-      "sha256": "3eb128a25c0dd27c98cf172523c418b7186d16765f5c19e7fd58ed4ce2d73621"
+      "sha256": "abe74e4b9db6104da35921b4176a858c6b941f86353d34656ec875e7ee907c61"
     },
     {
       "name": "SHA256SUMS.txt",
       "bytes": 957,
-      "sha256": "ba4a172b2f3ec44074c0deef30287304eeaf119de0c9a4c025ee6b0a1ebeb1e4"
+      "sha256": "94c23b5d3e9ea67d6d90e78d0d64a97dabbd1f7dcca89a7bb2c055d07354665a"
     }
+  ],
+  "adopt_draft_markers": [
+    "<!-- hinaria-release:v1.2.2:775089e21efb73585c4cfd450205b25dcc4b21a2 -->"
   ]
 }

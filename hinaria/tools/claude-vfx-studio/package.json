@@ -1,0 +1,1 @@
+{ "name": "hinaria-vfx", "version": "1.0.0", "type": "module", "description": "Biblioteca de VFX em Three.js para a HINÁRIA", "scripts": { "test": "node tests/vfx.test.mjs", "start": "npx --yes serve ." }, "dependencies": { "three": "0.160.0" } }

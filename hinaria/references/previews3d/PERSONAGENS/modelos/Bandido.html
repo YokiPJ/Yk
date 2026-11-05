@@ -1,0 +1,161 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>HINÁRIA | BANDIDO — Estúdio 3D</title><style>
+:root{color-scheme:dark;--line:#304353;--gold:#efc775;--text:#f4f1e7}*{box-sizing:border-box}body{margin:0;background:#0b1320;color:var(--text);font:13px/1.5 system-ui,Arial,sans-serif}main{height:100dvh;min-height:530px;display:grid;grid-template-columns:minmax(0,1fr) 306px}#viewport{position:relative;min-width:0;overflow:hidden;background:radial-gradient(circle at 52% 30%,#284452,#132432 67%,#0a111b)}#viewport>canvas{display:block;width:100%;height:100%;touch-action:none}.brand{pointer-events:none;position:absolute;top:25px;left:30px;text-shadow:0 3px 12px #0009}.brand small{letter-spacing:.25em;font-weight:800;color:var(--gold)}h1{font-family:Georgia,serif;font-size:clamp(25px,3.6vw,47px);margin:8px 0 3px}.brand p{margin:0;color:#b4c7d4}.help{position:absolute;bottom:18px;left:24px;background:#0b1724c7;border:1px solid #425368;border-radius:9px;padding:9px;color:#bfd1e2;font-size:11px;pointer-events:none}aside{padding:21px 18px;background:linear-gradient(170deg,#15273a,#111c2b);border-left:1px solid var(--line);overflow:auto;display:flex;flex-direction:column;gap:15px}.cap{font-size:11px;color:var(--gold);font-weight:800;letter-spacing:.14em}h2{font:26px Georgia,serif;margin:7px 0 0}.muted{color:#99adc3}hr{border:0;border-top:1px solid var(--line);width:100%;margin:0}.buttons{display:grid;grid-template-columns:1fr 1fr;gap:7px}button{cursor:pointer;border:1px solid #425e7b;border-radius:8px;background:#1a3349;color:#d9e5ed;font-weight:700;padding:10px 5px}button:hover{background:#294b60}button.active{background:#425d58;border-color:#b6c985;color:#fff}#capture{width:100%;background:#62502c;border-color:#c4a65a;color:#fff}.opt{display:flex;justify-content:space-between;gap:15px;align-items:center;padding:6px 0}.opt input{accent-color:#e4ba67}.opt input[type=range]{width:105px}.stats{display:grid;grid-template-columns:1fr 1fr;gap:8px}.stat{background:#0f1c29;border:1px solid var(--line);padding:9px;border-radius:9px;font-size:11px;color:#a9bfd2}.stat strong{display:block;font-size:19px;color:var(--gold)}#preview{width:100%;border:1px solid var(--line);border-radius:8px}#loading{position:absolute;inset:0;z-index:8;background:#0c1b2aee;display:grid;place-items:center;text-align:center;padding:30px;color:var(--gold)}footer{font-size:10px;color:#90a6b5;margin-top:auto}@media(max-width:750px){main{height:auto;display:flex;flex-direction:column}#viewport{height:65dvh;min-height:390px}aside{border-left:none;border-top:1px solid var(--line)}.brand{top:16px;left:18px}.help{left:8px;bottom:10px}}
+</style></head><body><main><section id="viewport"><div class="brand"><small>HINÁRIA • CHARACTER LAB</small><h1>BANDIDO</h1><p>A Lâmina da Estrada</p></div><div class="help">🖱️ Arraste para girar • Scroll para zoom • 1–6 para animar</div><div id="loading">Carregando modelo 3D…</div></section><aside><header><div class="cap">DEMONSTRAÇÃO PROCEDURAL</div><h2>BANDIDO</h2><p class="muted">Salteador • couro • lenço vermelho</p></header><hr/><section><div class="cap">ANIMAÇÕES INTERATIVAS</div><div class="buttons" style="margin-top:8px"><button data-anim="idle" class="active">✦ Parado</button><button data-anim="walk">↗ Caminhar</button><button data-anim="run">➤ Correr</button><button data-anim="attack">⚔ Ataque</button><button data-anim="hit">✹ Dano</button><button data-anim="death">☠ Morte</button></div></section><hr/><section><div class="cap">INSPEÇÃO</div><div style="margin:9px 0"><button id="capture">📸 Capturar 4 ângulos • PNG</button></div><img id="preview" hidden alt="Prévia das quatro vistas capturadas"></section><hr/><section><div class="cap">VISUALIZAÇÃO</div><label class="opt">Girar automaticamente <input id="autorotate" type="checkbox"></label><label class="opt">Modo argila <input id="clay" type="checkbox"></label><label class="opt">Aramado <input id="wireframe" type="checkbox"></label><label class="opt">Velocidade <input id="speed" type="range" value="1" min="0.35" max="2" step="0.05"></label></section><hr/><section><div class="cap">ESTATÍSTICAS DO RENDERER</div><div class="stats"><div class="stat">Triângulos/frame<strong id="tris">—</strong></div><div class="stat">Draw calls<strong id="calls">—</strong></div></div></section><footer>Three.js 0.160 • Modelo independente • Precisa de internet para carregar Three.js • Não está instalado no jogo.</footer></aside></main><script type="module">
+const CFG={"id": "Bandido", "name": "BANDIDO", "role": "bandit", "subtitle": "A Lâmina da Estrada", "summary": "Salteador • couro • lenço vermelho", "skin": "#cc9472", "skinLight": "#ecb58f", "hair": "#302a31", "hairLight": "#5c4654", "iris": "#9a8a63", "primary": "#443b3c", "secondary": "#71594b", "trim": "#af8770", "metal": "#86818a", "metalDark": "#484348", "leather": "#55372b", "scale": 1.0, "weapon": "sword", "hairStyle": "asymmetric"};
+import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js';
+const $=s=>document.querySelector(s), viewport=$('#viewport');
+const renderer=new THREE.WebGLRenderer({antialias:true,alpha:false,powerPreference:'high-performance'});
+renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2));
+renderer.outputColorSpace=THREE.SRGBColorSpace;
+renderer.toneMapping=THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure=1.24;
+renderer.shadowMap.enabled=true;
+renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+viewport.insertBefore(renderer.domElement,viewport.firstChild);
+const scene=new THREE.Scene();scene.background=new THREE.Color('#142332');
+const camera=new THREE.PerspectiveCamera(36,1,.08,120);
+scene.add(new THREE.HemisphereLight(0xd6e8ff,0x433b31,2.0));
+const key=new THREE.DirectionalLight(0xffecc9,3.1);key.position.set(-3,6,5);key.castShadow=true;key.shadow.mapSize.set(1024,1024);key.shadow.camera.left=-6;key.shadow.camera.right=6;key.shadow.camera.top=8;key.shadow.camera.bottom=-6;scene.add(key);
+const rim=new THREE.DirectionalLight(0x9fbeff,2.0);rim.position.set(4,4,-3);scene.add(rim);
+const fill=new THREE.PointLight(0x85b4ff,16,12);fill.position.set(2,2.2,4);scene.add(fill);
+const mat=(c,metalness=0,roughness=.72)=>new THREE.MeshStandardMaterial({color:c,metalness,roughness,flatShading:true});
+const P={skin:mat(CFG.skin),skinLight:mat(CFG.skinLight),hair:mat(CFG.hair),hairLight:mat(CFG.hairLight),iris:mat(CFG.iris),white:mat('#fff6df'),pupil:mat('#18212c'),lip:mat('#9d624e'),primary:mat(CFG.primary),secondary:mat(CFG.secondary),trim:mat(CFG.trim,.40,.4),metal:mat(CFG.metal,.70,.38),metalDark:mat(CFG.metalDark,.65,.54),leather:mat(CFG.leather,.02,.87),bone:mat('#ebe2ca'),dark:mat('#222a2a'),red:mat('#a6494c'),glow:mat('#7de1cc',.1,.24)};
+const meshes=[];const add=(parent,geom,material,x=0,y=0,z=0)=>{const m=new THREE.Mesh(geom,material);m.position.set(x,y,z);m.castShadow=true;m.receiveShadow=true;parent.add(m);meshes.push(m);return m};
+function ell(p,m,x,y,z,sx,sy,sz,seg=11){const o=add(p,new THREE.SphereGeometry(1,seg,Math.max(6,Math.round(seg*.72))),m,x,y,z);o.scale.set(sx,sy,sz);return o}
+function box(p,m,x,y,z,sx,sy,sz){return add(p,new THREE.BoxGeometry(sx,sy,sz),m,x,y,z)}
+function cyl(p,m,x,y,z,t,b,h,n=10){return add(p,new THREE.CylinderGeometry(t,b,h,n),m,x,y,z)}
+function cone(p,m,x,y,z,r,h,n=7){return add(p,new THREE.ConeGeometry(r,h,n),m,x,y,z)}
+function rod(p,m,a,b,r=.05){const A=new THREE.Vector3(...a),B=new THREE.Vector3(...b),dir=B.clone().sub(A);const c=cyl(p,m,...A.clone().add(B).multiplyScalar(.5).toArray(),r,r,dir.length(),8);c.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),dir.normalize());return c}
+function gem(p,m,x,y,z,s=.12){return add(p,new THREE.OctahedronGeometry(s,0),m,x,y,z)}
+function plate(p,m,x,y,z,sx,sy,sz){const e=ell(p,m,x,y,z,sx,sy,sz,12);return e}
+function leaf(p,m,x,y,z,sz,ry=0){const sh=new THREE.Shape();sh.moveTo(0,-.15);sh.quadraticCurveTo(-.20,0,0,.4);sh.quadraticCurveTo(.20,0,0,-.15);const o=add(p,new THREE.ExtrudeGeometry(sh,{depth:.028,bevelEnabled:true,bevelSize:.012,bevelThickness:.011,bevelSegments:1}),m,x,y,z);o.scale.setScalar(sz);o.rotation.y=ry;return o}
+function strand(p,m,coords,w=.11){const curve=new THREE.CatmullRomCurve3(coords.map(t=>new THREE.Vector3(...t)),false,'centripetal');const pts=[],idx=[],n=7;for(let i=0;i<=n;i++){const t=i/n,pos=curve.getPoint(t),tangent=curve.getTangent(t).normalize();let side=new THREE.Vector3(0,0,1).cross(tangent);if(side.lengthSq()<.01)side.set(1,0,0);side.normalize();const width=w*Math.pow(Math.max(.018,1-t),.7),thick=.054*(1-t*.72);const vectors=[side.clone().multiplyScalar(width),new THREE.Vector3(0,0,thick),side.clone().multiplyScalar(-width),new THREE.Vector3(0,0,-thick)];for(const v of vectors)pts.push(pos.x+v.x,pos.y+v.y,pos.z+v.z)}for(let i=0;i<n;i++)for(let k=0;k<4;k++){const a=i*4+k,b=i*4+(k+1)%4,c=a+4,d=b+4;idx.push(a,c,b,b,c,d)}idx.push(0,1,2,0,2,3);const t=n*4;idx.push(t,t+2,t+1,t,t+3,t+2);const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(pts,3));g.setIndex(idx);g.computeVertexNormals();return add(p,g,m)}
+function createSword(p,rusty=false){const g=new THREE.Group();p.add(g);cyl(g,P.leather,0,.14,0,.066,.07,.34);cyl(g,P.trim,0,.37,0,.115,.10,.08);rod(g,P.trim,[-.24,-.055,0],[.24,-.055,0],.052);const blade=cyl(g,rusty?P.metalDark:P.metal,0,-.43,0,.035,.113,.70,4);blade.rotation.y=Math.PI/4;const tip=cone(g,P.metal,0,-.83,0,.095,.20,4);tip.rotation.z=Math.PI;return g}
+function createAxe(p){const g=new THREE.Group();p.add(g);cyl(g,P.leather,0,0,0,.060,.065,1.46);cyl(g,P.trim,0,-.05,0,.085,.08,.35);const sh=new THREE.Shape();sh.moveTo(-.10,.33);sh.quadraticCurveTo(-.48,.43,-.63,.67);sh.quadraticCurveTo(-.49,.85,-.62,1.05);sh.quadraticCurveTo(-.35,.97,-.10,.90);sh.closePath();add(g,new THREE.ExtrudeGeometry(sh,{depth:.09,bevelEnabled:true,bevelSize:.025,bevelThickness:.02,bevelSegments:1}),P.metal,0,0,-.045);cyl(g,P.trim,0,.66,0,.12,.12,.23,8);gem(g,P.red,0,.64,.11,.065);return g}
+function createStaff(p,branch=false){const g=new THREE.Group();p.add(g);cyl(g,branch?P.leather:P.metalDark,0,.25,0,.075,.085,1.95,9);for(let i=0;i<4;i++)cyl(g,P.trim,0,-.45+i*.22,0,.089,.089,.025,9);if(branch){rod(g,P.leather,[0,1.08,0],[-.27,1.48,0],.075);rod(g,P.leather,[0,1.08,0],[.25,1.46,0],.075);leaf(g,P.secondary,-.25,1.42,0,.6,-.2);leaf(g,P.secondary,.22,1.41,.04,.5,.35);gem(g,P.glow,0,1.38,.04,.17)}else{const crown=cone(g,P.trim,0,1.25,0,.25,.42,6);crown.rotation.z=Math.PI;gem(g,P.glow,0,1.54,0,.24);ell(g,P.glow,0,1.54,.16,.07,.08,.09,9)}return g}
+function createClub(p,elder=false){const g=new THREE.Group();p.add(g);cyl(g,P.leather,0,.04,0,.078,.10,1.65,9);const head=ell(g,elder?P.metalDark:P.leather,0,.88,0,.28,.5,.29,11);head.rotation.z=.09;for(let i=0;i<7;i++){const a=i*Math.PI*2/7;const h=cone(g,P.metal,Math.sin(a)*.27,.85+Math.cos(a)*.20,Math.cos(a)*.20,.085,.23,6);h.rotation.z=Math.sin(a)*.55}if(elder){for(let i=0;i<4;i++)gem(g,P.glow,0,.57+i*.16,.29,.07)}return g}
+function createHammer(p){const g=new THREE.Group();p.add(g);cyl(g,P.leather,0,.09,0,.068,.074,1.20,9);cyl(g,P.trim,0,-.26,0,.083,.081,.21,9);const h=box(g,P.metal,0,.61,0,.72,.25,.27);ell(g,P.metalDark,-.37,.61,0,.16,.20,.19,8);ell(g,P.metalDark,.37,.61,0,.16,.20,.19,8);cyl(g,P.trim,0,.43,0,.11,.11,.09,9);return g}
+function createBow(p){const g=new THREE.Group();p.add(g);const upper=[[0,-.8,0],[.20,-.46,0],[.29,0,0],[.20,.45,0],[0,.80,0]];for(let i=0;i<upper.length-1;i++)rod(g,P.leather,upper[i],upper[i+1],.035);rod(g,P.white,[0,-.80,.014],[0,.80,.014],.012);cyl(g,P.trim,.29,0,0,.065,.06,.22);return g}
+function shield(p){const g=new THREE.Group();p.add(g);const sh=new THREE.Shape();sh.moveTo(-.37,.40);sh.quadraticCurveTo(0,.52,.37,.40);sh.lineTo(.34,-.18);sh.quadraticCurveTo(.20,-.43,0,-.60);sh.quadraticCurveTo(-.20,-.43,-.34,-.18);sh.closePath();add(g,new THREE.ExtrudeGeometry(sh,{depth:.065,bevelEnabled:true,bevelThickness:.025,bevelSize:.03,bevelSegments:1}),P.trim);const inner=add(g,new THREE.ShapeGeometry(sh,12),P.primary,0,0,.11);inner.scale.set(.84,.84,1);gem(g,P.trim,0,.02,.14,.18);g.rotation.y=-.15;return g}
+function buildHair(h,style){if(style==='none')return;const root=new THREE.Group();h.add(root);
+ if(style==='hood'){const hood=ell(root,P.secondary,0,.35,-.04,.43,.36,.36,13);ell(root,P.primary,0,.17,-.12,.43,.29,.32,12);return}
+ ell(root,P.hair,0,.37,-.055,.362,.22,.31,12);
+ if(style==='mohawk'){for(let i=0;i<6;i++){const t=(i-2.5)*.145;const tuft=cone(root,i%2?P.hair:P.hairLight,0,.58-.07*Math.abs(t),t,.14,.30,6);tuft.rotation.z=.13*(i-2.5)}return}
+ const bangs=style==='medium'?5:style==='long'?7:style==='asymmetric'?5:style==='braids'?6:6;
+ for(let i=0;i<bangs;i++){const t=(i-(bangs-1)/2),x=t*.113,weight=style==='asymmetric'?(i*.05):0;strand(root,i%3===0?P.hairLight:P.hair,[[x*.75,.53,.11],[x,.40,.31],[x+(i%2?.035:-.025)+weight,.25-.020*Math.abs(t),.335]],.11+.016*(i%2))}
+ for(const s of [-1,1]){for(let i=0;i<2;i++){const sy=style==='short'?.04:style==='medium'?-.24:-.36;strand(root,i%2?P.hairLight:P.hair,[[s*.32,.35,.05],[s*(.37+i*.04),.11,-.02],[s*(.32+i*.05),sy-.10*i,-.04]],.085)}}
+ const long=style==='long'||style==='braids'||style==='medium';for(let i=0;i<(long?9:5);i++){const x=(i-((long?9:5)-1)/2)*.084;strand(root,i%2?P.hair:P.hairLight,[[x,.39,-.25],[x*1.04,.06,-.35],[x*.9,long?-.40:-.10,-.28]],.096)}
+ if(style==='braids'){for(const s of [-1,1]){for(let i=0;i<5;i++){const yy=-.07-i*.12;ell(root,i%2?P.hair:P.hairLight,s*(.31+.012*Math.sin(i)),yy,.015,.075,.093,.072,7)}cyl(root,P.trim,s*.31,-.68,.01,.055,.055,.06,8)}}
+}
+function buildCharacter(){const root=new THREE.Group(),body=new THREE.Group();root.add(body);root.scale.setScalar(CFG.scale);const core=new THREE.Group();body.add(core);const rig={root,body,core,arms:[],legs:[],cape:[],jaw:null};const r=CFG.role,mon=['troll','orc','elder'].includes(r),sk=r==='skeleton';const shoulderW=mon?.64:.49;const headY=mon?2.46:2.16;
+ // Coherent class-specific silhouette; everything follows animation pivots.
+ ell(core,sk?P.dark:P.secondary,0,1.52,0,mon?.54:.40,mon?.55:.44,mon?.30:.27,13);
+ if(sk){ell(core,P.bone,0,1.53,.08,.28,.39,.16,10);for(let i=0;i<5;i++){const y=1.40+i*.13;const rib=ell(core,P.bone,0,y,.22,.31,.029,.10,10);rib.rotation.z=.03*i}cyl(core,P.bone,0,1.54,.29,.055,.06,.56,8)}
+ else{ell(core,mon?P.skin:P.metal,0,1.62,.17,mon?.54:.37,mon?.44:.37,.12,12);ell(core,P.primary,0,1.48,.275,mon?.41:.25,.26,.063,11);box(core,P.trim,0,1.53,.337,.05,.42,.038);for(const s of [-1,1])ell(core,P.trim,s*(mon?.40:.285),1.66,.20,.032,.26,.05,9)}
+ if(['mage','druid','sage'].includes(r)){ell(core,P.primary,0,1.18,0,.40,.24,.28,11);for(let i=0;i<6;i++){const a=i*Math.PI*2/6,x=Math.sin(a)*.30,z=Math.cos(a)*.15;const p=box(core,i%2?P.secondary:P.primary,x,.91,z,.20,.65,.08);p.rotation.y=-a}}else{box(core,P.leather,0,1.09,.24,mon?.90:.76,.13,.12);box(core,P.trim,0,1.09,.32,.18,.17,.045)}
+ if(r==='blacksmith'){box(core,P.leather,0,.96,.33,.45,.66,.07);for(const x of [-.21,.21])rod(core,P.leather,[x,1.50,.22],[x,1.04,.34],.04)}
+ if(r==='bandit'){const scarf=ell(core,P.red,0,1.88,.11,.40,.17,.30,11);scarf.rotation.x=.12}
+ if(r==='druid'){gem(core,P.glow,0,1.58,.40,.20);for(const s of [-1,1])leaf(core,P.secondary,s*.33,1.77,.25,.64,s*.4)}
+ if(r==='mage'){gem(core,P.glow,0,1.66,.40,.18);for(const s of [-1,1])ell(core,P.trim,s*.30,1.74,.24,.07,.04,.07,8)}
+ if(r==='paladin'){gem(core,P.trim,0,1.56,.42,.15);for(const s of [-1,1])box(core,P.trim,s*.31,1.50,.30,.06,.42,.035)}
+ if(r==='elder'){for(const s of [-1,1]){gem(core,P.glow,s*.37,1.83,.35,.11);cone(core,P.metal,s*.47,2.40,-.08,.19,.46,6)}}
+ const head=new THREE.Group();head.position.y=headY;body.add(head);rig.head=head;const faceScale=mon?1.13:1;
+ ell(head,sk?P.bone:P.skin,0,.12,.03,.345*faceScale,.37*faceScale,.315*faceScale,14);
+ if(sk){for(const s of [-1,1]){ell(head,P.dark,s*.15,.11,.305,.091,.09,.035,10);ell(head,P.iris,s*.15,.12,.336,.033,.038,.018,9)}cone(head,P.dark,0,-.045,.32,.069,.09,4);box(head,P.dark,0,-.21,.24,.28,.055,.045);for(let i=0;i<5;i++)box(head,P.bone,(i-2)*.055,-.225,.29,.04,.06,.03)}
+ else{for(const s of [-1,1]){const x=s*(mon?.185:.14);const brow=ell(head,P.hair,x,.22,.325,.130,.04,.035,9);brow.rotation.z=s*.15;ell(head,P.white,x,.13,.345,.092,.065,.025,12);ell(head,P.iris,x,.13,.365,.050,.053,.023,10);ell(head,P.pupil,x,.13,.382,.026,.034,.014,9);ell(head,P.white,x-.016,.158,.392,.013,.013,.007,6);ell(head,P.skinLight,x,.065,.346,.094,.024,.025,8);ell(head,P.skinLight,s*.28,.015,.245,.12,.095,.12,9)}ell(head,P.skinLight,0,-.025,.36,mon?.16:.092,mon?.105:.075,.090,10);const mouth=add(head,new THREE.TorusGeometry(.072,.009,6,16,Math.PI),sk?P.dark:P.lip,0,-.16,.33);mouth.rotation.z=Math.PI}
+ if(sk){for(const s of [-1,1])ell(head,P.bone,s*.34,.10,.03,.072,.12,.09,9)}else if(mon){for(const s of [-1,1]){const ear=cone(head,P.skin,s*.44,.19,-.01,.15,.38,5);ear.rotation.z=s*.96;cone(head,P.bone,s*.205,-.15,.34,.077,.23,8)}}else{for(const s of [-1,1])ell(head,P.skin,s*.35,.085,.03,.075,.118,.064,8)}
+ if(r==='blacksmith'){ell(head,P.hair,0,-.23,.22,.24,.14,.16,9);for(const s of [-1,1])ell(head,P.hair,s*.18,-.26,.20,.10,.13,.09,9)}
+ if(r==='bandit'){const mask=ell(head,P.red,0,-.11,.305,.31,.13,.07,12);mask.rotation.x=.08}
+ if(r==='mage'){const brim=cyl(head,P.primary,0,.45,0,.42,.42,.09,12);const hat=cone(head,P.primary,0,.82,-.035,.33,.66,9);hat.rotation.z=.11;cyl(head,P.trim,0,.50,0,.345,.345,.07,10);gem(head,P.glow,.11,.55,.29,.09)}
+ if(r==='druid'){for(const s of [-1,1]){const branch=rod(head,P.leather,[s*.23,.52,.00],[s*.36,.78,.02],.06);leaf(head,P.secondary,s*.36,.72,.02,.54,s*.3)}}
+ if(r==='sage'){const cap=ell(head,P.secondary,0,.42,-.05,.39,.24,.34,10);for(const s of [-1,1]){cone(head,P.bone,s*.08,-.16,.33,.024,.13,6);ell(head,P.skinLight,s*.16,.23,.09,.14,.16,.09,8)}}
+ if(r==='troll'||r==='elder'){for(const s of [-1,1]){cone(head,P.bone,s*.28,.48,-.05,.115,.28,7);cone(head,P.bone,s*.21,-.11,.33,.083,.22,6)}ell(head,P.hair,0,.45,-.06,.30,.16,.25,10)}
+ if(r==='orc'){for(const s of [-1,1])cone(head,P.bone,s*.22,-.12,.33,.075,.18,7)}
+ if(r==='paladin'){const circ=cyl(head,P.trim,0,.47,0,.36,.36,.055,13);circ.material=P.trim}
+ buildHair(head,CFG.hairStyle);
+ // Separate articulated arms and legs.
+ for(const s of [-1,1]){const a=new THREE.Group();a.position.set(s*shoulderW,1.78+(mon?.13:0),0);body.add(a);rig.arms.push(a);ell(a,sk?P.bone:mon?P.skin:P.secondary,0,-.28,0,mon?.22:.155,.31,.18,11);ell(a,sk?P.metalDark:P.metal,s*.06,-.105,.03,mon?.29:.235,.18,mon?.28:.225,12);ell(a,P.trim,s*.10,-.105,.17,.08,.065,.07,8);cyl(a,sk?P.bone:P.metalDark,0,-.50,.02,mon?.20:.14,mon?.22:.17,.34,9);ell(a,sk?P.bone:P.skin,0,-.75,.09,mon?.20:.16,.17,.16,9);for(let j=0;j<3;j++)ell(a,sk?P.bone:P.skinLight,(j-1)*.068,-.84,.22,.042,.08,.055,7);
+ if(s===1){
+   // Weapon local origin is the PALM, not the shoulder. Animation stays on the existing arm.
+   const handSocket=new THREE.Group();handSocket.name='RightHandGrip';
+   handSocket.position.set(0,-.77,.105);a.add(handSocket);rig.rightHandGrip=handSocket;
+   const gear=CFG.weapon==='bow'?createBow(handSocket):CFG.weapon==='sword'||CFG.weapon==='rustysword'?createSword(handSocket,CFG.weapon==='rustysword'):CFG.weapon==='axe'?createAxe(handSocket):CFG.weapon==='staff'||CFG.weapon==='branch'||CFG.weapon==='wand'?createStaff(handSocket,CFG.weapon==='branch'):CFG.weapon==='hammer'?createHammer(handSocket):createClub(handSocket,CFG.weapon==='elderclub');
+   gear.name='Weapon_'+CFG.weapon;
+   // Weapon pose tuned to keep the equipment OUTSIDE the torso and readable in idle view.
+   if(CFG.weapon==='staff'||CFG.weapon==='branch'||CFG.weapon==='wand'){
+     gear.position.set(.17,.02,.22);gear.rotation.set(-.68,.06,-.24);
+   }else if(CFG.weapon==='axe'){
+     gear.position.set(.18,-.02,.18);gear.rotation.set(-.82,.02,-.28);
+   }else if(CFG.weapon==='bow'){
+     // Center the bow grip in the palm, keeping the bow forward and off the torso.
+     gear.position.set(.31,-.02,.23);gear.rotation.set(-.24,Math.PI,-.18);
+   }else if(CFG.weapon==='sword'||CFG.weapon==='rustysword'){
+     gear.position.set(.18,-.03,.18);gear.rotation.set(-.92,.06,-.18);
+   }else if(CFG.weapon==='hammer'){
+     gear.position.set(.18,-.01,.18);gear.rotation.set(-.86,.04,-.22);
+   }else{
+     gear.position.set(.18,.01,.18);gear.rotation.set(-.76,.03,-.20);
+   }
+   rig.weapon=gear;
+ }else if(['paladin','orc','bandit','skeleton'].includes(r)){
+   // Attached to the forearm, not to the torso or the weapon hand.
+   const shieldSocket=new THREE.Group();shieldSocket.name='LeftForearmShield';
+   shieldSocket.position.set(-.09,-.55,.27);a.add(shieldSocket);
+   const sh=shield(shieldSocket);sh.position.z=.10;sh.scale.setScalar(r==='orc'?1.04:.84);rig.shield=sh;
+ }}
+ for(const s of [-1,1]){const l=new THREE.Group();l.position.set(s*(mon?.27:.22),1.01,0);body.add(l);rig.legs.push(l);ell(l,sk?P.bone:mon?P.skin:P.primary,0,-.20,0,mon?.23:.175,.31,.20,11);cyl(l,sk?P.bone:P.metalDark,0,-.50,.015,mon?.18:.14,mon?.22:.18,.34,10);ell(l,P.trim,0,-.52,.15,mon?.19:.16,.09,.12,9);ell(l,sk?P.bone:P.metalDark,0,-.75,.08,mon?.24:.195,.23,.24,10);ell(l,P.metal,0,-.84,.23,mon?.25:.21,.12,.26,10)}
+ if(['paladin','mage','druid','bandit','orc','elder'].includes(r)){for(let i=0;i<5;i++){const cp=new THREE.Group();cp.position.set((i-2)*.155,1.78,-.25);body.add(cp);rig.cape.push(cp);const sh=new THREE.Shape();sh.moveTo(-.12,0);sh.lineTo(.12,0);sh.lineTo(.155,-1.03);sh.quadraticCurveTo(0,-1.13,-.14,-1.02);sh.closePath();const c=add(cp,new THREE.ExtrudeGeometry(sh,{depth:.034,bevelEnabled:true,bevelThickness:.01,bevelSize:.015,bevelSegments:1}),i%2?P.secondary:P.primary);c.rotation.x=-.1}}
+ if(r==='troll'||r==='elder'){for(let i=0;i<5;i++)cone(core,P.metalDark,(i-2)*.22,2.14,-.38,.14,.33,6)}
+ if(r==='orc'){for(let i=0;i<4;i++)cone(core,P.metalDark,(i-1.5)*.22,2.22,-.32,.12,.23,6)}
+ return rig}
+const model=buildCharacter();scene.add(model.root);
+// Shared stone display stage, not part of any reusable character.
+const stage=new THREE.Group();scene.add(stage);const ps=CFG.scale>1.2?1.9:1.63;
+const podium=cyl(stage,mat('#3b4a50',.18,.85),0,-.21,0,ps,ps+.15,.28,24);podium.castShadow=false;
+const ring=cyl(stage,mat('#526f63',.15,.70),0,-.03,0,ps-.10,ps-.07,.07,24);ring.castShadow=false;
+const pad=cyl(stage,mat('#263e3d',.08,.87),0,.01,0,ps-.25,ps-.23,.05,24);pad.castShadow=false;
+for(let i=0;i<20;i++){const a=i*Math.PI/10,b=box(stage,P.trim,Math.sin(a)*(ps-.05),.035,Math.cos(a)*(ps-.05),.07,.04,.115);b.rotation.y=a;b.castShadow=false}
+const floor=add(stage,new THREE.PlaneGeometry(200,200),mat('#1a282a'),0,-.40,0);floor.rotation.x=-Math.PI/2;floor.castShadow=false;
+const originalMaterials=new Map();meshes.forEach(o=>originalMaterials.set(o,o.material));const clayMaterial=mat('#b3b9b5');let clay=false,wire=false;
+function materials(){for(const o of meshes){let base=clay?clayMaterial:originalMaterials.get(o);if(wire){if(!base.userData.wireCopy){base.userData.wireCopy=base.clone();base.userData.wireCopy.wireframe=true}base=base.userData.wireCopy}o.material=base}}
+$('#clay').addEventListener('change',e=>{clay=e.target.checked;materials()});$('#wireframe').addEventListener('change',e=>{wire=e.target.checked;materials()});
+let mode='idle',elapsed=0,tm=0,spd=1,turn=false;const keys=['idle','walk','run','attack','hit','death'];
+function select(m){mode=m;elapsed=0;document.querySelectorAll('[data-anim]').forEach(b=>b.classList.toggle('active',b.dataset.anim===m))}
+document.querySelectorAll('[data-anim]').forEach(b=>b.addEventListener('click',()=>select(b.dataset.anim)));
+window.addEventListener('keydown',e=>{if(/^[1-6]$/.test(e.key)&&!(e.target instanceof HTMLInputElement))select(keys[Number(e.key)-1])});
+$('#autorotate').addEventListener('change',e=>turn=e.target.checked);$('#speed').addEventListener('input',e=>spd=Number(e.target.value));
+let yaw=.35,pitch=.13,distance=5.65,targetYaw=yaw,targetPitch=pitch,targetDistance=distance,drag=false,lx=0,ly=0;
+const HEIGHT=CFG.scale>1.2?3.2:CFG.scale<.9?2.4:2.65;const LOOK=HEIGHT*.50;
+function updateCam(){camera.position.set(Math.sin(yaw)*Math.cos(pitch)*distance,LOOK+Math.sin(pitch)*distance,Math.cos(yaw)*Math.cos(pitch)*distance);camera.lookAt(0,LOOK,0)}
+renderer.domElement.addEventListener('pointerdown',e=>{drag=true;lx=e.clientX;ly=e.clientY;renderer.domElement.setPointerCapture(e.pointerId)});
+renderer.domElement.addEventListener('pointermove',e=>{if(!drag)return;targetYaw+=(e.clientX-lx)*.007;targetPitch=Math.max(-.36,Math.min(.7,targetPitch+(e.clientY-ly)*.004));lx=e.clientX;ly=e.clientY});
+renderer.domElement.addEventListener('pointerup',()=>drag=false);renderer.domElement.addEventListener('pointercancel',()=>drag=false);
+renderer.domElement.addEventListener('wheel',e=>{e.preventDefault();targetDistance=Math.max(3.4,Math.min(12,targetDistance+Math.sign(e.deltaY)*.4))},{passive:false});
+const ease=(a,b,t)=>a+(b-a)*Math.max(0,Math.min(1,t));
+function animate(dt){dt=Math.min(dt,.05);tm+=dt*spd;elapsed+=dt*spd;const walk=mode==='walk'||mode==='run',run=mode==='run',stride=walk?Math.sin(tm*(run?10:6.3))*(run?.70:.46):0,impact=mode==='attack'?Math.sin(Math.min(1,(elapsed%1.2)/.9)*Math.PI):0;
+ let bounce=walk?Math.abs(stride)*.06:Math.sin(tm*1.8)*.022,lean=walk?(run?.12:.045):0,larm=walk?stride*.7:-.08,rarm=walk?-stride*.7:.06,ll=walk?-stride:0,rr=walk?stride:0;
+ if(mode==='attack'){rarm=-.22-impact*2.0;lean=.10+impact*.15;ll=.15;rr=-.10}
+ if(mode==='hit'){const p=Math.max(0,1-elapsed*.9);lean=-p*.24;bounce=-p*.07;larm=-p*.44;rarm=p*.4}
+ if(mode==='death'){const p=Math.min(1,elapsed*.72),k=p*p*(3-2*p);model.body.rotation.z=ease(model.body.rotation.z,-k*1.2,dt*9);bounce=-k*.4;larm=-k*.3;rarm=k*.7;lean=k*.2}else model.body.rotation.z=ease(model.body.rotation.z,0,dt*9);
+ model.body.position.y=ease(model.body.position.y,bounce,dt*14);model.body.rotation.x=ease(model.body.rotation.x,lean,dt*12);
+ model.head.rotation.y=ease(model.head.rotation.y,Math.sin(tm*.6)*.065,dt*9);
+ model.arms[0].rotation.x=ease(model.arms[0].rotation.x,larm,dt*12);model.arms[1].rotation.x=ease(model.arms[1].rotation.x,rarm,dt*12);
+ model.legs[0].rotation.x=ease(model.legs[0].rotation.x,ll,dt*11);model.legs[1].rotation.x=ease(model.legs[1].rotation.x,rr,dt*11);
+ model.cape.forEach((o,i)=>{o.rotation.x=ease(o.rotation.x,-.12+Math.sin(tm*2+i*.4)*.08+(walk?.18:0),dt*7)});
+ if(turn&&!drag)targetYaw+=dt*.25;
+ yaw=ease(yaw,targetYaw,dt*7);pitch=ease(pitch,targetPitch,dt*7);distance=ease(distance,targetDistance,dt*6);updateCam()}
+function resize(){const w=Math.max(1,viewport.clientWidth),h=Math.max(1,viewport.clientHeight);camera.aspect=w/h;camera.updateProjectionMatrix();renderer.setSize(w,h,false)}
+new ResizeObserver(resize).observe(viewport);resize();updateCam();
+const clock=new THREE.Clock();let sampled=0;
+function loop(){requestAnimationFrame(loop);const dt=clock.getDelta();animate(dt);renderer.render(scene,camera);sampled+=dt;if(sampled>.4){sampled=0;$('#tris').textContent=renderer.info.render.triangles.toLocaleString('pt-BR');$('#calls').textContent=renderer.info.render.calls.toLocaleString('pt-BR')}}
+const targets=[['FRENTE',0,false],['LATERAL',Math.PI/2,false],['COSTAS',Math.PI,false],['ROSTO',0,true]];
+function capture(){const w=480,h=430;const panel=document.createElement('canvas');panel.width=w*2;panel.height=h*2+54;const ctx=panel.getContext('2d');ctx.fillStyle='#101b29';ctx.fillRect(0,0,panel.width,panel.height);ctx.fillStyle='#f1c76a';ctx.font='bold 23px system-ui';ctx.fillText('HINÁRIA • '+CFG.name+' • INSPEÇÃO 3D',16,34);
+ const savePos=camera.position.clone(),saveQuat=camera.quaternion.clone(),saveAspect=camera.aspect,saveTarget=renderer.getRenderTarget(),saveSize=new THREE.Vector2();renderer.getSize(saveSize);
+ const rt=new THREE.WebGLRenderTarget(w,h,{format:THREE.RGBAFormat,type:THREE.UnsignedByteType,depthBuffer:true});const bytes=new Uint8Array(w*h*4),src=document.createElement('canvas');src.width=w;src.height=h;const sc=src.getContext('2d');
+ try{for(let k=0;k<4;k++){const [label,angle,face]=targets[k],x=(k%2)*w,y=Math.floor(k/2)*h+54,at=face?HEIGHT*.83:LOOK,dist=face?1.48:(CFG.scale>1.2?6.9:5.85);camera.aspect=w/h;camera.updateProjectionMatrix();camera.position.set(Math.sin(angle)*dist,at+(face?.05:.7),Math.cos(angle)*dist);camera.lookAt(0,at,0);renderer.setRenderTarget(rt);renderer.setViewport(0,0,w,h);renderer.render(scene,camera);renderer.readRenderTargetPixels(rt,0,0,w,h,bytes);const data=sc.createImageData(w,h);for(let row=0;row<h;row++)data.data.set(bytes.subarray((h-1-row)*w*4,(h-row)*w*4),row*w*4);sc.putImageData(data,0,0);ctx.drawImage(src,x,y);ctx.fillStyle='#f1c76a';ctx.fillRect(x,y,w,30);ctx.fillStyle='#142332';ctx.font='bold 16px system-ui';ctx.fillText(label,x+14,y+21)}}
+ finally{renderer.setRenderTarget(saveTarget);renderer.setViewport(0,0,saveSize.x,saveSize.y);camera.position.copy(savePos);camera.quaternion.copy(saveQuat);camera.aspect=saveAspect;camera.updateProjectionMatrix();rt.dispose()}
+ const url=panel.toDataURL('image/png'),a=document.createElement('a');a.href=url;a.download='HINARIA_'+CFG.id+'_4_ANGULOS.png';document.body.appendChild(a);a.click();a.remove();$('#preview').src=url;$('#preview').hidden=false;}
+$('#capture').addEventListener('click',()=>{try{capture()}catch(err){console.error('Falha na captura PNG:',err);alert('Não consegui capturar o PNG: '+err.message)}});
+$('#loading').remove();loop();
+
+</script></body></html>

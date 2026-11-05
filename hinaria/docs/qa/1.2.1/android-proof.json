@@ -1,0 +1,11 @@
+{
+  "status": "PASS",
+  "package": "package: name='br.com.hinaria.rpg' versionCode='3' versionName='1.2.1' platformBuildVersionName='15' platformBuildVersionCode='35' compileSdkVersion='35' compileSdkVersionCodename='15'",
+  "sameDebugCertificateAs120": true,
+  "certificateSha256": "9cdb501eedf49aad4fc660d4571a98f6b0bbdb718e702c3c725e0aa0f47750af",
+  "buildFingerprint": "948e43a90b38",
+  "apkSha256": "ed0db0d040d1210e45167faf64025ecdd503b1b1521eb8ff809e0729d4fcc158",
+  "apkBytes": 21128247,
+  "sourceFilesMatchApk": true,
+  "physicalDeviceTested": false
+}
