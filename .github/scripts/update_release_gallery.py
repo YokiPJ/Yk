@@ -1,10 +1,11 @@
-"""Append a real screenshot gallery to the existing release without replacing its builds."""
+"""Publish a scenery-only gallery while preserving the existing release builds."""
 from pathlib import Path
 import hashlib,json,os,subprocess,tempfile,shutil,html
 from html.parser import HTMLParser
 from urllib.parse import urlparse
 REPO='yorimiguel727-eng/Yk';TAG='v1.2.0';BRANCH='hinaria-downloads-v1.2.0'
 START='<!-- HINARIA_GALLERY_V1_START -->';END='<!-- HINARIA_GALLERY_V1_END -->'
+OBSOLETE=['HINARIA_TITULO.png','HINARIA_VILARRUBRA.png','HINARIA_HUD_MOBILE.png','HINARIA_INTERIOR.png','HINARIA_CURA_DRUIDA.png','HINARIA_MAGIA_CAJADO.png']
 stage='initialize'
 def run(*args):
  r=subprocess.run(args,capture_output=True,text=True)
@@ -33,7 +34,8 @@ try:
  if os.environ.get('GITHUB_REPOSITORY')!=REPO:raise RuntimeError('Unexpected repository')
  stage='validate screenshots'
  manifest=json.loads(Path('media/releases/v1.2.0/gallery.json').read_text());images=manifest['images']
- if len(images)!=6:raise RuntimeError('Expected six real game screenshots')
+ if len(images)!=6 or images[0]['asset']!='HINARIA_CENARIO_VILARRUBRA.png':raise RuntimeError('Expected Vilarrubra first and six environment screenshots')
+ if any(i['asset'] in OBSOLETE for i in images):raise RuntimeError('An obsolete character screenshot was selected')
  for image in images:
   path=Path(image['path'])
   if not path.is_file() or checksum(path)!=image['sha256'] or path.read_bytes()[:8]!=b'\x89PNG\r\n\x1a\n':raise RuntimeError('Invalid screenshot: '+str(path))
@@ -53,10 +55,10 @@ try:
   for image in images:
    if checksum(download/image['asset'])!=image['sha256']:raise RuntimeError('Uploaded screenshot mismatch: '+image['asset'])
  current=release();assets={a['name']:a for a in current['assets']}
- block=[START,'## Imagens do jogo','Capturas reais da build **HINÁRIA 1.2.0**. O layout mobile foi emulado no navegador; não representa teste em telefone.','']
+ block=[START,'## Imagens do jogo','Vilarrubra em destaque e outros lugares de **HINÁRIA**. Capturas reais em câmera livre, com interface e personagens ocultos para destacar os cenários.','']
  for image in images:
   src=f"https://github.com/{REPO}/raw/{os.environ['GITHUB_SHA']}/{image['path']}"
-  width=300 if image['width']<image['height'] else 960
+  width=1280 if image is images[0] else 960
   block.extend(['### '+image['title'],f'<img src="{src}" alt="{html.escape(image["caption"],quote=True)}" width="{width}">',image['caption'],f'[Abrir ou baixar esta imagem]({assets[image["asset"]]["browser_download_url"]})',''])
  block.append(END);gallery='\n\n'.join(block)
  stage='check rendered gallery markup'
@@ -67,22 +69,30 @@ try:
  if len(parsed.sources)!=len(images) or any(not source for source in parsed.sources):raise RuntimeError('GitHub did not render all six image elements')
  body=current.get('body') or ''
  if (START in body)!=(END in body):raise RuntimeError('Incomplete gallery markers in existing notes; notes preserved')
- if START in body:body=body[:body.index(START)]+gallery+body[body.index(END)+len(END):]
- else:body=body.rstrip()+'\n\n'+gallery+'\n'
+ if START in body:body=body[:body.index(START)]+body[body.index(END)+len(END):]
+ body=gallery+'\n\n'+body.strip()+'\n'
  stage='update release notes'
  Path('/tmp/hinaria-gallery-edit.json').write_text(json.dumps({'body':body}))
  run('gh','api',f'repos/{REPO}/releases/{current["id"]}','--method','PATCH','--input','/tmp/hinaria-gallery-edit.json')
+ stage='remove the obsolete character and UI screenshots'
+ existing={a['name'] for a in release()['assets']}
+ for obsolete in OBSOLETE:
+  if obsolete in existing:run('gh','release','delete-asset',TAG,obsolete,'--repo',REPO,'--yes')
  after=release();after_assets={a['name']:a for a in after['assets']}
- if after['draft'] or START not in after['body'] or END not in after['body']:raise RuntimeError('Updated published notes were not confirmed')
+ if set(OBSOLETE).intersection(after_assets):raise RuntimeError('An obsolete screenshot remains attached')
+ if any(old in after['body'] for old in OBSOLETE):raise RuntimeError('The notes still reference an obsolete screenshot')
+ if after['draft'] or not after['body'].startswith(gallery) or END not in after['body']:raise RuntimeError('Updated published notes were not confirmed')
+ if any(i['asset'] not in after_assets for i in images):raise RuntimeError('A new scenery screenshot is missing')
  for name,identity in preserved.items():
   a=after_assets[name]
   if (a['id'],a['size'])!=identity:raise RuntimeError('The original build asset changed unexpectedly')
  proof={'status':'published','release_url':after['html_url'],'image_count':len(images),'rendered_img_elements':len(parsed.sources),
   'rendered_image_hosts':sorted({urlparse(source).hostname for source in parsed.sources}),
   'gallery_commit':os.environ['GITHUB_SHA'],'preserved_build_assets':list(preserved),
+  'main_image':images[0]['asset'],'removed_assets':OBSOLETE,'scenery_only':True,
   'images':[{'name':i['asset'],'sha256':i['sha256'],'width':i['width'],'height':i['height'],'url':after_assets[i['asset']]['browser_download_url']} for i in images],
   'run_url':f"https://github.com/{REPO}/actions/runs/{os.environ.get('GITHUB_RUN_ID')}"}
- record(proof);print('Published six real screenshots and gallery: '+after['html_url'])
+ record(proof);print('Published Vilarrubra-first scenery gallery and removed obsolete character screenshots: '+after['html_url'])
 except Exception as error:
  try:record({'status':'failed','stage':stage,'error':str(error),'run_url':f"https://github.com/{REPO}/actions/runs/{os.environ.get('GITHUB_RUN_ID')}"})
  except Exception as e:print('Could not record gallery failure:',str(e))

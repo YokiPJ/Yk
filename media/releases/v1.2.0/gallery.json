@@ -1,59 +1,60 @@
 {
   "version": "1.2.0",
+  "scenery_only": true,
   "images": [
     {
-      "path": "media/releases/v1.2.0/01-titulo.png",
-      "asset": "HINARIA_TITULO.png",
-      "title": "Tela de título",
-      "caption": "Menu principal cinematográfico, capturado durante a validação da build.",
-      "width": 1280,
-      "height": 720,
-      "sha256": "eb62fe284c82dc9447fbd54f1d8a74b66774680318ead058786d2df5747c6d06"
+      "path": "media/releases/v1.2.0/01-vilarrubra.png",
+      "asset": "HINARIA_CENARIO_VILARRUBRA.png",
+      "title": "Vilarrubra · imagem principal",
+      "caption": "Vista da praça de Vilarrubra, suas casas, comércio e caminhos entre as árvores.",
+      "width": 1600,
+      "height": 900,
+      "sha256": "aeadeef0f238e07bf4cc5663458a82c90dfe35c428f47ee8fec18726f1c7fae7"
     },
     {
-      "path": "media/releases/v1.2.0/02-vila.png",
-      "asset": "HINARIA_VILARRUBRA.png",
-      "title": "Explore Vilarrubra",
-      "caption": "Vila, personagem e HUD durante uma sessão real no navegador.",
-      "width": 1280,
-      "height": 720,
-      "sha256": "fb6f5c3f4f67ffe14009eb5b41b0300be359110f8087f718b08ffaa2172f1384"
+      "path": "media/releases/v1.2.0/02-ponte-velha.png",
+      "asset": "HINARIA_CENARIO_PONTE_VELHA.png",
+      "title": "Ponte Velha",
+      "caption": "Travessia de madeira sobre o rio, entre a vila e as ruínas.",
+      "width": 1600,
+      "height": 900,
+      "sha256": "5f0fa1acd663595cbbf4b1032b1cb844c3f36e91f2504801ec3c0d8b16372629"
     },
     {
-      "path": "media/releases/v1.2.0/03-hud-mobile.png",
-      "asset": "HINARIA_HUD_MOBILE.png",
-      "title": "HUD mobile",
-      "caption": "Layout touch emulado em 390×844, com os efeitos de cura e conjuração ativos.",
-      "width": 390,
-      "height": 844,
-      "sha256": "9cd0e0887da1743b60873accde5e6f2f071aeb6b5ab8c22d17f75c5eef72b62c"
+      "path": "media/releases/v1.2.0/03-clareira.png",
+      "asset": "HINARIA_CENARIO_CLAREIRA.png",
+      "title": "Clareira das Fadas",
+      "caption": "Clareira na floresta, cercada por árvores, flores e água.",
+      "width": 1600,
+      "height": 900,
+      "sha256": "a7a55423d2b13ad69a1d9877b8bc5a60a532ae5e021cd35a6ef52e2fdb06b663"
     },
     {
-      "path": "media/releases/v1.2.0/04-interior.png",
-      "asset": "HINARIA_INTERIOR.png",
-      "title": "Interiores das casas",
-      "caption": "Interior de uma casa, capturado na validação de entrada e salvamento.",
-      "width": 900,
-      "height": 600,
-      "sha256": "52b89b30ef0db21de129e50158fabe44e41515e6f0fb48bd6a3919f96c71d6de"
+      "path": "media/releases/v1.2.0/04-ruinas-ardu.png",
+      "asset": "HINARIA_CENARIO_RUINAS_ARDU.png",
+      "title": "Ruínas de Ardu",
+      "caption": "Colunas, muros antigos e o marco rúnico das Ruínas de Ardu.",
+      "width": 1600,
+      "height": 900,
+      "sha256": "4591c272c83e052ae205525b50653432f9277852012d08d8c58af15c09080dc5"
     },
     {
-      "path": "media/releases/v1.2.0/05-cura-druida.png",
-      "asset": "HINARIA_CURA_DRUIDA.png",
-      "title": "Cura do Druida",
-      "caption": "Habilidade de cura acionada pela tecla 2; anéis e coluna de energia renderizados pelo jogo.",
-      "width": 1280,
-      "height": 720,
-      "sha256": "68d761c7dc3858eaf5388313262cd21829fd93caf78d79ca886ef9c2a6daea4c"
+      "path": "media/releases/v1.2.0/05-caverna-sombria.png",
+      "asset": "HINARIA_CENARIO_CAVERNA_SOMBRIA.png",
+      "title": "Caverna Sombria",
+      "caption": "Formação rochosa e entrada da Caverna Sombria.",
+      "width": 1600,
+      "height": 900,
+      "sha256": "79c7a252484e55fa6dcec2704701d3942307519d2c3add23a9815b3a28399019"
     },
     {
-      "path": "media/releases/v1.2.0/06-magia-cajado.png",
-      "asset": "HINARIA_MAGIA_CAJADO.png",
-      "title": "Magia do cajado",
-      "caption": "Ataque manual acionado por J, com círculo mágico e partículas. A cura anterior ainda está ativa.",
-      "width": 1280,
-      "height": 720,
-      "sha256": "2f26eea9ddacd83623d12a03c867126826d262c6f2e53d824ac7f72220f27d32"
+      "path": "media/releases/v1.2.0/06-acampamento.png",
+      "asset": "HINARIA_CENARIO_ACAMPAMENTO.png",
+      "title": "Acampamento Abandonado",
+      "caption": "Barracas e fogueira do acampamento, próximo ao rio e à floresta.",
+      "width": 1600,
+      "height": 900,
+      "sha256": "d9acef9a5666fcc2fd48e52fd63871719b66576d02354df9308f04b22281aca9"
     }
   ]
 }
