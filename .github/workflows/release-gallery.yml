@@ -1,0 +1,26 @@
+name: Adicionar imagens à release HINÁRIA
+on:
+  push:
+    branches: [hinaria-downloads-v1.2.0]
+    paths:
+      - '.github/workflows/release-gallery.yml'
+      - '.github/scripts/update_release_gallery.py'
+      - 'media/releases/v1.2.0/**'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: hinaria-release-gallery-v1.2.0
+  cancel-in-progress: false
+jobs:
+  gallery:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          ref: hinaria-downloads-v1.2.0
+      - name: Publicar imagens reais e conferir a galeria
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 .github/scripts/update_release_gallery.py

@@ -1,0 +1,66 @@
+{
+  "source": "Actual HINÁRIA v1.2.0 browser rendering; no generated/concept artwork",
+  "frames": [
+    {
+      "file": "02-vila.png",
+      "description": "Vilarrubra e HUD durante a exploração, após a cena de chegada.",
+      "state": {
+        "flow": "PLAYING",
+        "cls": "dr",
+        "time": 3.2334999999999967,
+        "hp": 68,
+        "mana": 49.700499999999906,
+        "viewport": [
+          1280,
+          720
+        ]
+      }
+    },
+    {
+      "file": "05-cura-druida.png",
+      "description": "Cura do Druida acionada pela tecla 2; efeito real no jogo.",
+      "state": {
+        "flow": "PLAYING",
+        "cls": "dr",
+        "time": 3.700199999999992,
+        "hp": 68,
+        "mana": 26.100599999999883,
+        "viewport": [
+          1280,
+          720
+        ]
+      }
+    },
+    {
+      "file": "06-magia-cajado.png",
+      "description": "Ataque manual de cajado acionado por J, com círculo mágico.",
+      "state": {
+        "flow": "PLAYING",
+        "cls": "dr",
+        "time": 4.03349999999998,
+        "hp": 68,
+        "mana": 27.100499999999837,
+        "viewport": [
+          1280,
+          720
+        ]
+      }
+    },
+    {
+      "file": "03-hud-mobile.png",
+      "description": "Layout touch emulado em 390×844; captura no navegador, não telefone físico.",
+      "state": {
+        "flow": "PLAYING",
+        "cls": "dr",
+        "time": 4.416900000000002,
+        "hp": 68,
+        "mana": 28.2506999999999,
+        "viewport": [
+          390,
+          844
+        ]
+      }
+    }
+  ],
+  "pageErrors": []
+}

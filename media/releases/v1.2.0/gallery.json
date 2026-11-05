@@ -1,0 +1,59 @@
+{
+  "version": "1.2.0",
+  "images": [
+    {
+      "path": "media/releases/v1.2.0/01-titulo.png",
+      "asset": "HINARIA_TITULO.png",
+      "title": "Tela de título",
+      "caption": "Menu principal cinematográfico, capturado durante a validação da build.",
+      "width": 1280,
+      "height": 720,
+      "sha256": "eb62fe284c82dc9447fbd54f1d8a74b66774680318ead058786d2df5747c6d06"
+    },
+    {
+      "path": "media/releases/v1.2.0/02-vila.png",
+      "asset": "HINARIA_VILARRUBRA.png",
+      "title": "Explore Vilarrubra",
+      "caption": "Vila, personagem e HUD durante uma sessão real no navegador.",
+      "width": 1280,
+      "height": 720,
+      "sha256": "fb6f5c3f4f67ffe14009eb5b41b0300be359110f8087f718b08ffaa2172f1384"
+    },
+    {
+      "path": "media/releases/v1.2.0/03-hud-mobile.png",
+      "asset": "HINARIA_HUD_MOBILE.png",
+      "title": "HUD mobile",
+      "caption": "Layout touch emulado em 390×844, com os efeitos de cura e conjuração ativos.",
+      "width": 390,
+      "height": 844,
+      "sha256": "9cd0e0887da1743b60873accde5e6f2f071aeb6b5ab8c22d17f75c5eef72b62c"
+    },
+    {
+      "path": "media/releases/v1.2.0/04-interior.png",
+      "asset": "HINARIA_INTERIOR.png",
+      "title": "Interiores das casas",
+      "caption": "Interior de uma casa, capturado na validação de entrada e salvamento.",
+      "width": 900,
+      "height": 600,
+      "sha256": "52b89b30ef0db21de129e50158fabe44e41515e6f0fb48bd6a3919f96c71d6de"
+    },
+    {
+      "path": "media/releases/v1.2.0/05-cura-druida.png",
+      "asset": "HINARIA_CURA_DRUIDA.png",
+      "title": "Cura do Druida",
+      "caption": "Habilidade de cura acionada pela tecla 2; anéis e coluna de energia renderizados pelo jogo.",
+      "width": 1280,
+      "height": 720,
+      "sha256": "68d761c7dc3858eaf5388313262cd21829fd93caf78d79ca886ef9c2a6daea4c"
+    },
+    {
+      "path": "media/releases/v1.2.0/06-magia-cajado.png",
+      "asset": "HINARIA_MAGIA_CAJADO.png",
+      "title": "Magia do cajado",
+      "caption": "Ataque manual acionado por J, com círculo mágico e partículas. A cura anterior ainda está ativa.",
+      "width": 1280,
+      "height": 720,
+      "sha256": "2f26eea9ddacd83623d12a03c867126826d262c6f2e53d824ac7f72220f27d32"
+    }
+  ]
+}
