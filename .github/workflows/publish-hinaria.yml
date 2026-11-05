@@ -1,0 +1,27 @@
+name: Publicar HINÁRIA 1.2.0
+on:
+  push:
+    branches: [hinaria-downloads-v1.2.0]
+    paths:
+      - '.github/workflows/publish-hinaria.yml'
+      - '.github/scripts/publish_hinaria_release.py'
+      - '.github/release-notes-v1.2.0.md'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: hinaria-release-v1.2.0
+  cancel-in-progress: false
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout da distribuição verificada
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          ref: hinaria-downloads-v1.2.0
+      - name: Publicar e verificar release e anexos
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 .github/scripts/publish_hinaria_release.py
