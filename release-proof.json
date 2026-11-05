@@ -1,0 +1,8 @@
+{
+  "status": "failed",
+  "stage": "create draft",
+  "error": "'NoneType' object is not subscriptable",
+  "tag": "v1.2.2",
+  "source_commit": "775089e21efb73585c4cfd450205b25dcc4b21a2",
+  "run_url": "https://github.com/YokiPJ/Yk/actions/runs/42131757722"
+}
