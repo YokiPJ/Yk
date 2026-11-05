@@ -1,7 +1,7 @@
 # HINÁRIA 1.2.0 · Downloads
 
-- [Baixar o projeto completo (ZIP)](https://github.com/yorimiguel727-eng/Yk/raw/refs/heads/hinaria-downloads-v1.2.0/HINARIA_UPGRADE_1.2.0.zip)
-- [Baixar o aplicativo Android (APK debug)](https://github.com/yorimiguel727-eng/Yk/raw/refs/heads/hinaria-downloads-v1.2.0/HINARIA_UPGRADE_DEBUG_1.2.0.apk)
+- [Baixar o projeto completo (ZIP)](https://raw.githubusercontent.com/yorimiguel727-eng/Yk/hinaria-downloads-v1.2.0/HINARIA_UPGRADE_1.2.0.zip)
+- [Baixar o aplicativo Android (APK debug)](https://raw.githubusercontent.com/yorimiguel727-eng/Yk/hinaria-downloads-v1.2.0/HINARIA_UPGRADE_DEBUG_1.2.0.apk)
 
 O ZIP contém os fontes, recursos, build web offline, projeto Android, testes e evidências. O APK é uma build debug 1.2.0; não foi testado em telefone físico.
 
