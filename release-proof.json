@@ -1,0 +1,47 @@
+{
+  "status": "published",
+  "tag": "v1.2.0",
+  "url": "https://github.com/yorimiguel727-eng/Yk/releases/tag/v1.2.0",
+  "target": "b3534c268ad0dc987ec436624d3ff2062f689dd4",
+  "run_id": "42059062096",
+  "run_url": "https://github.com/yorimiguel727-eng/Yk/actions/runs/42059062096",
+  "verified_sha256": {
+    "HINARIA_UPGRADE_1.2.0.zip": "67952e440e918563b548b22eed8e9a271ce93ecc047e279caafe4f5cb79d8331",
+    "HINARIA_UPGRADE_DEBUG_1.2.0.apk": "51d4ce9507031f2e03a7128efc75aee5df09f9526aa8347d0a1746c85471280f",
+    "TEST_RESULTS.md": "0fd856cb0336994876ff9880fbda6754aa96e0a45b0ebd55b0281f3b078ed1d8",
+    "CHANGELOG_HINARIA_UPGRADE.md": "94a8f0b50aa911b95e03fbe0ae3121bcb1d0790816586221ac4b24c38d403c40",
+    "README.md": "2ab8f760f83980a42419dd6d2561aa79cc135f270888d50b31639343db4b620f"
+  },
+  "assets": [
+    {
+      "name": "HINARIA_UPGRADE_1.2.0.zip",
+      "size": 49942316,
+      "download_url": "https://github.com/yorimiguel727-eng/Yk/releases/download/v1.2.0/HINARIA_UPGRADE_1.2.0.zip"
+    },
+    {
+      "name": "HINARIA_UPGRADE_DEBUG_1.2.0.apk",
+      "size": 21126194,
+      "download_url": "https://github.com/yorimiguel727-eng/Yk/releases/download/v1.2.0/HINARIA_UPGRADE_DEBUG_1.2.0.apk"
+    },
+    {
+      "name": "README.md",
+      "size": 895,
+      "download_url": "https://github.com/yorimiguel727-eng/Yk/releases/download/v1.2.0/README.md"
+    },
+    {
+      "name": "TEST_RESULTS.md",
+      "size": 7225,
+      "download_url": "https://github.com/yorimiguel727-eng/Yk/releases/download/v1.2.0/TEST_RESULTS.md"
+    },
+    {
+      "name": "CHANGELOG_HINARIA_UPGRADE.md",
+      "size": 4603,
+      "download_url": "https://github.com/yorimiguel727-eng/Yk/releases/download/v1.2.0/CHANGELOG_HINARIA_UPGRADE.md"
+    },
+    {
+      "name": "SHA256SUMS.txt",
+      "size": 443,
+      "download_url": "https://github.com/yorimiguel727-eng/Yk/releases/download/v1.2.0/SHA256SUMS.txt"
+    }
+  ]
+}
