@@ -6,54 +6,64 @@
   "rendered_image_hosts": [
     "github.com"
   ],
-  "gallery_commit": "6daa66ad9d8aa7f272b14a93687c14e7905de4e6",
+  "gallery_commit": "8a31122c732bf5ee1854f0639be7e86e54900cd4",
   "preserved_build_assets": [
     "HINARIA_UPGRADE_1.2.0.zip",
     "HINARIA_UPGRADE_DEBUG_1.2.0.apk"
   ],
+  "main_image": "HINARIA_CENARIO_VILARRUBRA.png",
+  "removed_assets": [
+    "HINARIA_TITULO.png",
+    "HINARIA_VILARRUBRA.png",
+    "HINARIA_HUD_MOBILE.png",
+    "HINARIA_INTERIOR.png",
+    "HINARIA_CURA_DRUIDA.png",
+    "HINARIA_MAGIA_CAJADO.png"
+  ],
+  "scenery_only": true,
   "images": [
     {
-      "name": "HINARIA_TITULO.png",
-      "sha256": "eb62fe284c82dc9447fbd54f1d8a74b66774680318ead058786d2df5747c6d06",
-      "width": 1280,
-      "height": 720,
-      "url": "https://github.com/yorimiguel727-eng/Yk/releases/download/v1.2.0/HINARIA_TITULO.png"
+      "name": "HINARIA_CENARIO_VILARRUBRA.png",
+      "sha256": "aeadeef0f238e07bf4cc5663458a82c90dfe35c428f47ee8fec18726f1c7fae7",
+      "width": 1600,
+      "height": 900,
+      "url": "https://github.com/yorimiguel727-eng/Yk/releases/download/v1.2.0/HINARIA_CENARIO_VILARRUBRA.png"
     },
     {
-      "name": "HINARIA_VILARRUBRA.png",
-      "sha256": "fb6f5c3f4f67ffe14009eb5b41b0300be359110f8087f718b08ffaa2172f1384",
-      "width": 1280,
-      "height": 720,
-      "url": "https://github.com/yorimiguel727-eng/Yk/releases/download/v1.2.0/HINARIA_VILARRUBRA.png"
+      "name": "HINARIA_CENARIO_PONTE_VELHA.png",
+      "sha256": "5f0fa1acd663595cbbf4b1032b1cb844c3f36e91f2504801ec3c0d8b16372629",
+      "width": 1600,
+      "height": 900,
+      "url": "https://github.com/yorimiguel727-eng/Yk/releases/download/v1.2.0/HINARIA_CENARIO_PONTE_VELHA.png"
     },
     {
-      "name": "HINARIA_HUD_MOBILE.png",
-      "sha256": "9cd0e0887da1743b60873accde5e6f2f071aeb6b5ab8c22d17f75c5eef72b62c",
-      "width": 390,
-      "height": 844,
-      "url": "https://github.com/yorimiguel727-eng/Yk/releases/download/v1.2.0/HINARIA_HUD_MOBILE.png"
+      "name": "HINARIA_CENARIO_CLAREIRA.png",
+      "sha256": "a7a55423d2b13ad69a1d9877b8bc5a60a532ae5e021cd35a6ef52e2fdb06b663",
+      "width": 1600,
+      "height": 900,
+      "url": "https://github.com/yorimiguel727-eng/Yk/releases/download/v1.2.0/HINARIA_CENARIO_CLAREIRA.png"
     },
     {
-      "name": "HINARIA_INTERIOR.png",
-      "sha256": "52b89b30ef0db21de129e50158fabe44e41515e6f0fb48bd6a3919f96c71d6de",
-      "width": 900,
-      "height": 600,
-      "url": "https://github.com/yorimiguel727-eng/Yk/releases/download/v1.2.0/HINARIA_INTERIOR.png"
+      "name": "HINARIA_CENARIO_RUINAS_ARDU.png",
+      "sha256": "4591c272c83e052ae205525b50653432f9277852012d08d8c58af15c09080dc5",
+      "width": 1600,
+      "height": 900,
+      "url": "https://github.com/yorimiguel727-eng/Yk/releases/download/v1.2.0/HINARIA_CENARIO_RUINAS_ARDU.png"
     },
     {
-      "name": "HINARIA_CURA_DRUIDA.png",
-      "sha256": "68d761c7dc3858eaf5388313262cd21829fd93caf78d79ca886ef9c2a6daea4c",
-      "width": 1280,
-      "height": 720,
-      "url": "https://github.com/yorimiguel727-eng/Yk/releases/download/v1.2.0/HINARIA_CURA_DRUIDA.png"
+      "name": "HINARIA_CENARIO_CAVERNA_SOMBRIA.png",
+      "sha256": "79c7a252484e55fa6dcec2704701d3942307519d2c3add23a9815b3a28399019",
+      "width": 1600,
+      "height": 900,
+      "url": "https://github.com/yorimiguel727-eng/Yk/releases/download/v1.2.0/HINARIA_CENARIO_CAVERNA_SOMBRIA.png"
     },
     {
-      "name": "HINARIA_MAGIA_CAJADO.png",
-      "sha256": "2f26eea9ddacd83623d12a03c867126826d262c6f2e53d824ac7f72220f27d32",
-      "width": 1280,
-      "height": 720,
-      "url": "https://github.com/yorimiguel727-eng/Yk/releases/download/v1.2.0/HINARIA_MAGIA_CAJADO.png"
+      "name": "HINARIA_CENARIO_ACAMPAMENTO.png",
+      "sha256": "d9acef9a5666fcc2fd48e52fd63871719b66576d02354df9308f04b22281aca9",
+      "width": 1600,
+      "height": 900,
+      "url": "https://github.com/yorimiguel727-eng/Yk/releases/download/v1.2.0/HINARIA_CENARIO_ACAMPAMENTO.png"
     }
   ],
-  "run_url": "https://github.com/yorimiguel727-eng/Yk/actions/runs/42080320994"
+  "run_url": "https://github.com/yorimiguel727-eng/Yk/actions/runs/42082251046"
 }
