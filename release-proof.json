@@ -1,8 +1,83 @@
 {
-  "status": "failed",
-  "stage": "create draft",
-  "error": "'NoneType' object is not subscriptable",
+  "status": "published",
+  "release_id": 435898020,
   "tag": "v1.2.2",
-  "source_commit": "775089e21efb73585c4cfd450205b25dcc4b21a2",
-  "run_url": "https://github.com/YokiPJ/Yk/actions/runs/42131757722"
+  "source_commit": "969d646cac29efc6d2413c9fd03fb62082f7013a",
+  "tag_commit": "969d646cac29efc6d2413c9fd03fb62082f7013a",
+  "url": "https://github.com/YokiPJ/Yk/releases/tag/v1.2.2",
+  "run_url": "https://github.com/YokiPJ/Yk/actions/runs/42133361012",
+  "assets": [
+    {
+      "name": "01-vilarrubra.png",
+      "sha256": "aeadeef0f238e07bf4cc5663458a82c90dfe35c428f47ee8fec18726f1c7fae7",
+      "bytes": 963779,
+      "download_url": "https://github.com/YokiPJ/Yk/releases/download/v1.2.2/01-vilarrubra.png"
+    },
+    {
+      "name": "02-ponte-velha.png",
+      "sha256": "5f0fa1acd663595cbbf4b1032b1cb844c3f36e91f2504801ec3c0d8b16372629",
+      "bytes": 828031,
+      "download_url": "https://github.com/YokiPJ/Yk/releases/download/v1.2.2/02-ponte-velha.png"
+    },
+    {
+      "name": "03-clareira.png",
+      "sha256": "a7a55423d2b13ad69a1d9877b8bc5a60a532ae5e021cd35a6ef52e2fdb06b663",
+      "bytes": 861748,
+      "download_url": "https://github.com/YokiPJ/Yk/releases/download/v1.2.2/03-clareira.png"
+    },
+    {
+      "name": "04-ruinas-ardu.png",
+      "sha256": "4591c272c83e052ae205525b50653432f9277852012d08d8c58af15c09080dc5",
+      "bytes": 777918,
+      "download_url": "https://github.com/YokiPJ/Yk/releases/download/v1.2.2/04-ruinas-ardu.png"
+    },
+    {
+      "name": "05-caverna-sombria.png",
+      "sha256": "79c7a252484e55fa6dcec2704701d3942307519d2c3add23a9815b3a28399019",
+      "bytes": 762875,
+      "download_url": "https://github.com/YokiPJ/Yk/releases/download/v1.2.2/05-caverna-sombria.png"
+    },
+    {
+      "name": "06-acampamento.png",
+      "sha256": "d9acef9a5666fcc2fd48e52fd63871719b66576d02354df9308f04b22281aca9",
+      "bytes": 863595,
+      "download_url": "https://github.com/YokiPJ/Yk/releases/download/v1.2.2/06-acampamento.png"
+    },
+    {
+      "name": "HINARIA_MOBILE_1.2.2_DEBUG.apk",
+      "sha256": "2b68f5246f63983cd8935337e18d65e1fc925d379f3feb3619f50c6ba26a9c03",
+      "bytes": 21134883,
+      "download_url": "https://github.com/YokiPJ/Yk/releases/download/v1.2.2/HINARIA_MOBILE_1.2.2_DEBUG.apk"
+    },
+    {
+      "name": "HINARIA_PROJETO_1.2.2.zip",
+      "sha256": "02feb081cd97f023682775433ba9d5155fc9f622e2148478e6db891b20fc7040",
+      "bytes": 35082672,
+      "download_url": "https://github.com/YokiPJ/Yk/releases/download/v1.2.2/HINARIA_PROJETO_1.2.2.zip"
+    },
+    {
+      "name": "HinariaMotion.jar",
+      "sha256": "14cd5f4f72b2e1945f97a1ff54d85b64ccdb800ecdc3b532e26f9a4f548056f3",
+      "bytes": 1466674,
+      "download_url": "https://github.com/YokiPJ/Yk/releases/download/v1.2.2/HinariaMotion.jar"
+    },
+    {
+      "name": "MOBILE_TEST_RESULTS.json",
+      "sha256": "40a7135f0c0fedb6e0a94044c6c526fef95536f14d5ee91c4e2c0e6d9fad85fe",
+      "bytes": 2265,
+      "download_url": "https://github.com/YokiPJ/Yk/releases/download/v1.2.2/MOBILE_TEST_RESULTS.json"
+    },
+    {
+      "name": "RELEASE_NOTES.md",
+      "sha256": "abe74e4b9db6104da35921b4176a858c6b941f86353d34656ec875e7ee907c61",
+      "bytes": 2410,
+      "download_url": "https://github.com/YokiPJ/Yk/releases/download/v1.2.2/RELEASE_NOTES.md"
+    },
+    {
+      "name": "SHA256SUMS.txt",
+      "sha256": "94c23b5d3e9ea67d6d90e78d0d64a97dabbd1f7dcca89a7bb2c055d07354665a",
+      "bytes": 957,
+      "download_url": "https://github.com/YokiPJ/Yk/releases/download/v1.2.2/SHA256SUMS.txt"
+    }
+  ]
 }
