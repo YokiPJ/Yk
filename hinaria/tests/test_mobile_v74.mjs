@@ -24,5 +24,7 @@ assert.match(file('src/quest/questUI.js'),/quest-quick-toggle/);
 assert.match(file('src/player/player.js'),/skill-label/);
 assert.match(file('src/ui/hud.js'),/resizeMinimap\(\);/);
 assert.match(file('tools/build-web.mjs'),/assets/);
-assert.match(file('tools/assemble-debug.mjs'),/HINARIA_1_1_0_COMBATE_MANUAL_VFX\.apk/);
+const release=JSON.parse(file('release.json'));
+assert.match(release.apk,/^HINARIA_MOBILE_[0-9.]+_DEBUG\.apk$/);
+assert.ok(file('tools/assemble-debug.mjs').includes('release.apk'),'APK uses the current release metadata');
 console.log('PASS 1.0.7.9 mobile: CSS responsive, controls, safe areas, quest toggle, offline assets and APK marker');

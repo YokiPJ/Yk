@@ -5,6 +5,8 @@
 
 import * as THREE from 'three';
 import { CONFIG, GAME_IDENTITY } from './core/config.js';
+import { deviceRenderProfile } from './core/renderProfile.js';
+import { optimizeStaticChunks, freezeStaticTransforms } from './world/staticBatch.js';
 import { initGameFlow } from './core/gameFlow.js';
 import { initTitleMenu } from './ui/titleMenu.js';
 import { ensureArsenal } from './player/arsenal.js';
@@ -30,7 +32,7 @@ import { initArsenalUI } from './ui/arsenalUI.js';
 import { initDialogueUI } from './ui/dialogueUI.js';
 import { initLoop } from './core/loop.js';
 import { initCutscenePreview } from './cutscene/cutsceneSystem.js';
-import { initPerformanceUI } from './ui/performanceUI.js';
+import { initPerformanceUI, effectivePixelRatio } from './ui/performanceUI.js';
 import { initDiagnostics } from './ui/qaDiagnostics.js';
 import { initLore } from './lore/loreSystem.js';
 import { initHudOverhaulV1 } from './ui/hudOverhaulV1.js';
@@ -46,16 +48,17 @@ window.gameState = gameState;
 
 // Initialize Three.js
 function initThreeJS() {
-    const MOBILE = navigator.maxTouchPoints > 0;
+    const profile=deviceRenderProfile(),MOBILE=profile.mobile;
     
     gameState.renderer = new THREE.WebGLRenderer({
         antialias: !MOBILE,
         powerPreference: 'high-performance'
     });
-    gameState.renderer.setPixelRatio(Math.min(devicePixelRatio, MOBILE ? 0.95 : 1.15));
+    gameState.renderer.setPixelRatio(Math.min(devicePixelRatio,profile.initialRatio));
     document.getElementById('wrap').appendChild(gameState.renderer.domElement);
     
     gameState.scene = new THREE.Scene();
+    gameState.scene.matrixAutoUpdate=false;
     gameState.scene.background = new THREE.Color(CONFIG.COLORS.BACKGROUND);
     gameState.scene.fog = new THREE.Fog(CONFIG.COLORS.FOG_DEFAULT, 15, 32);
     
@@ -75,6 +78,8 @@ function initThreeJS() {
         const wrap = document.getElementById('wrap');
         const vw = wrap.clientWidth;
         const vh = wrap.clientHeight;
+        const ratio=effectivePixelRatio();
+        if(Math.abs(gameState.renderer.getPixelRatio()-ratio)>.001)gameState.renderer.setPixelRatio(ratio);
         gameState.renderer.setSize(vw, vh, false);
         gameState.camera.aspect = vw / vh;
         gameState.camera.updateProjectionMatrix();
@@ -87,6 +92,8 @@ function initThreeJS() {
 async function init() {
     // Set document title
     document.title = `${GAME_IDENTITY.NAME} — ${GAME_IDENTITY.SUBTITLE}`;
+    const buildLabel=document.getElementById('hinaria-build');
+    if(buildLabel)buildLabel.textContent=`${GAME_IDENTITY.VERSION} · COMBATE MANUAL + VFX/SFX V2 · STORY`;
     
     // Init Three.js
     initThreeJS();
@@ -96,6 +103,9 @@ async function init() {
     
     // Build world meshes
     buildWorldMeshes();
+    for(const marker of gameState.loreMarkers||[])marker.crystal.userData.dynamicTransform=true;
+    gameState.staticBatchStats=optimizeStaticChunks(gameState.worldChunks);
+    freezeStaticTransforms(gameState.ground);freezeStaticTransforms(gameState.waterMesh);
     
     // V6 diagnostics are opt-in (window.HINARIA_V6.toggleCollision()).
     installV6Diagnostics();

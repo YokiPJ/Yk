@@ -1,74 +1,88 @@
-# HINÁRIA · projeto completo 1.2.1
+# HINÁRIA 1.2.2 · Mobile
 
-Código editável do jogo, projeto Android, modelos corrigidos e todos os laboratórios de animação no repositório original.
+RPG 3D em Three.js/PixiJS com projeto Android Capacitor, controles touch, saves e laboratórios de animação Java/HTML.
+
+[**Baixar APK e projeto na release 1.2.2**](https://github.com/yorimiguel727-eng/Yk/releases/tag/v1.2.2)
 
 ```bash
 npm run setup
 npm start
 ```
 
-Abra **http://localhost:8080/studio/** para acessar tudo. O jogo continua em **http://localhost:8080/**. Requer Node.js 22 ou superior. No Windows, também é possível executar `INICIAR_PROJETO.bat`.
+Abra **http://localhost:8080/studio/** para o projeto completo ou **http://localhost:8080/** para jogar. Requer Node.js 22+. No Windows, execute também `INICIAR_PROJETO.bat`.
 
-## Conteúdo
+## Estrutura
 
-| Caminho | Conteúdo |
+| Pasta | Conteúdo |
 | --- | --- |
-| [hinaria/src](hinaria/src) | Jogo completo, HUD, título, saves, combate, ambientes e correções dos 12 modelos |
-| [hinaria/studio](hinaria/studio/index.html) | Entrada dos quatro laboratórios e galeria de seis cenários |
-| [hinaria/tools/motion-java](hinaria/tools/motion-java/README.md) | Gerador Java 17+, sete modelos e dez clipes por modelo, GLBs e adaptador Three.js |
-| [hinaria/tools/motion-3d](hinaria/tools/motion-3d/README.md) | Fontes do laboratório Three.js com 12 cenas 3D |
-| [hinaria/tools/motion-ui](hinaria/tools/motion-ui/README.md) | Laboratório HTML/SVG com 32 animações |
-| [hinaria/tools/model-review](hinaria/tools/model-review) | Comparativo dos 12 modelos, com fontes e versão histórica para referência |
-| [hinaria/android](hinaria/android) | Projeto Capacitor/Gradle para Android |
-| [hinaria/downloads](hinaria/downloads) | APK debug 1.2.1 e JAR Java prontos |
-| [hinaria/studio/scenery](hinaria/studio/scenery) | Seis capturas de cenários, com Vilarrubra em destaque |
+| `hinaria/src/` | Jogo, renderização, combate, controles, HUD e saves |
+| `hinaria/assets/` | Recursos usados pelo jogo |
+| `hinaria/android/` | Projeto Gradle/Capacitor |
+| `hinaria/studio/` | Quatro laboratórios HTML prontos e seis capturas de cenários |
+| `hinaria/tools/` | Builds, verificações, animações Java e preparação de releases |
+| `hinaria/tests/` | Suíte atual de regressão; scripts antigos em `legacy/` |
+| `hinaria/docs/` | Documentação atual, versões anteriores e evidências QA |
+| `hinaria/references/` | Referências de HUD/título e prévias dos modelos |
+| `hinaria/downloads/` | JAR pronto e destino local do APK compilado |
+| `.github/` | Build contínuo e publicação de anexos verificados |
 
-As correções de espada, escudo, cajado, arco, armadura e contato com o chão já estão no jogo. Os laboratórios mantêm execução independente. O jogo preserva seu animador procedural; o adaptador dos GLBs Java está disponível em `tools/motion-java/examples/`.
+APKs e ZIPs de distribuição ficam nas Releases. As distribuições antigas continuam disponíveis na [release 1.2.0](https://github.com/yorimiguel727-eng/Yk/releases/tag/v1.2.0) e no histórico Git. As cópias HTML duplicadas dos geradores são reconstruídas por `build:studio`.
 
-O laboratório Java conserva o snapshot 1.2.0 usado para criar as animações anteriores. O jogo e o comparativo incluem as correções 1.2.1. O snapshot comprimido, sua procedência e o código do extrator ficam junto do gerador.
+## Mobile
 
-## Build e verificação
+- HUD Canvas2D no touch, mantendo o Pixi/WebGL no desktop e as informações DOM acessíveis.
+- Perfil automático por memória/CPU informadas pelo navegador; aparelhos de orçamento limitado começam com alvo de 30 FPS. Configurações permitem escolher 30 ou 60 FPS.
+- Resolução adaptativa com orçamento de pixels e ajuste após rotação da tela.
+- Geometria estática agrupada por chunk/material, sem fundir juntas, armas, transparências ou partes animadas.
+- Matrizes fixas das peças rígidas preservadas; pivôs e encaixes de equipamentos continuam animados.
+- Leituras de layout dos nomes e do joystick reutilizadas. Mudanças de orientação limpam o toque mantido.
+- APK contém somente o jogo; laboratórios e JAR ficam no projeto completo.
 
-Na raiz deste repositório:
+Medições e limites: [MOBILE_1.2.2.md](hinaria/docs/MOBILE_1.2.2.md). O jogo mantém seu animador procedural; os clipes Java são ferramentas independentes disponíveis no Studio.
 
-```bash
-npm run build                  # www offline, incluindo os laboratórios
-npm run verify                 # regressões + pacote + URLs e downloads
-```
-
-Para reconstruir os clipes e os HTMLs, instale também **JDK 17+** e **Python 3**:
-
-```bash
-npm run build:animations       # compila Java, gera GLBs e publica os quatro HTMLs
-npm --prefix hinaria run test:animations
-```
-
-Se o JDK estiver fora do PATH, defina `HINARIA_JDK` com a pasta do JDK. No Windows, o gerador também pode ser compilado por `hinaria/tools/motion-java/build.bat`. Os scripts de montagem dos HTMLs usam o comando `python3`.
-
-Para os testes visuais:
+## Build
 
 ```bash
-cd hinaria
-npx playwright install chromium
-cd ..
-npm run test:studio
-npm run test:browser -- --offline
+npm run build                  # web completa em hinaria/www
+npm run build:mobile           # pacote web do jogo, sem laboratórios/JAR
+npm run verify                 # regressões, imports, pacote e HTTP
 ```
 
-`HINARIA_CHROMIUM` seleciona o executável dos testes do Studio; `CHROMIUM_PATH` seleciona o navegador dos testes do jogo. Relatórios dos laboratórios são gerados nas respectivas pastas `verification/` e no comparativo em `report.json`.
-
-Para Android, instale **JDK 21**, Android SDK plataforma 35 e Build Tools 35.0.0. Configure `ANDROID_HOME` e `JAVA_HOME` ou abra `hinaria/android` no Android Studio:
+Android exige JDK 21, SDK Platform 35 e Build Tools 35.0.0. Configure `JAVA_HOME` e `ANDROID_HOME`, ou abra `hinaria/android` no Android Studio:
 
 ```bash
 npm run build:android
 ```
 
-O APK atualizado é gravado em `hinaria/downloads/HINARIA_MODELOS_CORRIGIDOS_1.2.1_DEBUG.apk`. Mantém `br.com.hinaria.rpg`, versão 1.2.1, código 3. A instalação como atualização exige o mesmo certificado da versão instalada. Uma compilação em outra máquina usa a chave debug dessa máquina.
+Saída: `hinaria/downloads/HINARIA_MOBILE_1.2.2_DEBUG.apk`, pacote `br.com.hinaria.rpg`, versão 1.2.2, código 4. O build confere todos os recursos do APK contra o manifesto SHA256. Para atualizar uma instalação, o certificado deve coincidir; uma compilação local em outra máquina usa a chave debug dessa máquina.
 
-O workflow [HINARIA - verificar e compilar](.github/workflows/hinaria-build.yml) compila web/Java e Android a partir do código do repositório.
+## Laboratórios e testes visuais
 
-## Uso dos arquivos
+Java exige JDK 17+; reconstrução dos HTMLs exige Python 3 (`python3` no PATH):
 
-O código completo está disponível pelo clone ou por **Code → Download ZIP** do repositório. Com o projeto iniciado, `/studio/` oferece botões de download HTTP do APK, JAR e HTMLs.
+```bash
+npm run build:animations
+npm run build:studio
+cd hinaria
+npx playwright install chromium
+cd ..
+npm run test:studio
+npm run test:mobile
+npm run test:browser -- --offline
+```
 
-Os arquivos `HINARIA_UPGRADE_1.2.0.zip` e `HINARIA_UPGRADE_DEBUG_1.2.0.apk` na raiz são a distribuição histórica. O código atual está em `hinaria/`. Consulte [INTEGRACAO_1.2.1.md](hinaria/INTEGRACAO_1.2.1.md) para a estrutura e os resultados da integração. Não houve teste em aparelho Android físico.
+Execute `build:mobile` antes dos testes do APK e `build` para os testes da distribuição web completa. `CHROMIUM_PATH` seleciona o navegador dos testes do jogo; `HINARIA_CHROMIUM` seleciona o navegador dos laboratórios. Evidências novas ficam em `hinaria/qa-evidence/` e a seleção revisada em `hinaria/docs/qa/1.2.2/`.
+
+O Studio reúne 32 estudos 2D, 12 cenas 3D, sete modelos com dez clipes Java cada e o comparativo dos 12 modelos corrigidos. Vilarrubra permanece como imagem principal da galeria de cenários.
+
+## Publicação
+
+`hinaria/release.json` concentra versão, tag, nome do APK e repositório. Após compilar, verificar e fazer commit:
+
+```bash
+npm run release:prepare
+```
+
+O comando cria `dist/v1.2.2/` com APK, JAR, projeto ZIP do commit, resultados, capturas e hashes. A automação de `.github/workflows/publish-release.yml` publica o ramo de distribuição `releases/v1.2.2`: cria um draft, envia os anexos, baixa e verifica seus hashes e então publica. Tags/releases existentes de outra publicação são preservadas.
+
+O APK distribuído é debug para testes. A verificação gráfica usa Chromium/SwiftShader e toque emulado; não houve teste em telefone Android físico.

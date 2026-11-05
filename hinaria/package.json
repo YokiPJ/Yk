@@ -1,13 +1,13 @@
 {
   "name": "hinaria-v7-android",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "private": true,
   "type": "module",
   "description": "HINÁRIA RPG — título cinematográfico, HUD acessível, pausa e save completo offline",
   "scripts": {
     "build:web": "node tools/build-web.mjs",
-    "android:add": "npm run build:web && npx cap add android",
-    "android:sync": "npm run build:web && npx cap sync android",
+    "android:add": "npm run build:mobile && npx cap add android",
+    "android:sync": "npm run build:mobile && npx cap sync android",
     "android:open": "npm run android:sync && npx cap open android",
     "android:debug": "npm run android:sync && node tools/assemble-debug.mjs",
     "test:package": "node tools/test-package.mjs",
@@ -18,11 +18,14 @@
     "studio": "node server.js --studio",
     "build:studio": "python3 tools/build-studio.py",
     "build:animations": "node tools/build-motion-java.mjs && npm run build:studio",
-    "test:studio": "node tools/test-studio.mjs",
+    "test:studio": "npm run build:studio && node tools/test-studio.mjs",
     "test:integration": "node tools/test-studio-integration.mjs",
     "verify": "npm run test:qa && npm run test:imports && npm run test:package && npm run test:integration",
     "test:animations": "python3 tools/motion-java/tools/verify-data.py && node tools/motion-java/tools/validate-glb.mjs",
-    "test:imports": "node validate_imports.js && node tools/verify-release.mjs"
+    "test:imports": "node tools/check-imports.mjs && node tools/verify-release.mjs",
+    "build:mobile": "node tools/build-web.mjs --game-only",
+    "benchmark:mobile": "node tools/benchmark-mobile.mjs",
+    "test:mobile": "node tools/test-mobile-browser.mjs"
   },
   "dependencies": {
     "@capacitor/app": "^7.1.2",

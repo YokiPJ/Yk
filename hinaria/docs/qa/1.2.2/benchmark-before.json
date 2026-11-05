@@ -1,0 +1,95 @@
+{
+  "status": "PASS",
+  "environment": "Chromium headless / SwiftShader; emulated 844x390 touch device, deterministic random fixture; not a physical phone benchmark",
+  "titleReadyMs": 7924,
+  "device": {
+    "viewport": [
+      844,
+      390
+    ],
+    "dpr": 2.75,
+    "touch": 1,
+    "cores": 4,
+    "memoryGiB": 4
+  },
+  "position": [
+    13,
+    15
+  ],
+  "requestedRatio": 0.6699999999999999,
+  "camera": [
+    21,
+    11,
+    24
+  ],
+  "pixelRatio": 1,
+  "drawingBuffer": [
+    844,
+    390
+  ],
+  "scene": {
+    "objects": 3277,
+    "meshes": 2358,
+    "autoMatrices": 3277,
+    "geometries": 835,
+    "textures": 37
+  },
+  "hud": {
+    "backend": "pixi-webgl"
+  },
+  "graphics": {
+    "mode": "auto",
+    "fps": 0,
+    "fpsVisible": false,
+    "pixelRatio": 1,
+    "contextState": "ready",
+    "measuredFlow": "PAUSED",
+    "frameTiming": {
+      "samples": 1,
+      "meanMs": 529.2,
+      "p50Ms": 529.2,
+      "p95Ms": 529.2,
+      "maxMs": 529.2
+    },
+    "sampleAgeMs": 331
+  },
+  "runs": [
+    {
+      "cpuSubmissionMs": 59.80000000074506,
+      "localMatrixUpdates": 3278,
+      "calls": 814,
+      "triangles": 208652
+    },
+    {
+      "cpuSubmissionMs": 125.30000000074506,
+      "localMatrixUpdates": 3278,
+      "calls": 814,
+      "triangles": 208652
+    },
+    {
+      "cpuSubmissionMs": 35,
+      "localMatrixUpdates": 3278,
+      "calls": 814,
+      "triangles": 208652
+    },
+    {
+      "cpuSubmissionMs": 31.800000000745058,
+      "localMatrixUpdates": 3278,
+      "calls": 814,
+      "triangles": 208652
+    },
+    {
+      "cpuSubmissionMs": 22.400000002235174,
+      "localMatrixUpdates": 3278,
+      "calls": 814,
+      "triangles": 208652
+    },
+    {
+      "cpuSubmissionMs": 37.899999998509884,
+      "localMatrixUpdates": 3278,
+      "calls": 814,
+      "triangles": 208652
+    }
+  ],
+  "errors": []
+}

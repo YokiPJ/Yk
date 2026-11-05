@@ -2,10 +2,13 @@
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import vm from 'node:vm';
+import {deviceRenderProfile,budgetPixelRatio} from '../src/core/renderProfile.js';
 
 const source=path=>readFileSync(new URL('../'+path,import.meta.url),'utf8')
   .replace(/^import .*;\s*$/gm,'').replace(/export (function|const|class) /g,'$1 ');
 function execute(path,context,names){
+  context.deviceRenderProfile=()=>deviceRenderProfile(context.navigator,context.window);
+  context.budgetPixelRatio=budgetPixelRatio;
   vm.createContext(context);vm.runInContext(source(path)+'\nthis.api={'+names.join(',')+'};',context);return context.api;
 }
 function bus(){

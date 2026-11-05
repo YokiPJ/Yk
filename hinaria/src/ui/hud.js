@@ -456,14 +456,19 @@ export function updateWorldUI(dt) {
  * Reuse the vector so this stays inexpensive on phones.
  */
 const projectionPoint = new THREE.Vector3();
-function project(x, y, z) {
+function projectionLayout() {
     const canvas = gameState.renderer?.domElement;
-    const camera = gameState.camera;
-    if (!canvas || !camera) return null;
+    if (!canvas) return null;
     const cr = canvas.getBoundingClientRect();
     const overlay = document.getElementById('ov');
     const or = overlay?.getBoundingClientRect() || { left: 0, top: 0 };
     if (cr.width <= 0 || cr.height <= 0) return null;
+    return {cr,or};
+}
+function project(x, y, z, layout=projectionLayout()) {
+    const camera = gameState.camera;
+    if (!camera || !layout) return null;
+    const {cr,or}=layout;
     projectionPoint.set(x, y, z).project(camera);
     if (!Number.isFinite(projectionPoint.x) || !Number.isFinite(projectionPoint.y) ||
         !Number.isFinite(projectionPoint.z) || projectionPoint.z < -1 || projectionPoint.z > 1) return null;
@@ -474,10 +479,11 @@ function project(x, y, z) {
 
 /** Update floating damage numbers, respecting screen scale and camera visibility. */
 export function updateFloatingText(dt) {
+    const layout=gameState.fl.length?projectionLayout():null;
     for (let i = gameState.fl.length - 1; i >= 0; i--) {
         const f = gameState.fl[i];
         f.t += dt;
-        const pos = project(f.x, 1.2, f.z);
+        const pos = project(f.x, 1.2, f.z,layout);
         f.d.style.display = pos ? '' : 'none';
         if (pos) {
             f.d.style.left = pos[0] + 'px';
@@ -520,10 +526,11 @@ export function updateTags() {
     const overlay = document.getElementById('ov');
     const ow = overlay?.clientWidth || window.innerWidth;
     const oh = overlay?.clientHeight || window.innerHeight;
+    const layout=projectionLayout();
     for (const e of gameState.ents) {
         if (!e.tag) continue;
         const head = getLabelWorldPosition(e);
-        const pos = project(head.x, head.y, head.z);
+        const pos = project(head.x, head.y, head.z,layout);
         const visible = !!pos && pos[0] >= -80 && pos[0] <= ow + 80 && pos[1] >= -30 && pos[1] <= oh + 35;
         e.tag.style.display = visible ? '' : 'none';
         if (!visible) continue;

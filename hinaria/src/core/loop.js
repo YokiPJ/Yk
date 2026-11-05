@@ -17,7 +17,8 @@ import { updateWorldUI, updateFloatingText, updateTags, say, updateHUD as update
 import { CLASSES, POWERS, ARMORS, updateSkillUI } from '../player/player.js';
 import { updateEntityAnimation } from '../player/characterAnimator.js';
 import { equippedWeapon } from '../player/arsenal.js';
-import { tickPerformance } from '../ui/performanceUI.js';
+import { tickPerformance, getFrameLimit } from '../ui/performanceUI.js';
+import { createFramePacer } from './renderProfile.js';
 import { tickDiagnostics } from '../ui/qaDiagnostics.js';
 import { tickLore } from '../lore/loreSystem.js';
 import { updateChunkVisibility } from '../world/chunkVisibility.js';
@@ -37,7 +38,10 @@ export function initLoop() {
 }
 
 let lastLoopError=0;
+const framePacer=createFramePacer();
 function gameLoop(now){
+    const limit=['PAUSED','DIALOGUE','DEAD'].includes(gameState.flow)?Math.min(30,getFrameLimit()):getFrameLimit();
+    if(!framePacer.shouldRender(now,limit)){requestAnimationFrame(gameLoop);return;}
     try { return tickGameFrame(now); }
     catch(error){
         // A single asset/UI error must not permanently stop animation frames.

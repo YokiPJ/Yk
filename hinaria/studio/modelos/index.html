@@ -3954,6 +3954,20 @@ function batchArticulatedModel(root){
      group.add(merged);saved+=objects.length-1;
    }
  }
+ // Joint/socket groups stay live. Rigid mesh pieces within them do not need
+ // their unchanged local matrices rebuilt on every animation frame.
+ const rig=root.userData.r;
+ if(rig){
+   const live=new Set([root,rig.unit,rig.head,rig.armR,rig.armL,rig.tail,rig.cape,...(rig.legs||[]),...(rig.capes||[])]);
+   let frozen=0;
+   root.traverse(object=>{
+     if(!object.isMesh||live.has(object))return;
+     for(let parent=object;parent&&parent!==root;parent=parent.parent)
+       if(parent===rig.weapon||parent===rig.shield)return;
+     object.updateMatrix();object.matrixAutoUpdate=false;frozen++;
+   });
+   root.userData.v2StaticMeshCount=frozen;
+ }
  root.userData.v2BatchedDrawCalls=saved;return root;
 }
 

@@ -20,3 +20,9 @@ __pycache__/
 /hinaria/android/.gradle/
 /hinaria/android/.kotlin/
 /hinaria/android/**/build/
+/hinaria/downloads/*.apk
+/hinaria/tools/model-review/HINARIA_MODELOS_ANTES_DEPOIS.html
+/hinaria/tools/motion-3d/ZERO_MOTION_STUDIO_3D.html
+/hinaria/tools/motion-java/HINARIA_MOTION_JAVA_PREVIEW.html
+/dist/
+/hinaria/tools/model-review/report.json

@@ -10,6 +10,8 @@ import { createHash } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const out = join(root,'www');
+const release=JSON.parse(readFileSync(join(root,'release.json'),'utf8'));
+const gameOnly=process.argv.includes('--game-only');
 const vendor = join(root,'node_modules','three','build','three.module.js');
 if (!existsSync(vendor)) {
   console.error('Three.js local não encontrado. Execute "npm install" antes de "npm run build:web".');
@@ -33,16 +35,18 @@ if (!existsSync(pixiVendor)) {
 html = localizeHTML(html);
 rmSync(out, {recursive:true,force:true});
 mkdirSync(join(out,'vendor'),{recursive:true});
-for (const d of ['src','assets','studio']) cpSync(join(root,d),join(out,d),{recursive:true});
+for (const d of ['src','assets',...(!gameOnly?['studio']:[])]) cpSync(join(root,d),join(out,d),{recursive:true});
 // The packaged app cannot contain its own APK. The full project serves it from
 // downloads/; a standalone www build keeps only the Java tool download.
-mkdirSync(join(out,'downloads'),{recursive:true});
-copyFileSync(join(root,'downloads','HinariaMotion.jar'),join(out,'downloads','HinariaMotion.jar'));
-const studioIndex=join(out,'studio','index.html');
-writeFileSync(studioIndex,readFileSync(studioIndex,'utf8').replace(
-  /<li><a href="\.\.\/downloads\/HINARIA_MODELOS_CORRIGIDOS_1\.2\.1_DEBUG\.apk" download>[^<]+<\/a><\/li>/,
-  '<li>APK Android: disponível na pasta hinaria/downloads do projeto completo.</li>'
-));
+if(!gameOnly){
+  mkdirSync(join(out,'downloads'),{recursive:true});
+  copyFileSync(join(root,'downloads','HinariaMotion.jar'),join(out,'downloads','HinariaMotion.jar'));
+  const studioIndex=join(out,'studio','index.html');
+  writeFileSync(studioIndex,readFileSync(studioIndex,'utf8').replace(
+    `href="../downloads/${release.apk}"`,
+    `href="https://github.com/${release.repository}/releases/download/${release.tag}/${release.apk}"`
+  ));
+}
 copyFileSync(vendor,join(out,'vendor','three.module.js'));
 copyFileSync(animeVendor,join(out,'vendor','anime.es.js'));
 copyFileSync(pixiVendor,join(out,'vendor','pixi.min.mjs'));
@@ -63,6 +67,6 @@ function inventory(dir) {
 inventory(out);
 const fingerprint = createHash('sha256').update(JSON.stringify(manifest)).digest('hex').slice(0,12);
 writeFileSync(join(out,'build-manifest.json'),JSON.stringify(manifest,null,2));
-writeFileSync(join(out,'build-info.json'),JSON.stringify({version:'1.2.1-projeto-integrado',fingerprint,created:new Date().toISOString()},null,2));
+writeFileSync(join(out,'build-info.json'),JSON.stringify({version:release.version,target:gameOnly?'mobile':'full',fingerprint,created:new Date().toISOString()},null,2));
 console.log('HINÁRIA upgrade · '+Object.keys(manifest).length+' arquivos · SHA256 '+fingerprint);
 console.log(`WebView offline: ${out}`);

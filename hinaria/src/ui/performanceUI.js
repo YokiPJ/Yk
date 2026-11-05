@@ -1,5 +1,6 @@
 /** Mobile renderer tuning. Changes only pixel ratio, not collision or world logic. */
 import { gameState } from '../core/gameState.js';
+import { deviceRenderProfile, budgetPixelRatio } from '../core/renderProfile.js';
 import { setPaused } from '../core/gameFlow.js';
 import { setVisualAtmosphereEnabled } from '../vfx/worldAtmosphereV3.js';
 import { unlockGameAudio, setAudioEnabled, setAudioVolume, getAudioPreferences } from '../audio/gameAudio.js';
@@ -7,6 +8,8 @@ const KEY = 'hinaria-v79-quality';
 let atmosphereEnabled = true;
 let mode = 'auto', fpsVisible = false, fps = 0, acc = 0, frames = 0, poorWindows = 0, goodWindows = 0;
 let adaptiveRatio = 1.0, installed = false, contextState = 'ready', measuredFlow = null;
+let frameLimit='auto';
+const deviceProfile=deviceRenderProfile();
 // A bounded ring records actual rendered-frame intervals; snapshots sort at most 240 values.
 const frameIntervals = new Float64Array(240);
 let frameCursor = 0, frameCount = 0, measuredAt = null, contextNotice = null;
@@ -52,17 +55,27 @@ function installContextMonitoring() {
 }
 let panel, fpsTag, qualitySelect, fpsSwitch, soundSwitch, volumeSlider;
 const caps = { low: 0.72, medium: 1.0, high: 1.45 };
-const isMobile = typeof navigator !== 'undefined' && (navigator.maxTouchPoints > 0 || (typeof matchMedia === 'function' && matchMedia('(pointer:coarse)').matches));
+const isMobile = deviceProfile.mobile;
 function loadSettings() {
   try {
     const p = JSON.parse(localStorage.getItem(KEY) || '{}');
     if (['auto','low','medium','high'].includes(p.mode)) mode = p.mode;
     fpsVisible = p.fpsVisible === true;
     atmosphereEnabled = p.atmosphereEnabled !== false;
+    if(['auto','30','60'].includes(p.frameLimit))frameLimit=p.frameLimit;
   } catch { /* local storage optional */ }
 }
-function saveSettings() { try { localStorage.setItem(KEY, JSON.stringify({ mode, fpsVisible, atmosphereEnabled })); } catch {} }
-export function effectivePixelRatio() { return Math.min(window.devicePixelRatio || 1, mode === 'auto' ? adaptiveRatio : caps[mode]); }
+function saveSettings() { try { localStorage.setItem(KEY, JSON.stringify({ mode, fpsVisible, atmosphereEnabled,frameLimit })); } catch {} }
+export function effectivePixelRatio() {
+  const wrap=document.getElementById('wrap');
+  return budgetPixelRatio(mode==='auto'?adaptiveRatio:caps[mode],wrap?.clientWidth||window.innerWidth||1,
+    wrap?.clientHeight||window.innerHeight||1,window.devicePixelRatio||1,deviceProfile);
+}
+export function getFrameLimit(){return frameLimit==='auto'?deviceProfile.targetFPS:Number(frameLimit);}
+export function changeFrameLimit(value){
+  if(!['auto','30','60'].includes(value))return;
+  frameLimit=value;poorWindows=goodWindows=0;resetFrameMeasurement();saveSettings();
+}
 export function applyGraphicsQuality() {
   const r = gameState.renderer;
   if (!r || contextState === 'lost') return;
@@ -75,7 +88,7 @@ export function applyGraphicsQuality() {
 export function changeGraphicsMode(value) {
   if (!['auto','low','medium','high'].includes(value)) return;
   mode = value;
-  if (mode === 'auto') adaptiveRatio = isMobile ? 0.95 : 1.15;
+  if (mode === 'auto') adaptiveRatio = deviceProfile.initialRatio;
   poorWindows = goodWindows = 0;
   saveSettings(); applyGraphicsQuality();
 }
@@ -95,18 +108,19 @@ export function tickPerformance(dt) {
   // Menu rendering is cheaper than gameplay: never tune quality from a paused/title sample.
   if (mode !== 'auto' || measuredFlow !== 'PLAYING') return;
   // Require sustained FPS, avoiding resolution oscillation on a single bad frame.
-  if (fps < 34) { poorWindows++; goodWindows = 0; }
-  else if (fps > 54) { goodWindows++; poorWindows = 0; }
+  const target=getFrameLimit();
+  if (fps < (target<=30?25:34)) { poorWindows++; goodWindows = 0; }
+  else if (fps > (target<=30?28:54)) { goodWindows++; poorWindows = 0; }
   else { poorWindows = goodWindows = 0; }
   if (poorWindows >= 2) { adaptiveRatio = Math.max(0.65, adaptiveRatio - 0.14); poorWindows = 0; applyGraphicsQuality(); }
-  if (goodWindows >= 7) { adaptiveRatio = Math.min(isMobile ? 1.12 : 1.45, adaptiveRatio + 0.08); goodWindows = 0; applyGraphicsQuality(); }
+  if (goodWindows >= 7) { adaptiveRatio = Math.min(deviceProfile.maxRatio, adaptiveRatio + 0.08); goodWindows = 0; applyGraphicsQuality(); }
 }
 export function initPerformanceUI() {
   if (installed) return;
   installed = true;
   installContextMonitoring();
   loadSettings();
-  adaptiveRatio = isMobile ? 0.95 : 1.15;
+  adaptiveRatio = deviceProfile.initialRatio;
   applyGraphicsQuality();
   panel = document.getElementById('perf-panel');
   fpsTag = document.getElementById('fps-tag');
@@ -127,6 +141,8 @@ export function initPerformanceUI() {
   document.getElementById('perf-open').addEventListener('click', () => { unlockGameAudio(); panel.hidden = !panel.hidden; });
   document.getElementById('perf-close').addEventListener('click', () => { panel.hidden = true; });
   qualitySelect.addEventListener('change', e => changeGraphicsMode(e.target.value));
+  const frameSelect=document.getElementById('perf-frame-limit');
+  if(frameSelect){frameSelect.value=frameLimit;frameSelect.addEventListener('change',e=>changeFrameLimit(e.target.value));}
   fpsSwitch.addEventListener('change', e => { fpsVisible = e.target.checked; fpsTag.style.display = fpsVisible ? 'block' : 'none'; saveSettings(); });
   soundSwitch.addEventListener('change', e => { unlockGameAudio(); setAudioEnabled(e.target.checked); });
   volumeSlider.addEventListener('input', e => { unlockGameAudio(); setAudioVolume(Number(e.target.value) / 100); });
@@ -137,6 +153,7 @@ export function initPerformanceUI() {
 import { pauseGameAudio as pauseMusic, resumeGameAudio as resumeMusic } from '../audio/gameAudio.js';
 export function getGraphicsDiagnostics() {
   return {mode,fps,fpsVisible,pixelRatio:gameState.renderer?.getPixelRatio()||0,
+    frameLimit:getFrameLimit(),deviceProfile,hud:window.HINARIA_HUD_PIXI?.diagnostics?.()||null,
     contextState,measuredFlow,frameTiming:frameStatistics(),
     sampleAgeMs:measuredAt===null?null:Math.max(0,Math.round(performance.now()-measuredAt))};
 }

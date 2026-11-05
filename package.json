@@ -1,6 +1,6 @@
 {
   "name": "hinaria-project",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "private": true,
   "description": "Projeto HINÁRIA completo: jogo, Android, modelos e laboratórios de animação",
   "scripts": {
@@ -13,7 +13,10 @@
     "build:android": "npm --prefix hinaria run android:debug",
     "verify": "npm --prefix hinaria run verify",
     "test:studio": "npm --prefix hinaria run test:studio",
-    "test:browser": "npm --prefix hinaria run test:browser --"
+    "test:browser": "npm --prefix hinaria run test:browser --",
+    "build:mobile": "npm --prefix hinaria run build:mobile",
+    "release:prepare": "python3 hinaria/tools/prepare-release.py",
+    "test:mobile": "npm --prefix hinaria run test:mobile"
   },
   "engines": {
     "node": ">=22"

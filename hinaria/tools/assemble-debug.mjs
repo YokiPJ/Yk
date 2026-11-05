@@ -1,5 +1,5 @@
 import { spawnSync } from 'node:child_process';
-import { existsSync, copyFileSync, mkdirSync } from 'node:fs';
+import { existsSync, copyFileSync, mkdirSync, readFileSync } from 'node:fs';
 import { resolve, join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { javaTrustStore } from './java-trust.mjs';
@@ -27,7 +27,7 @@ if (proxyValue) {
   if (trustStore && existsSync(trustStore)) args.push(`-Djavax.net.ssl.trustStore=${trustStore}`);
 }
 args.push('assembleDebug');
-const r=spawnSync(gradlew,args,{cwd:android,stdio:'inherit',shell:win});
+const r=spawnSync(win?'gradlew.bat':gradlew,args,{cwd:android,stdio:'inherit',shell:win});
 if (r.error) throw r.error;
 if (r.status!==0) process.exit(r.status||1);
 const apk=join(android,'app','build','outputs','apk','debug','app-debug.apk');
@@ -37,19 +37,17 @@ const build=verifyApk(apk,join(root,'www'));
 const target=join(root,'APK_GERADO','HINARIA_V7_DEBUG.apk');
 mkdirSync(dirname(target),{recursive:true});
 copyFileSync(apk,target);
-const marked=join(root,'APK_GERADO','HINARIA_1_1_0_COMBATE_MANUAL_VFX.apk');
-copyFileSync(apk,marked);
 const upgraded=join(root,'APK_GERADO','HINARIA_UPGRADE_DEBUG.apk');
 copyFileSync(apk,upgraded);
 const downloads=join(root,'downloads');
 mkdirSync(downloads,{recursive:true});
-const integrated=join(downloads,'HINARIA_MODELOS_CORRIGIDOS_1.2.1_DEBUG.apk');
+const release=JSON.parse(readFileSync(join(root,'release.json'),'utf8'));
+const integrated=join(downloads,release.apk);
 copyFileSync(apk,integrated);
 const checksums=spawnSync(process.execPath,[join(root,'tools','refresh-downloads.mjs')],{cwd:root,stdio:'inherit'});
 if(checksums.error) throw checksums.error;
 if(checksums.status!==0) process.exit(checksums.status||1);
 console.log('APK integrado ao projeto: '+integrated);
 console.log('HINÁRIA upgrade APK: '+upgraded+' · fingerprint '+build.fingerprint);
-console.log('APK novo, identificavel: '+marked);
 console.log('Versão web verificada: '+build.version);
 console.log('APK criado em: '+target);

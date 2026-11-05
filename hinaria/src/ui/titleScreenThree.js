@@ -63,7 +63,7 @@ export async function initTitleScreenThree() {
   const cover = document.getElementById('cover');
   if (!cover || cover.hidden) return null;
   if (active) return active;
-  let stopped = false, raf = 0, renderer, quad, points, resizeObserver;
+  let stopped = false, raf = 0, renderer, quad, points, resizeObserver,dirty=true;
   const textures = new Set();
   const canvas = document.createElement('canvas');
   canvas.id = 'title-three'; canvas.setAttribute('aria-hidden', 'true');
@@ -123,18 +123,22 @@ export async function initTitleScreenThree() {
   geometry.setAttribute('aSeed',new THREE.BufferAttribute(seeds,1));
   points = new THREE.Points(geometry,new THREE.ShaderMaterial({ uniforms:{uTime:u.uTime,uPx:{value:renderer.getPixelRatio()}}, vertexShader:P_VERT,fragmentShader:P_FRAG,transparent:true,depthTest:false,depthWrite:false,blending:THREE.AdditiveBlending }));
   points.frustumCulled = false; scene.add(points);
-  const resize = () => { if(stopped)return;const w=Math.max(1,cover.clientWidth),h=Math.max(1,cover.clientHeight);renderer.setSize(w,h,false);u.uAspect.value=w/h; };
+  const resize = () => { if(stopped)return;const w=Math.max(1,cover.clientWidth),h=Math.max(1,cover.clientHeight);renderer.setSize(w,h,false);u.uAspect.value=w/h;dirty=true; };
   resizeObserver = new ResizeObserver(resize); resizeObserver.observe(cover); resize();
   cover.addEventListener('pointermove',onMove,{passive:true}); cover.classList.add('t3-on');
   let last=performance.now(), elapsed=0, age=0, current=0, transition=-1;
+  let lastDraw=-Infinity,previousReduced=null;
+  const mobile=matchMedia('(pointer:coarse)').matches;
   const frame = now => {
     if (stopped) return;
     if (!cover.isConnected || cover.hidden) { dispose(); return; }
     raf=requestAnimationFrame(frame);
     if (document.hidden) { last=now; return; }
-    const dt=Math.max(0,(now-last)/1000);last=now;
     const preference=document.documentElement.dataset.reduceMotion;
     const reduce=preference===undefined?motionQuery.matches:preference==='true';
+    if(reduce&&previousReduced===true&&!dirty){last=now;return;}
+    if(!reduce&&mobile&&now-lastDraw<1000/30-.3)return;
+    const dt=Math.max(0,(now-last)/1000);last=now;lastDraw=now;previousReduced=reduce;dirty=false;
     if (!reduce) { elapsed+=dt;age+=dt; }
     u.uTime.value=elapsed;u.uFade.value=reduce?1:Math.min(1,u.uFade.value+dt/1.4);
     u.uPointer.value.lerp(reduce?origin:target,1-Math.exp(-dt*3));

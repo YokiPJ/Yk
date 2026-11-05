@@ -32,7 +32,7 @@ function snapshot(){
   const sceneMeshes=gameState.scene?.children?.length||0;
   const audio=getAudioDiagnostics(),graphics=getGraphicsDiagnostics();
   return {
-    version:'1.1.0-upgrade-QA',worldSize:gameState.W,flow:gameState.flow||null,
+    version:'1.2.2-mobile-QA',worldSize:gameState.W,flow:gameState.flow||null,
     mapPosition:P?[rounded(P.x),rounded(P.mesh?.position?.y),rounded(P.z)]:null,
     class:P?.cls||null,zone:gameState.insideHouse?'interior':'world',
     fps:graphics.fps,graphics,device:deviceSnapshot(),heap:heapSnapshot(),

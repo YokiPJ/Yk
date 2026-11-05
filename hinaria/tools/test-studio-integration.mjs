@@ -6,6 +6,8 @@ import { once } from 'node:events';
 import { fileURLToPath } from 'node:url';
 import { createHash } from 'node:crypto';
 const root = fileURLToPath(new URL('../', import.meta.url));
+const release=JSON.parse(await readFile(root+'release.json','utf8'));
+const releaseURL=`https://github.com/${release.repository}/releases/download/${release.tag}/${release.apk}`;
 const hash = data => createHash('sha256').update(data).digest('hex');
 async function server(offline) {
   const child = spawn(process.execPath, ['server.js', ...(offline ? ['--offline'] : []), '--studio'], {
@@ -28,6 +30,15 @@ async function server(offline) {
 for (const offline of [false, true]) {
   const { child, origin } = await server(offline);
   try {
+    const build=JSON.parse(await readFile(root+'www/build-info.json','utf8'));
+    if(offline&&build.target==='mobile'){
+      assert.equal((await fetch(origin+'/')).status,200);
+      assert.equal((await fetch(origin+'/src/main.js')).status,200);
+      assert.equal((await fetch(origin+'/studio/')).status,404);
+      assert.equal((await fetch(origin+'/downloads/HinariaMotion.jar')).status,404);
+      console.log('PASS pacote mobile: jogo offline; laboratórios e JAR fora do APK.');
+      continue;
+    }
     const response = await fetch(origin + '/studio/');
     assert.equal(response.status, 200);
     const html = await response.text();
@@ -35,6 +46,7 @@ for (const offline of [false, true]) {
     const links = [...html.matchAll(/(?:href|src)="([^"#]+)"/g)].map(match => match[1]);
     for (const link of links) {
       const url = new URL(link, origin + '/studio/');
+      if(url.href===releaseURL)continue;
       assert.equal(url.origin, origin);
       const head = await fetch(url, { method: 'HEAD' });
       assert.equal(head.status, 200, link);
@@ -52,10 +64,12 @@ for (const offline of [false, true]) {
     assert.match(jar.headers.get('content-disposition'), /^attachment;/);
     assert.equal(hash(Buffer.from(await jar.arrayBuffer())), hash(await readFile(root + 'downloads/HinariaMotion.jar')));
     if (!offline) {
-      const apk = await fetch(origin + '/downloads/HINARIA_MODELOS_CORRIGIDOS_1.2.1_DEBUG.apk');
-      assert.equal(apk.status, 200);
-      assert.match(apk.headers.get('content-disposition'), /^attachment;/);
-      assert.equal(hash(Buffer.from(await apk.arrayBuffer())), hash(await readFile(root + 'downloads/HINARIA_MODELOS_CORRIGIDOS_1.2.1_DEBUG.apk')));
+      const apk = await fetch(origin + '/downloads/'+release.apk,{redirect:'manual'});
+      if(apk.status===303)assert.equal(apk.headers.get('location'),releaseURL);
+      else{
+        assert.equal(apk.status,200);assert.match(apk.headers.get('content-disposition'),/^attachment;/);
+        assert.equal(hash(Buffer.from(await apk.arrayBuffer())),hash(await readFile(root+'downloads/'+release.apk)));
+      }
     }
     assert.equal((await fetch(origin + '/studio', { redirect: 'manual' })).status, 308);
     assert.equal((await fetch(origin + '/.git/config')).status, 403);

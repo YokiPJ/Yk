@@ -7,6 +7,7 @@ import { localizeHTML, webDependencies } from './tools/web-dependencies.mjs';
 const project = dirname(fileURLToPath(import.meta.url));
 const offline = process.argv.includes('--offline');
 const root = offline ? resolve(project, 'www') : project;
+const release=JSON.parse(await readFile(resolve(project,'release.json'),'utf8'));
 const port = Number(process.env.PORT || 8080);
 const mime = { '.html':'text/html; charset=utf-8', '.js':'application/javascript; charset=utf-8',
   '.mjs':'application/javascript; charset=utf-8', '.css':'text/css; charset=utf-8', '.json':'application/json',
@@ -33,7 +34,14 @@ const server = http.createServer(async (req, res) => {
       if (!dependency) { res.writeHead(404); res.end('Not Found'); return; }
       file = resolve(project, 'node_modules', dependency);
     }
-    if ((await stat(file)).isDirectory()) {
+    let info;
+    try{info=await stat(file);}catch(error){
+      if(!offline&&error.code==='ENOENT'&&pathname===`/downloads/${release.apk}`){
+        res.writeHead(303,{Location:`https://github.com/${release.repository}/releases/download/${release.tag}/${release.apk}`});res.end();return;
+      }
+      throw error;
+    }
+    if (info.isDirectory()) {
       if (!pathname.endsWith('/')) { res.writeHead(308, { Location:encodeURI(pathname) + '/' }); res.end(); return; }
       file = resolve(file, 'index.html');
     }

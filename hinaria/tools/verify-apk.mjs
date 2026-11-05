@@ -19,6 +19,8 @@ export function verifyApk(apkPath, webDirectory) {
   const packed = JSON.parse(decoder.decode(entry('build-info.json')));
   assert.equal(packed.version, expected.version, 'APK desatualizado: versão web diferente');
   assert.equal(packed.fingerprint, expected.fingerprint, 'APK desatualizado: fingerprint web diferente');
+  assert.equal(packed.target,'mobile','O APK precisa usar a build mobile, sem laboratórios');
+  assert.ok(!Object.keys(manifest).some(name=>name.startsWith('studio/')||name.endsWith('.jar')),'Ferramentas de desenvolvimento não devem entrar no APK');
   assert.deepEqual(JSON.parse(decoder.decode(entry('build-manifest.json'))), manifest, 'Manifesto diferente no APK');
   for (const [name, digest] of Object.entries(manifest)) {
     assert.equal(createHash('sha256').update(entry(name)).digest('hex'), digest, 'Conteúdo diferente no APK: ' + name);
@@ -29,5 +31,6 @@ export function verifyApk(apkPath, webDirectory) {
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   const root = fileURLToPath(new URL('../', import.meta.url));
-  verifyApk(process.argv[2] || join(root, 'downloads/HINARIA_MODELOS_CORRIGIDOS_1.2.1_DEBUG.apk'), join(root, 'www'));
+  const release=JSON.parse(readFileSync(join(root,'release.json'),'utf8'));
+  verifyApk(process.argv[2] || join(root, 'downloads',release.apk), join(root, 'www'));
 }

@@ -30,6 +30,7 @@ let jid = null;
 let jx = 0;
 let jz = 0;
 let cvs = null; // Initialized by initControls; shared by pointer handlers
+let joystickRect=null;
 
 function gameplayInputAllowed() {
     return (!gameState.flow || gameState.flow === 'PLAYING') && !gameState.pauseRequested &&
@@ -39,7 +40,7 @@ function gameplayInputAllowed() {
 function jset(e) {
     // Magnitude must be computed BEFORE applying the deadzone. The old code
     // referenced `f` inside its own initializer and threw on every touch.
-    const r = joy.getBoundingClientRect();
+    const r = joystickRect||(joystickRect=joy.getBoundingClientRect());
     const radius = Math.max(1, Math.min(r.width, r.height) / 2);
     const dxRaw = e.clientX - (r.left + r.width / 2);
     const dyRaw = e.clientY - (r.top + r.height / 2);
@@ -57,6 +58,7 @@ function jset(e) {
     gameState.jz = jz;
 }
 function jreset() {
+    joystickRect=null;
     jid = null;
     jx = jz = 0;
     gameState.jx = gameState.jz = 0;
@@ -69,6 +71,7 @@ export function initControls() {
     window.addEventListener('keydown', onKeyDown);
     window.addEventListener('keyup', onKeyUp);
     window.addEventListener('blur', resetInput);
+    window.addEventListener('resize',resetInput);
     window.addEventListener('hinaria:reset-input', resetInput);
     
     // Virtual joystick

@@ -51,7 +51,7 @@ function parseExports(content) {
     return exports;
 }
 
-const srcDir = path.join(__dirname, 'src');
+const srcDir = path.join(__dirname, '..', '..', 'src');
 const files = [];
 
 function walk(dir) {

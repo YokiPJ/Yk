@@ -1,0 +1,21 @@
+name: Publicar release verificada HINARIA
+on:
+  push:
+    branches: ['releases/v*']
+    paths: ['release-manifest.json']
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: hinaria-release-${{ github.ref_name }}
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Conferir, publicar e baixar os anexos para verificar SHA256
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 .github/scripts/publish-release.py

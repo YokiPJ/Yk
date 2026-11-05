@@ -1,6 +1,8 @@
 /** Transparent, disposable Pixi visuals. The DOM owns every label, value and input. */
 import { gameState } from '../core/gameState.js';
 import { getHudVisualState, updateHudTelemetry } from './hud.js';
+import { deviceRenderProfile } from '../core/renderProfile.js';
+import { createCanvasHudBackend } from './hudCanvasBackend.js';
 
 let initializing = null;
 export function initHudPixiV2() {
@@ -15,16 +17,21 @@ async function createHud() {
   if (!hud || !document.body.classList.contains('ui-v1')) return null;
   let app;
   try {
-    const { Application, Graphics } = await import('pixi.js');
-    app = new Application();
-    await app.init({ backgroundAlpha: 0, antialias: false, autoDensity: true,
-      resolution: Math.min(window.devicePixelRatio || 1, 1.5), resizeTo: window, preference: 'webgl' });
+    const mobile=deviceRenderProfile().mobile;
+    let graphics,backend;
+    if(mobile){const result=createCanvasHudBackend();app=result.app;graphics=result.graphics;backend=result.backend;}
+    else {
+      const { Application, Graphics } = await import('pixi.js');
+      app = new Application();
+      await app.init({ backgroundAlpha: 0, antialias: false, autoDensity: true,
+        resolution: Math.min(window.devicePixelRatio || 1, 1.5), resizeTo: window, preference: 'webgl' });
+      graphics=new Graphics();app.stage.addChild(graphics);backend='pixi-webgl';
+    }
     const canvas = app.canvas;
     canvas.id = 'hud-pixi'; canvas.setAttribute('aria-hidden', 'true');
     document.body.append(canvas);
     const danger = document.createElement('div');
     danger.id = 'hud-danger'; danger.setAttribute('aria-hidden', 'true'); document.body.append(danger);
-    const graphics = new Graphics(); app.stage.addChild(graphics);
     const tracks = ['hud-health-track', 'hud-mana-track', 'hud-xp-track'].map(id => document.getElementById(id));
     const buttons = ['s0', 's1', 's2', 's4'].map(id => document.getElementById(id));
     const meterRects = tracks.map(() => ({ x: 0, y: 0, w: 0, h: 0 }));
@@ -147,7 +154,8 @@ async function createHud() {
     app.ticker.maxFPS = 30; app.ticker.add(frame);
     updateHudTelemetry(true); refreshLayout();
     document.body.classList.add('hud-pixi');
-    const api = { destroy, refresh: invalidate, version: '3-dom-fallback' };
+    const api = { destroy, refresh: invalidate, version: '4-mobile-canvas',
+      diagnostics:()=>({backend,width:canvas.width,height:canvas.height,maxFPS:app.ticker.maxFPS}) };
     window.HINARIA_HUD_PIXI = api;
     visibility(); return api;
   } catch (error) {
