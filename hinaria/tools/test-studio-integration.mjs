@@ -48,7 +48,15 @@ for (const offline of [false, true]) {
       const url = new URL(link, origin + '/studio/');
       if(url.href===releaseURL)continue;
       assert.equal(url.origin, origin);
-      const head = await fetch(url, { method: 'HEAD' });
+      const head = await fetch(url, { method: 'HEAD', redirect: 'manual' });
+      // Enquanto o APK não estiver presente em downloads/, o servidor
+      // oferece um redirecionamento para o asset da Release no GitHub.
+      // Validamos o destino sem depender de uma Release já publicada.
+      if (url.pathname === `/downloads/${release.apk}` && head.status === 303) {
+        assert.equal(head.headers.get('location'), releaseURL, link);
+        assert.equal(await head.text(), '', 'HEAD must not send a body');
+        continue;
+      }
       assert.equal(head.status, 200, link);
       assert.ok(Number(head.headers.get('content-length')) > 0, link);
       assert.equal(await head.text(), '', 'HEAD must not send a body');
