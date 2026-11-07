@@ -1,0 +1,70 @@
+{
+  "status": "PASS",
+  "version": "1.3.0-beta.2",
+  "prerelease": true,
+  "verifiedAtUTC": "2026-11-07T16:40:23.096159+00:00",
+  "regressionTests": {
+    "passed": 54,
+    "failed": 0,
+    "report": "regression-tests.txt"
+  },
+  "linkedGameModules": 80,
+  "sourceStartup": {
+    "passed": 4,
+    "failed": 0,
+    "withoutNodeModules": true,
+    "cases": [
+      "full ZIP through static root",
+      "full ZIP through Node server",
+      "patch over Beta1 through static root",
+      "partial dependencies produce actionable error before serving"
+    ],
+    "report": "source-startup.json"
+  },
+  "bundleBrowser": {
+    "passed": 2,
+    "forcedWebGL1": true,
+    "report": "bundle-browser.json"
+  },
+  "bootFaultInjection": {
+    "passed": 7,
+    "failed": 0,
+    "report": "boot-browser.json"
+  },
+  "releasePipeline": {
+    "passed": 7,
+    "failed": 0
+  },
+  "apk": {
+    "file": "HINARIA_1.3.0_BETA2_DEBUG.apk",
+    "bytes": 14924761,
+    "sha256": "1f5c681fef6811fc4b0c7b72fbf4444cbe02b1c928cfa1232d3a0d08c1fa7723",
+    "package": "br.com.hinaria.rpg",
+    "versionName": "1.3.0-beta.2",
+    "versionCode": 7,
+    "certificateSHA256": "9cdb501eedf49aad4fc660d4571a98f6b0bbdb718e702c3c725e0aa0f47750af",
+    "webBuild": {
+      "version": "1.3.0-beta.2",
+      "target": "mobile",
+      "compatibility": {
+        "format": "iife",
+        "target": "chrome80",
+        "imports": "bundled",
+        "bytes": 1995128
+      },
+      "fingerprint": "727aa72710dc",
+      "created": "2026-11-07T16:32:52.857Z"
+    },
+    "webAssetsVerified": 210
+  },
+  "inheritedGameplayValidation": {
+    "version": "1.3.0-beta.1",
+    "details": "Part II, procedural generator, combat and mobile rendering algorithms are unchanged; see previous version QA. Portrait URLs now also work under /hinaria/.",
+    "report": "../1.3.0-beta.1/results.json"
+  },
+  "limitations": [
+    "Browser tests ran on Linux Chromium/SwiftShader",
+    "Windows BAT was not executed on Windows",
+    "No physical Android phone execution"
+  ]
+}

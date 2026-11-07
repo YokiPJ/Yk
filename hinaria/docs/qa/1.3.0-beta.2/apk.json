@@ -1,0 +1,22 @@
+{
+  "file": "HINARIA_1.3.0_BETA2_DEBUG.apk",
+  "bytes": 14924761,
+  "sha256": "1f5c681fef6811fc4b0c7b72fbf4444cbe02b1c928cfa1232d3a0d08c1fa7723",
+  "package": "br.com.hinaria.rpg",
+  "versionName": "1.3.0-beta.2",
+  "versionCode": 7,
+  "certificateSHA256": "9cdb501eedf49aad4fc660d4571a98f6b0bbdb718e702c3c725e0aa0f47750af",
+  "webBuild": {
+    "version": "1.3.0-beta.2",
+    "target": "mobile",
+    "compatibility": {
+      "format": "iife",
+      "target": "chrome80",
+      "imports": "bundled",
+      "bytes": 1995128
+    },
+    "fingerprint": "727aa72710dc",
+    "created": "2026-11-07T16:32:52.857Z"
+  },
+  "webAssetsVerified": 210
+}

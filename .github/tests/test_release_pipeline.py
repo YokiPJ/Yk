@@ -16,6 +16,7 @@ import runpy
 import shutil
 import sys
 import unittest
+import zipfile
 
 ROOT = Path(__file__).resolve().parents[2]
 SCRIPTS = ROOT / '.github/scripts'
@@ -209,7 +210,12 @@ class PreparationTests(unittest.TestCase):
                 output = SOURCE if args == ('git', 'rev-parse', 'HEAD') else ''
                 if args[:2] == ('git', 'archive'):
                     self.assertEqual(args[-1], SOURCE, 'source ZIP uses exact committed tree')
-                    Path(next(arg[len('--output='):] for arg in args if arg.startswith('--output='))).write_bytes(b'fixture archive')
+                    archive=Path(next(arg[len('--output='):] for arg in args if arg.startswith('--output=')))
+                    with zipfile.ZipFile(archive,'w') as zipped:zipped.writestr('index.html','fixture entry')
+                if args[0]=='node' and str(args[1]).endswith('prepare-runtime.mjs'):
+                    runtime=Path(args[2]);runtime.mkdir(exist_ok=True)
+                    (runtime/'runtime-manifest.json').write_text('{"fixture":true}')
+                    (runtime/'three.module.js').write_text('export const fixture=true;')
                 return SimpleNamespace(stdout=output, returncode=0)
             with patch('subprocess.run', command), patch.object(sys, 'argv', [str(preparer)]), redirect_stdout(io.StringIO()):
                 runpy.run_path(str(preparer), run_name='__main__')
@@ -219,6 +225,9 @@ class PreparationTests(unittest.TestCase):
             self.assertEqual(manifest['source_commit'], SOURCE)
             self.assertEqual((target / '.github/scripts/release_policy.py').read_bytes(), (SCRIPTS / 'release_policy.py').read_bytes())
             self.assertIn(f'<!-- hinaria-release:v1.3.0-beta.1:{SOURCE} -->', (target / 'RELEASE_NOTES.md').read_text())
+            with zipfile.ZipFile(target/'HINARIA_PROJETO_1.3.0-beta.1.zip') as zipped:
+                self.assertIn('hinaria/vendor/three.module.js',zipped.namelist())
+                self.assertIn('hinaria/vendor/runtime-manifest.json',zipped.namelist())
             for asset in manifest['assets']:
                 data = (target / asset['name']).read_bytes()
                 self.assertEqual(asset['bytes'], len(data))

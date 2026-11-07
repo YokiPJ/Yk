@@ -1,0 +1,324 @@
+{
+  "status": "PASS",
+  "browser": "155.0.8059.79",
+  "environment": "Current Chromium/SwiftShader with touch and WebGL1 fault injection; not a physical Android or Chrome 80 execution test",
+  "build": {
+    "version": "1.3.0-beta.2",
+    "target": "mobile",
+    "compatibility": {
+      "format": "iife",
+      "target": "chrome80",
+      "imports": "bundled",
+      "bytes": 1995128
+    },
+    "fingerprint": "727aa72710dc",
+    "created": "2026-11-07T16:32:52.857Z"
+  },
+  "checks": [
+    "Classic IIFE entrypoint without import maps or module scripts",
+    "Runtime rejects every script except game.js",
+    "Default WebGL and forced WebGL1 boot/title/character creation/play",
+    "One game renderer and CSS mobile title",
+    "Automatic 30 FPS mobile profile",
+    "16 original local SFX files HTTP 200",
+    "No external runtime request or unhandled JavaScript error"
+  ],
+  "results": [
+    {
+      "name": "default-webgl",
+      "status": "PASS",
+      "readyMs": 7658,
+      "webglVersion": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+      "titleBackend": "css",
+      "gameCanvases": 1,
+      "frameLimit": 30,
+      "boot": {
+        "state": "ready",
+        "phase": "shaders",
+        "startedAt": 323.29999999981374,
+        "phases": [
+          {
+            "id": "modules",
+            "startedAt": 424.40000000037253,
+            "status": "ready",
+            "durationMs": 195.2
+          },
+          {
+            "id": "renderer",
+            "startedAt": 632.5,
+            "status": "ready",
+            "durationMs": 1208.1
+          },
+          {
+            "id": "world",
+            "startedAt": 1854.7000000001863,
+            "status": "ready",
+            "durationMs": 86.8
+          },
+          {
+            "id": "world-meshes",
+            "startedAt": 1943.2999999998137,
+            "status": "ready",
+            "durationMs": 890
+          },
+          {
+            "id": "world-batches",
+            "startedAt": 2836,
+            "status": "ready",
+            "durationMs": 62.5
+          },
+          {
+            "id": "characters",
+            "startedAt": 2900.5,
+            "status": "ready",
+            "durationMs": 85.9
+          },
+          {
+            "id": "enemies",
+            "startedAt": 3086.9000000003725,
+            "status": "ready",
+            "durationMs": 2142.4
+          },
+          {
+            "id": "interface",
+            "startedAt": 5332.4000000003725,
+            "status": "ready",
+            "durationMs": 701.7
+          },
+          {
+            "id": "shaders",
+            "startedAt": 6043.5,
+            "status": "ready",
+            "durationMs": 1206.5
+          }
+        ],
+        "readyAt": 7279.799999999814,
+        "durationMs": 6956.5
+      },
+      "legacyCompatibility": {
+        "replaceChildrenRemoved": false,
+        "ignoredInsetDeclarations": 0
+      },
+      "scripts": [
+        "/game.js"
+      ],
+      "sfx": [
+        {
+          "path": "/assets/audio/sfx/kn_0.wav",
+          "status": 200
+        },
+        {
+          "path": "/assets/audio/sfx/kn_1.wav",
+          "status": 200
+        },
+        {
+          "path": "/assets/audio/sfx/kn_3.wav",
+          "status": 200
+        },
+        {
+          "path": "/assets/audio/sfx/pa_0.wav",
+          "status": 200
+        },
+        {
+          "path": "/assets/audio/sfx/kn_2.wav",
+          "status": 200
+        },
+        {
+          "path": "/assets/audio/sfx/pa_2.wav",
+          "status": 200
+        },
+        {
+          "path": "/assets/audio/sfx/pa_1.wav",
+          "status": 200
+        },
+        {
+          "path": "/assets/audio/sfx/pa_3.wav",
+          "status": 200
+        },
+        {
+          "path": "/assets/audio/sfx/so_0.wav",
+          "status": 200
+        },
+        {
+          "path": "/assets/audio/sfx/so_1.wav",
+          "status": 200
+        },
+        {
+          "path": "/assets/audio/sfx/so_2.wav",
+          "status": 200
+        },
+        {
+          "path": "/assets/audio/sfx/so_3.wav",
+          "status": 200
+        },
+        {
+          "path": "/assets/audio/sfx/dr_0.wav",
+          "status": 200
+        },
+        {
+          "path": "/assets/audio/sfx/dr_1.wav",
+          "status": 200
+        },
+        {
+          "path": "/assets/audio/sfx/dr_2.wav",
+          "status": 200
+        },
+        {
+          "path": "/assets/audio/sfx/dr_3.wav",
+          "status": 200
+        }
+      ],
+      "errors": [],
+      "external": [],
+      "blocked": []
+    },
+    {
+      "name": "forced-webgl1",
+      "status": "PASS",
+      "readyMs": 4596,
+      "webglVersion": "WebGL 1.0 (OpenGL ES 2.0 Chromium)",
+      "titleBackend": "css",
+      "gameCanvases": 1,
+      "frameLimit": 30,
+      "boot": {
+        "state": "ready",
+        "phase": "shaders",
+        "startedAt": 422,
+        "phases": [
+          {
+            "id": "modules",
+            "startedAt": 474.29999999981374,
+            "status": "ready",
+            "durationMs": 190.6
+          },
+          {
+            "id": "renderer",
+            "startedAt": 676.3999999994412,
+            "status": "ready",
+            "durationMs": 81.4
+          },
+          {
+            "id": "world",
+            "startedAt": 768.3999999994412,
+            "status": "ready",
+            "durationMs": 43
+          },
+          {
+            "id": "world-meshes",
+            "startedAt": 814.5999999996275,
+            "status": "ready",
+            "durationMs": 2190.1
+          },
+          {
+            "id": "world-batches",
+            "startedAt": 3009.5,
+            "status": "ready",
+            "durationMs": 48.4
+          },
+          {
+            "id": "characters",
+            "startedAt": 3061.2000000001863,
+            "status": "ready",
+            "durationMs": 73.5
+          },
+          {
+            "id": "enemies",
+            "startedAt": 3136.5999999996275,
+            "status": "ready",
+            "durationMs": 455.2
+          },
+          {
+            "id": "interface",
+            "startedAt": 3609.5,
+            "status": "ready",
+            "durationMs": 70.3
+          },
+          {
+            "id": "shaders",
+            "startedAt": 3683.5,
+            "status": "ready",
+            "durationMs": 494.4
+          }
+        ],
+        "readyAt": 4196.200000000186,
+        "durationMs": 3774.2
+      },
+      "legacyCompatibility": {
+        "replaceChildrenRemoved": true,
+        "ignoredInsetDeclarations": 20
+      },
+      "scripts": [
+        "/game.js"
+      ],
+      "sfx": [
+        {
+          "path": "/assets/audio/sfx/kn_0.wav",
+          "status": 200
+        },
+        {
+          "path": "/assets/audio/sfx/kn_1.wav",
+          "status": 200
+        },
+        {
+          "path": "/assets/audio/sfx/kn_2.wav",
+          "status": 200
+        },
+        {
+          "path": "/assets/audio/sfx/kn_3.wav",
+          "status": 200
+        },
+        {
+          "path": "/assets/audio/sfx/pa_0.wav",
+          "status": 200
+        },
+        {
+          "path": "/assets/audio/sfx/pa_1.wav",
+          "status": 200
+        },
+        {
+          "path": "/assets/audio/sfx/pa_2.wav",
+          "status": 200
+        },
+        {
+          "path": "/assets/audio/sfx/pa_3.wav",
+          "status": 200
+        },
+        {
+          "path": "/assets/audio/sfx/so_0.wav",
+          "status": 200
+        },
+        {
+          "path": "/assets/audio/sfx/so_1.wav",
+          "status": 200
+        },
+        {
+          "path": "/assets/audio/sfx/so_2.wav",
+          "status": 200
+        },
+        {
+          "path": "/assets/audio/sfx/so_3.wav",
+          "status": 200
+        },
+        {
+          "path": "/assets/audio/sfx/dr_0.wav",
+          "status": 200
+        },
+        {
+          "path": "/assets/audio/sfx/dr_1.wav",
+          "status": 200
+        },
+        {
+          "path": "/assets/audio/sfx/dr_2.wav",
+          "status": 200
+        },
+        {
+          "path": "/assets/audio/sfx/dr_3.wav",
+          "status": 200
+        }
+      ],
+      "errors": [],
+      "external": [],
+      "blocked": []
+    }
+  ]
+}

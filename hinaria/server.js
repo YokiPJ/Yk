@@ -4,6 +4,8 @@ import { readFile, stat } from 'node:fs/promises';
 import { basename, dirname, extname, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { localizeHTML, webDependencies } from './tools/web-dependencies.mjs';
+import { missingRuntimeDependencies, runtimeDependency } from './tools/runtime-dependencies.mjs';
+import { spawn } from 'node:child_process';
 const project = dirname(fileURLToPath(import.meta.url));
 const offline = process.argv.includes('--offline');
 const root = offline ? resolve(project, 'www') : project;
@@ -20,6 +22,14 @@ if (offline) {
   try { await stat(resolve(root, 'index.html')); }
   catch { console.error('Pacote offline ausente. Execute npm run build:web.'); process.exit(1); }
 }
+if(!offline){
+  const missing=missingRuntimeDependencies(project);
+  if(missing.length){
+    console.error('[HINÁRIA] Dependências ausentes: '+missing.join(', '));
+    console.error('Execute npm run setup na pasta principal ou use o ZIP completo da release.');
+    process.exit(1);
+  }
+}
 const server = http.createServer(async (req, res) => {
   try {
     if (!['GET','HEAD'].includes(req.method)) { res.writeHead(405, { Allow:'GET, HEAD' }); res.end(); return; }
@@ -32,7 +42,8 @@ const server = http.createServer(async (req, res) => {
     if (!offline && pathname.startsWith('/vendor/')) {
       const dependency = webDependencies[pathname.slice('/vendor/'.length)];
       if (!dependency) { res.writeHead(404); res.end('Not Found'); return; }
-      file = resolve(project, 'node_modules', dependency);
+      file = runtimeDependency(project,pathname.slice('/vendor/'.length));
+      if(!file){res.writeHead(503);res.end('Dependência ausente. Execute npm run setup na pasta principal.');return;}
     }
     let info;
     try{info=await stat(file);}catch(error){
@@ -57,11 +68,21 @@ const server = http.createServer(async (req, res) => {
     if (status === 500) console.error('[HINÁRIA server]', error.message);
   }
 });
-server.on('error', error => { console.error('[HINÁRIA server]', error.message); process.exitCode = 1; });
+server.on('error', error => {
+  console.error('[HINÁRIA server]',error.code==='EADDRINUSE'?`A porta ${port} já está em uso. Feche o servidor anterior e execute novamente.`:error.message);
+  process.exitCode = 1;
+});
 server.listen(port, '0.0.0.0', () => {
   const actualPort=server.address().port;
   console.log(`HINÁRIA ${offline ? 'offline/www' : 'desenvolvimento local'} · porta ${actualPort} · ${root}`);
   console.log(`Jogo: http://localhost:${actualPort}/`);
   if (process.argv.includes('--studio')) console.log(`Projeto completo: http://localhost:${actualPort}/studio/`);
+  if(process.argv.includes('--open')){
+    const url=`http://localhost:${actualPort}/`;
+    const command=process.platform==='win32'?'rundll32.exe':process.platform==='darwin'?'open':'xdg-open';
+    const args=process.platform==='win32'?['url.dll,FileProtocolHandler',url]:[url];
+    const browser=spawn(command,args,{detached:true,stdio:'ignore'});
+    browser.once('error',()=>console.log('Abra o jogo no navegador: '+url));browser.unref();
+  }
 });
 for (const signal of ['SIGINT','SIGTERM']) process.on(signal, () => server.close(() => process.exit(0)));

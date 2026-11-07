@@ -1,10 +1,14 @@
-# HINÁRIA 1.3.0 Beta 1 · O Eco sob as Cinzas
+# HINÁRIA 1.3.0 Beta 2 · Inicialização direta
 
 RPG 3D em Three.js/PixiJS com projeto Android Capacitor, controles touch, saves e laboratórios de animação Java/HTML.
 
-[**Baixar o teste beta: APK e projeto completo**](https://github.com/YokiPJ/Yk/releases/tag/v1.3.0-beta.1)
+[**Baixar o teste beta: APK e projeto completo**](https://github.com/YokiPJ/Yk/releases/tag/v1.3.0-beta.2)
 
 A beta acrescenta a Parte II e revisa a geração procedural. A [versão estável 1.2.2](https://github.com/YokiPJ/Yk/releases/tag/v1.2.2) continua disponível e permanece no canal estável.
+
+O ZIP da release inclui as bibliotecas de execução. Extraia todos os arquivos e abra **INICIAR_PROJETO.bat** (Windows) ou **INICIAR_PROJETO.sh** (Linux/macOS). O navegador abre o jogo quando o servidor estiver pronto.
+
+Em um clone Git, instale as dependências antes de desenvolver:
 
 ```bash
 npm run setup
@@ -12,6 +16,8 @@ npm start
 ```
 
 Abra **http://localhost:8080/studio/** para o projeto completo ou **http://localhost:8080/** para jogar. Requer Node.js 22+. No Windows, execute também `INICIAR_PROJETO.bat`.
+
+A raiz também abre `hinaria/` automaticamente em servidores estáticos. Para atualizar a Beta 1, use o [patch de inicialização](https://github.com/YokiPJ/Yk/releases/download/v1.3.0-beta.2/HINARIA_CORRECAO_INICIO_1.3.0-beta.2.zip): extraia sobre a pasta que contém INICIAR_PROJETO.bat, substituindo os arquivos.
 
 ## Estrutura
 
@@ -53,7 +59,7 @@ O gerador reinicia os dados e a semente antes de construir o mapa, protege as ro
 - Peças dos ratos fora da câmera voltam a usar o descarte por frustum, preservando os modelos e suas animações.
 - Os dois Vigias e a Sentinela da Parte II são criados somente quando suas missões precisam deles; não ficam ativos na vila desde a inicialização.
 
-Medições e limites: [MOBILE_1.3.0-beta.1.md](hinaria/docs/MOBILE_1.3.0-beta.1.md). O jogo mantém seu animador procedural; os clipes Java são ferramentas independentes disponíveis no Studio. O carregamento dos saves antigos também restaura o intervalo do poder do machado sem herdar temporizadores de outra sessão.
+Medições e limites: [MOBILE_1.3.0-beta.2.md](hinaria/docs/MOBILE_1.3.0-beta.2.md). O jogo mantém seu animador procedural; os clipes Java são ferramentas independentes disponíveis no Studio. O carregamento dos saves antigos também restaura o intervalo do poder do machado sem herdar temporizadores de outra sessão.
 
 ## Build
 
@@ -69,7 +75,7 @@ Android exige JDK 21, SDK Platform 35 e Build Tools 35.0.0. Configure `JAVA_HOME
 npm run build:android
 ```
 
-Saída: `hinaria/downloads/HINARIA_1.3.0_BETA1_DEBUG.apk`, pacote `br.com.hinaria.rpg`, versão 1.3.0-beta.1, código 6. O build confere todos os recursos do APK contra o manifesto SHA256. Para atualizar uma instalação, o certificado deve coincidir; uma compilação local em outra máquina usa a chave debug dessa máquina.
+Saída: `hinaria/downloads/HINARIA_1.3.0_BETA2_DEBUG.apk`, pacote `br.com.hinaria.rpg`, versão 1.3.0-beta.2, código 7. O build confere todos os recursos do APK contra o manifesto SHA256. Para atualizar uma instalação, o certificado deve coincidir; uma compilação local em outra máquina usa a chave debug dessa máquina.
 
 As variantes de áudio mobile já estão incluídas. Ao trocar as músicas originais, regenere-as com `python3 hinaria/tools/prepare-mobile-audio.py` antes do build; esse comando exige FFmpeg e FFprobe.
 
@@ -88,7 +94,7 @@ npm run test:mobile
 npm run test:browser -- --offline
 ```
 
-Execute `build:mobile` antes dos testes do APK e `build` para os testes da distribuição web completa. `CHROMIUM_PATH` seleciona o navegador dos testes do jogo; `HINARIA_CHROMIUM` seleciona o navegador dos laboratórios. Evidências novas ficam em `hinaria/qa-evidence/` e a seleção revisada em `hinaria/docs/qa/1.3.0-beta.1/`.
+Execute `build:mobile` antes dos testes do APK e `build` para os testes da distribuição web completa. `CHROMIUM_PATH` seleciona o navegador dos testes do jogo; `HINARIA_CHROMIUM` seleciona o navegador dos laboratórios. Evidências novas ficam em `hinaria/qa-evidence/` e a seleção revisada em `hinaria/docs/qa/1.3.0-beta.2/`.
 
 O Studio reúne 32 estudos 2D, 12 cenas 3D, sete modelos com dez clipes Java cada e o comparativo dos 12 modelos corrigidos. Vilarrubra permanece como imagem principal da galeria de cenários.
 
@@ -100,6 +106,6 @@ O Studio reúne 32 estudos 2D, 12 cenas 3D, sete modelos com dez clipes Java cad
 npm run release:prepare
 ```
 
-O comando cria `dist/v1.3.0-beta.1/` com APK, JAR, projeto ZIP do commit, resultados, capturas e hashes. A automação de `.github/workflows/publish-release.yml` publica o ramo de distribuição `releases/v1.3.0-beta.1`: cria um draft, envia os anexos, baixa e verifica seus hashes e então publica. A tag beta exige `prerelease: true` e publica com `make_latest: false`, preservando a release estável. Tags/releases existentes de outra publicação são preservadas.
+O comando cria `dist/v1.3.0-beta.2/` com APK, JAR, projeto ZIP do commit, resultados, capturas e hashes. A automação de `.github/workflows/publish-release.yml` publica o ramo de distribuição `releases/v1.3.0-beta.2`: cria um draft, envia os anexos, baixa e verifica seus hashes e então publica. A tag beta exige `prerelease: true` e publica com `make_latest: false`, preservando a release estável. Tags/releases existentes de outra publicação são preservadas.
 
 O APK distribuído é debug para testes. A verificação gráfica usa Chromium/SwiftShader e toque emulado; não houve teste em telefone Android físico.

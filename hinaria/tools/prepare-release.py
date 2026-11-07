@@ -1,6 +1,6 @@
 """Prepare a delivery branch without publishing or touching existing releases."""
 from pathlib import Path
-import hashlib, json, re, shutil, subprocess, argparse, sys
+import hashlib, json, re, shutil, subprocess, argparse, sys, tempfile, zipfile
 
 GAME = Path(__file__).resolve().parent.parent
 ROOT = GAME.parent
@@ -37,6 +37,34 @@ for image in sorted((GAME / 'studio/scenery').glob('*.png')):
     shutil.copy2(image, target / image.name)
 archive = target / ('HINARIA_PROJETO_' + RELEASE['version'] + '.zip')
 run('git', 'archive', '--format=zip', '--output=' + str(archive), source)
+with tempfile.TemporaryDirectory(prefix='hinaria-runtime-') as directory:
+    runtime = Path(directory)
+    run('node', str(GAME / 'tools/prepare-runtime.mjs'), str(runtime))
+    if not (runtime / 'runtime-manifest.json').is_file():
+        raise RuntimeError('O pacote precisa das dependências locais de execução.')
+    def attach_runtime(path):
+        with zipfile.ZipFile(path, 'a', compression=zipfile.ZIP_DEFLATED, compresslevel=9) as zipped:
+            for file in sorted(runtime.rglob('*')):
+                if file.is_file():
+                    name='hinaria/vendor/'+file.relative_to(runtime).as_posix()
+                    if name in zipped.namelist():raise RuntimeError('Arquivo duplicado no pacote: '+name)
+                    zipped.write(file,name)
+    attach_runtime(archive)
+    previous=RELEASE.get('patch_base')
+    if previous:
+        publication_policy(previous, '-beta.' in previous)
+        run('git','merge-base','--is-ancestor',previous,source)
+        changed=run('git','diff','--name-only','--diff-filter=ACMR',previous,source).splitlines()
+        changed=[name for name in changed if not name.startswith('hinaria/docs/qa/')]
+        patch=target / ('HINARIA_CORRECAO_INICIO_' + RELEASE['version'] + '.zip')
+        run('git','archive','--format=zip','--output='+str(patch),source,*changed)
+        attach_runtime(patch)
+        with zipfile.ZipFile(patch,'a',compression=zipfile.ZIP_DEFLATED) as zipped:
+            zipped.writestr('APLICAR_CORRECAO.txt',
+                'Feche o servidor anterior. Extraia este ZIP sobre a pasta que contém INICIAR_PROJETO.bat, substituindo os arquivos.\n'
+                'Execute INICIAR_PROJETO.bat. O jogo abre automaticamente em http://localhost:8080/.\n'
+                'Com um servidor estático, abra a raiz do projeto; a entrada redireciona para hinaria/.\n'
+                'Não é necessário apagar os dados do navegador.\n')
 files = sorted(path for path in target.iterdir() if path.is_file())
 checksum = lambda path: hashlib.sha256(path.read_bytes()).hexdigest()
 (target / 'SHA256SUMS.txt').write_text(''.join(checksum(path) + '  ' + path.name + '\n' for path in files), encoding='utf-8')

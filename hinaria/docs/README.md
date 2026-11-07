@@ -1,5 +1,7 @@
 # Documentação
 
+- [Correção de inicialização Beta 2](releases/1.3.0-beta.2/RELEASE_NOTES.md): entrada automática, bibliotecas locais e patch para Beta 1.
+
 - [BETA_PARTE_II.md](BETA_PARTE_II.md): acesso, missões, locais e roteiro de teste da continuação.
 - [MOBILE_1.3.0-beta.1.md](MOBILE_1.3.0-beta.1.md): geração do mundo, inicialização Android, iluminação da vila e perfis mobile.
 - [releases/1.3.0-beta.1/RELEASE_NOTES.md](releases/1.3.0-beta.1/RELEASE_NOTES.md): notas e galeria de cenários da beta.

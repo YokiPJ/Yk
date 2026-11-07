@@ -9,6 +9,7 @@ __pycache__/
 *.jks
 *.keystore
 /hinaria/www/
+/hinaria/vendor/
 /hinaria/qa-evidence/
 /hinaria/APK_GERADO/
 /hinaria/tools/motion-*/verification/

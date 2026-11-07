@@ -32,7 +32,7 @@ function snapshot(){
   const sceneMeshes=gameState.scene?.children?.length||0;
   const audio=getAudioDiagnostics(),graphics=getGraphicsDiagnostics();
   return {
-    version:'1.3.0-beta.1-QA',worldSize:gameState.W,flow:gameState.flow||null,
+    version:'1.3.0-beta.2-QA',worldSize:gameState.W,flow:gameState.flow||null,
     worldGeneration:{seed:gameState.worldSeed??null,version:gameState.worldGenerationVersion??null,diagnostics:gameState.worldGenerationDiagnostics??null},
     mapPosition:P?[rounded(P.x),rounded(P.mesh?.position?.y),rounded(P.z)]:null,
     class:P?.cls||null,zone:gameState.insideHouse?'interior':'world',

@@ -183,14 +183,14 @@ export function initTextures() {
     
     // Face textures for character portraits
     const PH = [
-        '/assets/ui/portrait_01.jpg',
-        '/assets/ui/portrait_02.jpg',
-        '/assets/ui/portrait_03.jpg',
-        '/assets/ui/portrait_04.jpg',
-        '/assets/ui/portrait_05.jpg',
-        '/assets/ui/portrait_06.jpg',
-        '/assets/ui/portrait_07.jpg',
-        '/assets/ui/portrait_08.jpg'
+        'assets/ui/portrait_01.jpg',
+        'assets/ui/portrait_02.jpg',
+        'assets/ui/portrait_03.jpg',
+        'assets/ui/portrait_04.jpg',
+        'assets/ui/portrait_05.jpg',
+        'assets/ui/portrait_06.jpg',
+        'assets/ui/portrait_07.jpg',
+        'assets/ui/portrait_08.jpg'
     ];
     
     const PN = ['Retrato 1','Retrato 2','Retrato 3','Retrato 4','Retrato 5','Retrato 6','Retrato 7','Retrato 8'];

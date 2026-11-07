@@ -29,11 +29,12 @@ function failBoot(error) {
   document.body.dataset.bootState = 'failed';
   const status = document.getElementById('title-status');
   if (status) {
+    const android=/Android/i.test(globalThis.navigator?.userAgent||'')||window.Capacitor?.getPlatform?.()==='android';
     status.setAttribute('role', 'alert'); status.setAttribute('aria-live', 'assertive');
     status.textContent = /webgl|context|renderer|gpu/i.test(bootState.error.message)
       ? 'Não foi possível preparar os gráficos. Feche outros aplicativos e tente recarregar. Se persistir, atualize o Android System WebView e o Chrome.'
       : /import|module|fetch|syntax|specifier|unexpected token/i.test(bootState.error.message)
-        ? 'Não foi possível carregar os arquivos do jogo. Tente recarregar. Se persistir no Android, atualize o Android System WebView e o Chrome.'
+        ? android?'Não foi possível carregar os arquivos do jogo. Tente recarregar ou atualize o Android System WebView e o Chrome.':'Não foi possível carregar os arquivos do jogo. Abra por INICIAR_PROJETO.bat ou execute npm run setup na pasta principal e reinicie o servidor.'
         : 'Não foi possível preparar HINÁRIA. Recarregue para tentar novamente.';
   }
   for (const id of ['play', 'title-continue', 'title-settings', 'title-credits']) {

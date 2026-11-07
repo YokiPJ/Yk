@@ -7,13 +7,18 @@ if errorlevel 1 (
   pause
   exit /b 1
 )
-if not exist hinaria\node_modules (
+node hinaria\tools\runtime-dependencies.mjs --quiet
+if errorlevel 1 (
   call npm run setup
   if errorlevel 1 (
     pause
     exit /b 1
   )
 )
-start "" "http://localhost:8080/studio/"
-call npm start
+node hinaria\tools\runtime-dependencies.mjs
+if errorlevel 1 (
+  pause
+  exit /b 1
+)
+node hinaria\server.js --open
 if errorlevel 1 pause
