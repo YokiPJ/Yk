@@ -59,6 +59,9 @@ export function createQuestSystem(DATA, hooks = {}) {
       if (status(d.id) !== 'active') continue;
       const stp = cur(d), r = S.q[d.id];
       if (stp.type !== type) continue;
+      // Regional objectives must be satisfied by their own encounter. Existing
+      // kill quests have no region and retain their original global behavior.
+      if (type === 'kill' && stp.region && stp.region !== data.region) continue;
       const hit = type === 'kill' ? (stp.target.startsWith('boss:')
           ? stp.target.slice(5) === data.bossId : stp.target === data.k)
           : type === 'discover' ? stp.target === data.n : false;
@@ -85,7 +88,10 @@ export function createQuestSystem(DATA, hooks = {}) {
       if (stp.type === 'talk' && stp.npc === npc) { advance(d); return stp.say; }
     }
     if (hi || ask) {
-      for (const d of DATA) if (d.giver === npc && status(d.id) === 'available') { S.pending = { npc, id: d.id }; return d.offer; }
+      // A newly unlocked continuation should not be hidden behind unfinished
+      // optional errands from Part I. Keep original order inside each part.
+      const offers=[...DATA].sort((a,b)=>(b.part||1)-(a.part||1));
+      for (const d of offers) if (d.giver === npc && status(d.id) === 'available') { S.pending = { npc, id: d.id }; return d.offer; }
       if (ask) {
         for (const d of DATA) if (d.giver === npc && status(d.id) === 'active') return `Ainda conto com você em <b>${d.title}</b>: ${cur(d).text}.`;
         return 'Por ora não tenho mais pedidos. Fique atento: coisas estranhas estão acontecendo.';
@@ -113,8 +119,9 @@ export function createQuestSystem(DATA, hooks = {}) {
     const out = [];
     for (const d of DATA) {
       const s = status(d.id);
-      if (s === 'active') { const stp = cur(d), r = S.q[d.id]; out.push({ title: d.title, main: !!d.main, text: stp.text, prog: stp.count > 1 ? `${r.n}/${stp.count}` : '' }); }
-      else if (s === 'available' && d.featured) out.push({ title: d.title, main: !!d.main, text: d.hint, prog: '', isNew: true });
+      const section={part:d.part||1,...(d.chapter!==undefined?{chapter:d.chapter}:{})};
+      if (s === 'active') { const stp = cur(d), r = S.q[d.id]; out.push({ ...section,title: d.title, main: !!d.main, text: stp.text, prog: stp.count > 1 ? `${r.n}/${stp.count}` : '' }); }
+      else if (s === 'available' && d.featured) out.push({ ...section,title: d.title, main: !!d.main, text: d.hint, prog: '', isNew: true });
     }
     return out;
   }
@@ -123,7 +130,7 @@ export function createQuestSystem(DATA, hooks = {}) {
   function journal() {
     return DATA.filter(d => status(d.id) !== 'locked').map(d => {
       const s = status(d.id), r = S.q[d.id];
-      return { id: d.id, title: d.title, main: !!d.main, desc: d.desc, s, reward: d.reward || null,
+      return { id: d.id,part:d.part||1,...(d.chapter!==undefined?{chapter:d.chapter}:{}),title: d.title, main: !!d.main, desc: d.desc, s, reward: d.reward || null,
         steps: d.steps.map((st, i) => ({ text: st.text, done: s === 'done' || (r && i < r.step), cur: s === 'active' && i === r.step, prog: s === 'active' && i === r.step && st.count > 1 ? `${r.n}/${st.count}` : '' })) };
     });
   }

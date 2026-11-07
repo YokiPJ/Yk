@@ -1,6 +1,7 @@
 /** Mobile renderer tuning. Changes only pixel ratio, not collision or world logic. */
 import { gameState } from '../core/gameState.js';
 import { deviceRenderProfile, budgetPixelRatio } from '../core/renderProfile.js';
+import { applyWorldMaterialBudget, createWorldLightBudget } from '../world/worldRenderBudget.js';
 import { setPaused } from '../core/gameFlow.js';
 import { setVisualAtmosphereEnabled } from '../vfx/worldAtmosphereV3.js';
 import { unlockGameAudio, setAudioEnabled, setAudioVolume, getAudioPreferences } from '../audio/gameAudio.js';
@@ -10,6 +11,7 @@ let mode = 'auto', fpsVisible = false, fps = 0, acc = 0, frames = 0, poorWindows
 let adaptiveRatio = 1.0, installed = false, contextState = 'ready', measuredFlow = null;
 let frameLimit='auto';
 const deviceProfile=deviceRenderProfile();
+let contextFlowBeforeLoss=null;
 // A bounded ring records actual rendered-frame intervals; snapshots sort at most 240 values.
 const frameIntervals = new Float64Array(240);
 let frameCursor = 0, frameCount = 0, measuredAt = null, contextNotice = null;
@@ -28,16 +30,17 @@ function showContextNotice(restored) {
   if (!contextNotice) {
     contextNotice=document.createElement('section'); contextNotice.id='hinaria-context-notice';
     contextNotice.setAttribute('role','alert');
-    contextNotice.style.cssText='position:fixed;inset:auto 12px max(18px,env(safe-area-inset-bottom)) 12px;z-index:180;max-width:520px;margin:auto;padding:16px;background:#171a20f7;border:1px solid #aeb1bd;border-radius:12px;color:#f6f3ee;font:14px/1.6 system-ui;box-shadow:0 15px 50px #000b';
+    contextNotice.style.cssText='position:fixed;top:auto;right:12px;bottom:max(18px,env(safe-area-inset-bottom));left:12px;inset:auto 12px max(18px,env(safe-area-inset-bottom)) 12px;z-index:180;max-width:520px;margin:auto;padding:16px;background:#171a20f7;border:1px solid #aeb1bd;border-radius:12px;color:#f6f3ee;font:14px/1.6 system-ui;box-shadow:0 15px 50px #000b';
     document.body.append(contextNotice);
   }
   contextNotice.replaceChildren();
-  const text=document.createElement('p');text.textContent=restored?'Imagem recuperada. Sua aventura continua pausada.':'A renderização foi interrompida. A aventura está pausada enquanto a imagem é recuperada.';
+  const hasAdventure=!['BOOT','TITLE','CHARACTER_CREATION'].includes(contextFlowBeforeLoss);
+  const text=document.createElement('p');text.textContent=restored?(hasAdventure?'Imagem recuperada. Sua aventura continua pausada.':'Imagem recuperada. Você pode continuar pelo menu.'):'A renderização foi interrompida. Aguarde a recuperação da imagem.';
   contextNotice.append(text);
   if (restored) {
-    const resume=document.createElement('button');resume.type='button';resume.textContent='Retomar aventura';
+    const resume=document.createElement('button');resume.type='button';resume.textContent=hasAdventure?'Retomar aventura':'Fechar aviso';
     resume.style.cssText='min-height:44px;padding:8px 18px;background:#363b48;color:#fff;border:1px solid #aeb1bd;border-radius:6px';
-    resume.addEventListener('click',()=>{window.HINARIA_UI_V1?.close?.();setPaused(false);contextNotice?.remove();contextNotice=null;});
+    resume.addEventListener('click',()=>{if(hasAdventure){window.HINARIA_UI_V1?.close?.();setPaused(false);}contextNotice?.remove();contextNotice=null;});
     contextNotice.append(resume);resume.focus({preventScroll:true});
   }
 }
@@ -45,7 +48,9 @@ function installContextMonitoring() {
   const canvas=gameState.renderer?.domElement;
   if (!canvas?.addEventListener) return;
   canvas.addEventListener('webglcontextlost',event=>{
-    event.preventDefault();contextState='lost';resetFrameMeasurement();setPaused(true);showContextNotice(false);
+    event.preventDefault();contextFlowBeforeLoss=gameState.flow;contextState='lost';resetFrameMeasurement();
+    if(!['BOOT','TITLE','CHARACTER_CREATION'].includes(contextFlowBeforeLoss))setPaused(true);
+    showContextNotice(false);
     window.dispatchEvent(new CustomEvent('hinaria:graphicscontext',{detail:{state:'lost'}}));
   });
   canvas.addEventListener('webglcontextrestored',()=>{
@@ -85,12 +90,21 @@ export function applyGraphicsQuality() {
   const wrap = document.getElementById('wrap');
   if (wrap?.clientWidth && wrap?.clientHeight) r.setSize(wrap.clientWidth, wrap.clientHeight, false);
 }
+export function configureWorldRendering(){
+  if(!gameState.scene)return;
+  const highDetail=mode==='high'||(!deviceProfile.mobile&&mode!=='low');
+  gameState.worldMaterialBudget=applyWorldMaterialBudget(gameState.scene,{highDetail});
+  const slots=deviceProfile.mobile?(deviceProfile.economy?2:3):(mode==='low'?2:6);
+  if(!gameState.worldLightBudget)gameState.worldLightBudget=createWorldLightBudget(gameState.scene,{maxLights:slots});
+  else gameState.worldLightBudget.setBudget(slots);
+  gameState.worldLightBudget.update(gameState.P?.x,gameState.P?.z);
+}
 export function changeGraphicsMode(value) {
   if (!['auto','low','medium','high'].includes(value)) return;
   mode = value;
   if (mode === 'auto') adaptiveRatio = deviceProfile.initialRatio;
   poorWindows = goodWindows = 0;
-  saveSettings(); applyGraphicsQuality();
+  saveSettings(); applyGraphicsQuality();configureWorldRendering();
 }
 export function tickPerformance(dt) {
   // Frame-based metric, not an invented FPS counter. Ignore paused/hidden spikes.
@@ -112,7 +126,7 @@ export function tickPerformance(dt) {
   if (fps < (target<=30?25:34)) { poorWindows++; goodWindows = 0; }
   else if (fps > (target<=30?28:54)) { goodWindows++; poorWindows = 0; }
   else { poorWindows = goodWindows = 0; }
-  if (poorWindows >= 2) { adaptiveRatio = Math.max(0.65, adaptiveRatio - 0.14); poorWindows = 0; applyGraphicsQuality(); }
+  if (poorWindows >= 2) { adaptiveRatio = Math.max(0.55, adaptiveRatio - 0.12); poorWindows = 0; applyGraphicsQuality(); }
   if (goodWindows >= 7) { adaptiveRatio = Math.min(deviceProfile.maxRatio, adaptiveRatio + 0.08); goodWindows = 0; applyGraphicsQuality(); }
 }
 export function initPerformanceUI() {
@@ -122,6 +136,7 @@ export function initPerformanceUI() {
   loadSettings();
   adaptiveRatio = deviceProfile.initialRatio;
   applyGraphicsQuality();
+  configureWorldRendering();
   panel = document.getElementById('perf-panel');
   fpsTag = document.getElementById('fps-tag');
   qualitySelect = document.getElementById('perf-quality');
@@ -154,6 +169,7 @@ import { pauseGameAudio as pauseMusic, resumeGameAudio as resumeMusic } from '..
 export function getGraphicsDiagnostics() {
   return {mode,fps,fpsVisible,pixelRatio:gameState.renderer?.getPixelRatio()||0,
     frameLimit:getFrameLimit(),deviceProfile,hud:window.HINARIA_HUD_PIXI?.diagnostics?.()||null,
+    worldLighting:gameState.worldLightBudget?.diagnostics?.()||null,worldMaterials:gameState.worldMaterialBudget||null,
     contextState,measuredFlow,frameTiming:frameStatistics(),
     sampleAgeMs:measuredAt===null?null:Math.max(0,Math.round(performance.now()-measuredAt))};
 }

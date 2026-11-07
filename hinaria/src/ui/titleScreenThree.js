@@ -5,6 +5,7 @@
  * - Renderer próprio e descartável: some junto com #cover e libera GPU. Não toca no jogo.
  */
 import * as THREE from 'three';
+import { deviceRenderProfile } from '../core/renderProfile.js';
 
 const BLACK = '#000000';
 // Somente as duas artes P&B. bg = cor do fade nas bordas (preto, sem desfoque).
@@ -62,8 +63,11 @@ export function disposeTitleScreenThree() { active?.dispose(); }
 export async function initTitleScreenThree() {
   const cover = document.getElementById('cover');
   if (!cover || cover.hidden) return null;
+  // The CSS art and controls remain the title on phones. Keeping a second
+  // WebGL renderer alive alongside the world increases driver memory pressure.
+  if (deviceRenderProfile().mobile) { cover.dataset.titleBackend = 'css'; return null; }
   if (active) return active;
-  let stopped = false, raf = 0, renderer, quad, points, resizeObserver,dirty=true;
+  let stopped = false, raf = 0, renderer, quad, points, resizeObserver, resize, dirty=true;
   const textures = new Set();
   const canvas = document.createElement('canvas');
   canvas.id = 'title-three'; canvas.setAttribute('aria-hidden', 'true');
@@ -77,83 +81,89 @@ export async function initTitleScreenThree() {
   const dispose = () => {
     if (stopped) return;
     stopped = true; cancelAnimationFrame(raf); resizeObserver?.disconnect();
+    window.removeEventListener('resize', resize);
     cover.removeEventListener('pointermove', onMove);
     canvas.removeEventListener('webglcontextlost', onContextLost);
     for (const texture of textures) texture.dispose();
     quad?.geometry.dispose(); quad?.material.dispose();
     points?.geometry.dispose(); points?.material.dispose();
     renderer?.dispose(); renderer?.forceContextLoss(); canvas.remove();
-    cover.classList.remove('t3-on'); delete cover.dataset.t3;
+    cover.classList.remove('t3-on'); delete cover.dataset.t3; cover.dataset.titleBackend = 'css';
     if (active?.dispose === dispose) active = null;
   };
   active = { dispose }; cover.dataset.t3 = '1';
   try {
     // Do not allocate a second probing context: construction is the capability check.
     renderer = new THREE.WebGLRenderer({ canvas, antialias: false, alpha: false, powerPreference: 'low-power' });
-  } catch { dispose(); return null; }
-  canvas.addEventListener('webglcontextlost', onContextLost);
-  renderer.outputColorSpace = THREE.SRGBColorSpace;
-  renderer.setPixelRatio(Math.min(devicePixelRatio || 1, matchMedia('(pointer: coarse)').matches ? 1 : 1.5));
-  cover.prepend(canvas);
-  const loader = new THREE.TextureLoader();
-  const load = def => new Promise(resolve => loader.load(def.src, tex => {
-    if (stopped) { tex.dispose(); resolve(null); return; }
-    textures.add(tex); tex.colorSpace = THREE.SRGBColorSpace;
-    resolve({ tex, aspect: tex.image.width / tex.image.height });
-  }, undefined, () => resolve(null)));
-  const first = await load(IMAGES[0]);
-  if (!first || stopped || cover.hidden) { dispose(); return null; }
-  const slots = [first];
-  load(IMAGES[1]).then(slot => { if (slot && !stopped) slots.push(slot); });
-  const scene = new THREE.Scene();
-  const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
-  const u = {
-    uA:{value:first.tex}, uB:{value:first.tex}, uAspectA:{value:first.aspect}, uAspectB:{value:first.aspect},
-    uGrayA:{value:1}, uGrayB:{value:1}, uBgA:{value:new THREE.Color(BLACK)}, uBgB:{value:new THREE.Color(BLACK)},
-    uAspect:{value:1}, uMix:{value:0}, uTime:{value:0}, uFade:{value:.35},
-    uKbA:{value:0}, uKbB:{value:0}, uPointer:{value:new THREE.Vector2()}
-  };
-  quad = new THREE.Mesh(new THREE.PlaneGeometry(2,2), new THREE.ShaderMaterial({ uniforms:u, vertexShader:BG_VERT, fragmentShader:BG_FRAG, depthTest:false, depthWrite:false }));
-  scene.add(quad);
-  const count = matchMedia('(pointer:coarse)').matches ? 20 : 38;
-  const pos = new Float32Array(count*3), seeds = new Float32Array(count);
-  for (let i=0; i<count; i++) { pos[i*3] = Math.random()*2-1; seeds[i] = Math.random(); }
-  const geometry = new THREE.BufferGeometry();
-  geometry.setAttribute('position',new THREE.BufferAttribute(pos,3));
-  geometry.setAttribute('aSeed',new THREE.BufferAttribute(seeds,1));
-  points = new THREE.Points(geometry,new THREE.ShaderMaterial({ uniforms:{uTime:u.uTime,uPx:{value:renderer.getPixelRatio()}}, vertexShader:P_VERT,fragmentShader:P_FRAG,transparent:true,depthTest:false,depthWrite:false,blending:THREE.AdditiveBlending }));
-  points.frustumCulled = false; scene.add(points);
-  const resize = () => { if(stopped)return;const w=Math.max(1,cover.clientWidth),h=Math.max(1,cover.clientHeight);renderer.setSize(w,h,false);u.uAspect.value=w/h;dirty=true; };
-  resizeObserver = new ResizeObserver(resize); resizeObserver.observe(cover); resize();
-  cover.addEventListener('pointermove',onMove,{passive:true}); cover.classList.add('t3-on');
-  let last=performance.now(), elapsed=0, age=0, current=0, transition=-1;
-  let lastDraw=-Infinity,previousReduced=null;
-  const mobile=matchMedia('(pointer:coarse)').matches;
-  const frame = now => {
-    if (stopped) return;
-    if (!cover.isConnected || cover.hidden) { dispose(); return; }
+    canvas.addEventListener('webglcontextlost', onContextLost);
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
+    renderer.setPixelRatio(Math.min(devicePixelRatio || 1, matchMedia('(pointer: coarse)').matches ? 1 : 1.5));
+    cover.prepend(canvas);
+    const loader = new THREE.TextureLoader();
+    const load = def => new Promise(resolve => loader.load(def.src, tex => {
+      if (stopped) { tex.dispose(); resolve(null); return; }
+      textures.add(tex); tex.colorSpace = THREE.SRGBColorSpace;
+      resolve({ tex, aspect: tex.image.width / tex.image.height });
+    }, undefined, () => resolve(null)));
+    const first = await load(IMAGES[0]);
+    if (!first || stopped || cover.hidden) { dispose(); return null; }
+    const slots = [first];
+    load(IMAGES[1]).then(slot => { if (slot && !stopped) slots.push(slot); });
+    const scene = new THREE.Scene();
+    const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+    const u = {
+      uA:{value:first.tex}, uB:{value:first.tex}, uAspectA:{value:first.aspect}, uAspectB:{value:first.aspect},
+      uGrayA:{value:1}, uGrayB:{value:1}, uBgA:{value:new THREE.Color(BLACK)}, uBgB:{value:new THREE.Color(BLACK)},
+      uAspect:{value:1}, uMix:{value:0}, uTime:{value:0}, uFade:{value:.35},
+      uKbA:{value:0}, uKbB:{value:0}, uPointer:{value:new THREE.Vector2()}
+    };
+    quad = new THREE.Mesh(new THREE.PlaneGeometry(2,2), new THREE.ShaderMaterial({ uniforms:u, vertexShader:BG_VERT, fragmentShader:BG_FRAG, depthTest:false, depthWrite:false }));
+    scene.add(quad);
+    const count = matchMedia('(pointer:coarse)').matches ? 20 : 38;
+    const pos = new Float32Array(count*3), seeds = new Float32Array(count);
+    for (let i=0; i<count; i++) { pos[i*3] = Math.random()*2-1; seeds[i] = Math.random(); }
+    const geometry = new THREE.BufferGeometry();
+    geometry.setAttribute('position',new THREE.BufferAttribute(pos,3));
+    geometry.setAttribute('aSeed',new THREE.BufferAttribute(seeds,1));
+    points = new THREE.Points(geometry,new THREE.ShaderMaterial({ uniforms:{uTime:u.uTime,uPx:{value:renderer.getPixelRatio()}}, vertexShader:P_VERT,fragmentShader:P_FRAG,transparent:true,depthTest:false,depthWrite:false,blending:THREE.AdditiveBlending }));
+    points.frustumCulled = false; scene.add(points);
+    resize = () => { if(stopped)return;const w=Math.max(1,cover.clientWidth),h=Math.max(1,cover.clientHeight);renderer.setSize(w,h,false);u.uAspect.value=w/h;dirty=true; };
+    if (typeof ResizeObserver === 'function') { resizeObserver = new ResizeObserver(resize); resizeObserver.observe(cover); }
+    else window.addEventListener('resize', resize, { passive: true });
+    resize();
+    cover.addEventListener('pointermove',onMove,{passive:true}); cover.classList.add('t3-on'); cover.dataset.titleBackend = 'webgl';
+    let last=performance.now(), elapsed=0, age=0, current=0, transition=-1;
+    let lastDraw=-Infinity,previousReduced=null;
+    const mobile=matchMedia('(pointer:coarse)').matches;
+    const frame = now => {
+      if (stopped) return;
+      if (!cover.isConnected || cover.hidden) { dispose(); return; }
+      raf=requestAnimationFrame(frame);
+      if (document.hidden) { last=now; return; }
+      const preference=document.documentElement.dataset.reduceMotion;
+      const reduce=preference===undefined?motionQuery.matches:preference==='true';
+      if(reduce&&previousReduced===true&&!dirty){last=now;return;}
+      if(!reduce&&mobile&&now-lastDraw<1000/30-.3)return;
+      const dt=Math.max(0,(now-last)/1000);last=now;lastDraw=now;previousReduced=reduce;dirty=false;
+      if (!reduce) { elapsed+=dt;age+=dt; }
+      u.uTime.value=elapsed;u.uFade.value=reduce?1:Math.min(1,u.uFade.value+dt/1.4);
+      u.uPointer.value.lerp(reduce?origin:target,1-Math.exp(-dt*3));
+      u.uKbA.value=reduce?0:(Math.sin(elapsed*.12)*.5+.5);u.uKbB.value=1-u.uKbA.value;
+      points.visible=!reduce;
+      if (!reduce && slots.length>1 && transition<0 && age>HOLD_MS/1000) {
+        const next=(current+1)%slots.length;u.uB.value=slots[next].tex;u.uAspectB.value=slots[next].aspect;transition=0;
+      }
+      if (transition>=0) {
+        transition+=dt;const progress=Math.min(1,transition/(FADE_MS/1000));u.uMix.value=.5-Math.cos(progress*Math.PI)/2;
+        if(progress===1){current=(current+1)%slots.length;u.uA.value=slots[current].tex;u.uAspectA.value=slots[current].aspect;u.uMix.value=0;age=0;transition=-1;}
+      }
+      try { renderer.render(scene,camera); }
+      catch (error) { console.warn('[HINÁRIA] Título usa arte CSS:', error); dispose(); }
+    };
     raf=requestAnimationFrame(frame);
-    if (document.hidden) { last=now; return; }
-    const preference=document.documentElement.dataset.reduceMotion;
-    const reduce=preference===undefined?motionQuery.matches:preference==='true';
-    if(reduce&&previousReduced===true&&!dirty){last=now;return;}
-    if(!reduce&&mobile&&now-lastDraw<1000/30-.3)return;
-    const dt=Math.max(0,(now-last)/1000);last=now;lastDraw=now;previousReduced=reduce;dirty=false;
-    if (!reduce) { elapsed+=dt;age+=dt; }
-    u.uTime.value=elapsed;u.uFade.value=reduce?1:Math.min(1,u.uFade.value+dt/1.4);
-    u.uPointer.value.lerp(reduce?origin:target,1-Math.exp(-dt*3));
-    u.uKbA.value=reduce?0:(Math.sin(elapsed*.12)*.5+.5);u.uKbB.value=1-u.uKbA.value;
-    points.visible=!reduce;
-    if (!reduce && slots.length>1 && transition<0 && age>HOLD_MS/1000) {
-      const next=(current+1)%slots.length;u.uB.value=slots[next].tex;u.uAspectB.value=slots[next].aspect;transition=0;
-    }
-    if (transition>=0) {
-      transition+=dt;const progress=Math.min(1,transition/(FADE_MS/1000));u.uMix.value=.5-Math.cos(progress*Math.PI)/2;
-      if(progress===1){current=(current+1)%slots.length;u.uA.value=slots[current].tex;u.uAspectA.value=slots[current].aspect;u.uMix.value=0;age=0;transition=-1;}
-    }
-    renderer.render(scene,camera);
-  };
-  raf=requestAnimationFrame(frame);
-  return active;
+    return active;
+  } catch (error) {
+    dispose(); console.warn('[HINÁRIA] Título usa arte CSS:', error); return null;
+  }
 }
 

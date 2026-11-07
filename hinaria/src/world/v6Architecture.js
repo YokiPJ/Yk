@@ -285,12 +285,12 @@ export function buildForgeV6(height=0) {
     cube(root,1.08,.18,.26,wood,0,1.46,1.62);
     cube(root,.76,.22,.18,mat(0xb18b4a),0,1.70,1.67);
     awning(root,-.92,1.63,1.76,1.34,.82,0x94643c);
-    cube(root,-.92,.47,1.46,.92,.18,.44,woodLight);
-    cube(root,-1.22,.82,1.48,.18,.52,.18,stone);
-    cube(root,-.60,.82,1.48,.32,.18,.44,mat(0x6f777d));
-    cube(root,-.60,1.02,1.48,.56,.12,.22,mat(0xb0bac1));
-    cube(root,-1.38,.52,-.85,.38,.78,.38,woodLight);
-    cube(root,-1.38,.94,-.85,.52,.11,.16,mat(0x5a6168));
+    cube(root,.92,.18,.44,woodLight,-.92,.47,1.46);
+    cube(root,.18,.52,.18,stone,-1.22,.82,1.48);
+    cube(root,.32,.18,.44,mat(0x6f777d),-.60,.82,1.48);
+    cube(root,.56,.12,.22,mat(0xb0bac1),-.60,1.02,1.48);
+    cube(root,.38,.78,.38,woodLight,-1.38,.52,-.85);
+    cube(root,.52,.11,.16,mat(0x5a6168),-1.38,.94,-.85);
     hangingLantern(root,.96,1.58,1.69);
     hangingLantern(root,-.96,1.58,1.69);
     // Two horizontal steel bands around the chimney add industrial mass.

@@ -3,6 +3,8 @@ import { gameState } from '../core/gameState.js';
 import { Q } from '../quest/quests.js';
 const KEY='hinaria.lore.codex.v1';
 const ENTRIES=[
+ {id:'eco_fronteira',title:'O Eco sob as Cinzas',text:'O chamado além da fronteira não vem dos mortos. O observatório repete uma lembrança, presa ao santuário mesmo depois da queda da coroa.',check:()=>Q.status('p2_passagem')==='done'},
+ {id:'eco_ultima_voz',title:'A Última Voz',text:'A sentinela repetia uma luta que já havia terminado. Ao cair, permitiu que a tribo partisse e que os grilos voltassem. Yoki guardou a lembrança sem aprisioná-la.',check:()=>Q.status('p2_ultima_voz')==='done'},
  {id:'origem',title:'A Garra Cinzenta',text:'Na tribo Garra Cinzenta, os orcs eram ensinados a esquecer a dor. Yoki desobedecia: observava cada movimento e guardava cada erro.',check:()=>Q.status('c1_ratos')==='done'},
  {id:'espelho',title:'O Espelho que Não Refletia Rosto',text:'No fundo da Caverna do Esquecimento, um espelho de vidro negro mostrou um campo verde, um camisa 7 e uma bola fazendo uma curva impossível. Nenhum guerreiro morreu.',check:()=>Q.status('c1_espelho')==='done'},
  {id:'bosque',title:'O Bosque das Memórias',text:'Yoki não reconhecia o lugar por seus caminhos: reconhecia pelos passos. Cada trilha era uma lembrança de derrotas que poderiam ensinar.',check:()=>seenLandmark('Bosque das Memórias')},
@@ -27,7 +29,7 @@ function refresh(){
 function toggle(){if(!dialog)return;dialog.hidden=!dialog.hidden;if(!dialog.hidden)refresh();}
 export function initLore(){
  load();if(document.getElementById('hinaria-lore-codex'))return;
- const css=document.createElement('style');css.textContent=`#hinaria-lore-codex{position:fixed;inset:0;z-index:58;background:#0009;display:flex;align-items:center;justify-content:center;padding:20px}#hinaria-lore-codex[hidden]{display:none!important}#hinaria-lore-codex>div{width:min(540px,96vw);max-height:78vh;overflow-y:auto;background:#17212a;color:#efe3c9;border:2px solid #c2a265;padding:18px;border-radius:12px;box-shadow:0 20px 70px #000d}#hinaria-lore-codex button{background:#3d4c43;border:1px solid #ccae73;color:#fff;padding:10px;border-radius:7px}`;document.head.appendChild(css);
+ const css=document.createElement('style');css.textContent=`#hinaria-lore-codex{position:fixed;top:0;right:0;bottom:0;left:0;inset:0;z-index:58;background:#0009;display:flex;align-items:center;justify-content:center;padding:20px}#hinaria-lore-codex[hidden]{display:none!important}#hinaria-lore-codex>div{width:min(540px,96vw);max-height:78vh;overflow-y:auto;background:#17212a;color:#efe3c9;border:2px solid #c2a265;padding:18px;border-radius:12px;box-shadow:0 20px 70px #000d}#hinaria-lore-codex button{background:#3d4c43;border:1px solid #ccae73;color:#fff;padding:10px;border-radius:7px}`;document.head.appendChild(css);
  dialog=document.createElement('section');dialog.id='hinaria-lore-codex';dialog.hidden=true;
  const inner=document.createElement('div'),title=document.createElement('h2');title.textContent='📖 Crônicas de Yoki — O Bárbaro do Replay';
  const close=document.createElement('button');close.textContent='Fechar';close.addEventListener('click',toggle);

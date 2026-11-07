@@ -7,7 +7,8 @@ const phone=deviceRenderProfile({maxTouchPoints:5,hardwareConcurrency:4,deviceMe
 assert.equal(phone.mobile,true);assert.equal(phone.economy,true);assert.equal(phone.targetFPS,30);
 assert.equal(phone.hudBackend,'canvas2d');
 const powerful=deviceRenderProfile({maxTouchPoints:5,hardwareConcurrency:8,deviceMemory:8},{});
-assert.equal(powerful.targetFPS,60);assert.equal(powerful.economy,false);
+assert.equal(powerful.targetFPS,30);assert.equal(powerful.economy,false);
+assert.ok(budgetPixelRatio(2,7680,4320,3,phone)**2*7680*4320<=phone.pixelBudget+1,'pixel budget also holds on external displays');
 assert.equal(deviceRenderProfile({maxTouchPoints:0},{}).hudBackend,'pixi-webgl');
 const ratio=budgetPixelRatio(2,2400,1080,3,phone);
 assert.ok(2400*1080*ratio*ratio<=phone.pixelBudget+1);

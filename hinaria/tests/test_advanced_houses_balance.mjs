@@ -1,10 +1,11 @@
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import vm from 'node:vm';
+import {PART2_SPAWNS,PART2_BOSS_VISUALS,part2SpawnTarget} from '../src/content/part2.js';
 const text=p=>readFileSync(new URL('../'+p,import.meta.url),'utf8');
 const combat=text('src/combat/combat.js');
 const fragment=combat.slice(combat.indexOf('export const ENEMY_KINDS'),combat.indexOf('/**\n * Spawn an enemy'));
-const ctx={Math,Error};vm.createContext(ctx);
+const ctx={Math,Error,PART2_SPAWNS,PART2_BOSS_VISUALS,part2SpawnTarget};vm.createContext(ctx);
 vm.runInContext(fragment.replaceAll('export const ','const ').replace('export function ','function ') + ';globalThis.api={ENEMY_KINDS,enemyStatsForZone,SPAWN_ZONES}',ctx);
 const {ENEMY_KINDS,enemyStatsForZone,SPAWN_ZONES}=ctx.api;
 const rat=enemyStatsForZone('rat', {level:1});

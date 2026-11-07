@@ -1,0 +1,27 @@
+{
+  "profile": "Android music 96 kbps; original tracks retained in assets/audio",
+  "tracks": [
+    {
+      "name": "boss-troll-battle.mp3",
+      "sourceBytes": 4646747,
+      "sourceSHA256": "dde7bd4f10bde031800ba8e22151fad591b7c13e1c9ae51920341b4e4ae37be5",
+      "mobileBytes": 1394182,
+      "mobileSHA256": "2c8c7b941b1cb87fc112fa92b91dd71ba490250e80e489c0c4c9216a6b5a1535",
+      "duration": "116.140408",
+      "sampleRate": 44100,
+      "channels": 2,
+      "bitrateKbps": 96
+    },
+    {
+      "name": "boss-orc-heavy.mp3",
+      "sourceBytes": 4322869,
+      "sourceSHA256": "3d638e984a31a09be0a119245d892c6dadca441370e7800be73f8683506e690d",
+      "mobileBytes": 1296948,
+      "mobileSHA256": "3aff42a0c022fa8d656786a4858545cbf6a9f9f407772d8759b1cc4fcc6904f7",
+      "duration": "108.042449",
+      "sampleRate": 44100,
+      "channels": 2,
+      "bitrateKbps": 96
+    }
+  ]
+}

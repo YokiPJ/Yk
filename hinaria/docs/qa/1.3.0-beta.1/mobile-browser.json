@@ -1,0 +1,187 @@
+{
+  "status": "PASS",
+  "browser": "155.0.8059.79",
+  "engine": "SwiftShader; device emulation, not a physical Android phone",
+  "checks": [
+    "mobile Canvas2D HUD",
+    "one game renderer",
+    "pixel budget on three layouts",
+    "30/60 preference persistence",
+    "automatic economy preset",
+    "thumb controls do not overlap",
+    "held touch cleared on orientation change",
+    "no external runtime requests"
+  ],
+  "layouts": [
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "overflow": false,
+      "hud": {
+        "backend": "canvas2d",
+        "width": 390,
+        "height": 844,
+        "maxFPS": 30
+      },
+      "drawingPixels": 169960,
+      "graphics": {
+        "mode": "auto",
+        "fps": 0,
+        "fpsVisible": false,
+        "pixelRatio": 0.72,
+        "frameLimit": 30,
+        "deviceProfile": {
+          "mobile": true,
+          "economy": true,
+          "initialRatio": 0.72,
+          "maxRatio": 1,
+          "pixelBudget": 400000,
+          "targetFPS": 30,
+          "hudBackend": "canvas2d"
+        },
+        "hud": {
+          "backend": "canvas2d",
+          "width": 390,
+          "height": 844,
+          "maxFPS": 30
+        },
+        "worldLighting": {
+          "sources": 30,
+          "slots": 2,
+          "active": 2
+        },
+        "worldMaterials": {
+          "highDetail": false,
+          "changed": 238
+        },
+        "contextState": "ready",
+        "measuredFlow": "PLAYING",
+        "frameTiming": {
+          "samples": 1,
+          "meanMs": 316.7,
+          "p50Ms": 316.7,
+          "p95Ms": 316.7,
+          "maxMs": 316.7
+        },
+        "sampleAgeMs": 34
+      },
+      "gameCanvases": 1
+    },
+    {
+      "viewport": [
+        844,
+        390
+      ],
+      "overflow": false,
+      "hud": {
+        "backend": "canvas2d",
+        "width": 844,
+        "height": 390,
+        "maxFPS": 30
+      },
+      "drawingPixels": 169960,
+      "graphics": {
+        "mode": "auto",
+        "fps": 4,
+        "fpsVisible": false,
+        "pixelRatio": 0.72,
+        "frameLimit": 30,
+        "deviceProfile": {
+          "mobile": true,
+          "economy": true,
+          "initialRatio": 0.72,
+          "maxRatio": 1,
+          "pixelBudget": 400000,
+          "targetFPS": 30,
+          "hudBackend": "canvas2d"
+        },
+        "hud": {
+          "backend": "canvas2d",
+          "width": 844,
+          "height": 390,
+          "maxFPS": 30
+        },
+        "worldLighting": {
+          "sources": 30,
+          "slots": 2,
+          "active": 2
+        },
+        "worldMaterials": {
+          "highDetail": false,
+          "changed": 238
+        },
+        "contextState": "ready",
+        "measuredFlow": "PLAYING",
+        "frameTiming": {
+          "samples": 13,
+          "meanMs": 173.08,
+          "p50Ms": 100,
+          "p95Ms": 316.7,
+          "maxMs": 866.6
+        },
+        "sampleAgeMs": 17
+      },
+      "gameCanvases": 1
+    },
+    {
+      "viewport": [
+        360,
+        800
+      ],
+      "overflow": false,
+      "hud": {
+        "backend": "canvas2d",
+        "width": 360,
+        "height": 800,
+        "maxFPS": 30
+      },
+      "drawingPixels": 103680,
+      "graphics": {
+        "mode": "auto",
+        "fps": 5,
+        "fpsVisible": false,
+        "pixelRatio": 0.6,
+        "frameLimit": 30,
+        "deviceProfile": {
+          "mobile": true,
+          "economy": true,
+          "initialRatio": 0.72,
+          "maxRatio": 1,
+          "pixelBudget": 400000,
+          "targetFPS": 30,
+          "hudBackend": "canvas2d"
+        },
+        "hud": {
+          "backend": "canvas2d",
+          "width": 360,
+          "height": 800,
+          "maxFPS": 30
+        },
+        "worldLighting": {
+          "sources": 30,
+          "slots": 2,
+          "active": 2
+        },
+        "worldMaterials": {
+          "highDetail": false,
+          "changed": 238
+        },
+        "contextState": "ready",
+        "measuredFlow": "PLAYING",
+        "frameTiming": {
+          "samples": 26,
+          "meanMs": 166.66,
+          "p50Ms": 116.7,
+          "p95Ms": 316.7,
+          "maxMs": 866.6
+        },
+        "sampleAgeMs": 3
+      },
+      "gameCanvases": 1
+    }
+  ],
+  "errors": [],
+  "external": []
+}

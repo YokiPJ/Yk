@@ -5,7 +5,7 @@ export const SCHEMA_VERSION = 1;
 const MAX_BYTES = 2 * 1024 * 1024;
 const CLASSES = Object.freeze({kn:'Cavaleiro',pa:'Paladino',so:'Feiticeiro',dr:'Druida',yo:'Yoki'});
 const ENEMY_KINDS = new Set(['rat','bandit','skeleton','troll','orc']);
-const BOSS_IDS = new Set(['troll_ancient','orc_king']);
+const BOSS_IDS = new Set(['troll_ancient','orc_king','sentinela_eco']);
 const dangerous = new Set(['__proto__', 'prototype', 'constructor']);
 const own = (value, name) => Object.prototype.hasOwnProperty.call(value, name);
 const record = value => value !== null && typeof value === 'object' && !Array.isArray(value)
@@ -58,7 +58,7 @@ export function validateSave(value) {
     if ((own(p,'cameraYaw') && !number(p.cameraYaw,-1e9,1e9)) || (own(p,'rotation') && !number(p.rotation,-1e9,1e9))) return fail('Orientação do personagem inválida.');
     if (own(p,'need') && !number(p.need,1)) return fail('Experiência necessária inválida.');
     if (own(p,'cds') && (!Array.isArray(p.cds) || p.cds.length !== 4 || !p.cds.every(v=>number(v)))) return fail('Recargas inválidas.');
-    for (const key of ['rc','cd','reg','axeAwakeUntil','axeAwakeCooldown','axeProcNext','axeAwakeRemaining','axeCooldownRemaining']) {
+    for (const key of ['rc','cd','reg','axeAwakeUntil','axeAwakeCooldown','axeProcNext','axeAwakeRemaining','axeCooldownRemaining','axeProcRemaining']) {
       if (own(p,key) && !number(p[key])) return fail('Temporizador do personagem inválido.');
     }
     if (own(p,'ownedWeapons') && !strings(p.ownedWeapons,512)) return fail('Arsenal inválido.');
@@ -70,6 +70,8 @@ export function validateSave(value) {
     if (w.defeatedBosses.some(id=>!BOSS_IDS.has(id))) return fail('Progresso de chefes inválido.');
     if (own(w,'fog') && (!Array.isArray(w.fog) || (w.fog.length!==0 && w.fog.length!==9216) || !w.fog.every(v=>integer(v,0,255)))) return fail('Mapa explorado inválido.');
     if (own(w,'time') && !number(w.time)) return fail('Tempo do mundo inválido.');
+    if (own(w,'seed') && !integer(w.seed,1,2147483646)) return fail('Semente do mundo inválida.');
+    if (own(w,'generationVersion') && !integer(w.generationVersion,1,2)) return fail('Gerador do mundo incompatível.');
     if (own(w,'enemies')) {
       if (!Array.isArray(w.enemies) || w.enemies.length>300) return fail('Inimigos do mundo inválidos.');
       for (const enemy of w.enemies) {

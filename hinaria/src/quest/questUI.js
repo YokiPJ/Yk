@@ -4,6 +4,7 @@ import { say, updateHUD } from '../ui/hud.js';
 import { grantXp } from '../combat/combat.js';
 import { Q } from './quests.js';
 import { CHAPTER_1, QUESTS } from './questData.js';
+import { PART2_TITLE } from '../content/part2.js';
 
 let qt, qj, qb, qbT = 0, introDone = false, tagKey = '';
 const QUEST_SAVE_KEY='hinaria.quests.exploration.v2';
@@ -86,13 +87,14 @@ function toggleJournal() { qj.classList.toggle('on'); if (qj.classList.contains(
 function renderJournal() {
   const done = qj.querySelector('.tabs button.on').dataset.t === 'd';
   const list = Q.journal().filter(j => done ? j.s === 'done' : j.s !== 'done');
+  const chapterTitle=list.some(j=>j.part===2)?PART2_TITLE:CHAPTER_1.title;
   const items = Q.items().length ? `<div class="q"><b>Itens de missão:</b> ${Q.items().map(i => ({ estilhaco: 'Estilhaço de Sonho' }[i] || i)).join(', ')}</div>` : '';
-  qj.querySelector('#qjl').innerHTML = (done ? '' : `<div class="q rw">${CHAPTER_1.title}</div>` + items) + (list.length ? list.map(j => `<div class="q"><b>${j.main ? '★ ' : ''}${j.title}</b>${j.s === 'available' ? ' <i>(nova — clique em Conversar)</i>' : ''}<div class="rw">${j.desc}</div>${j.steps.map(s => `<div class="s ${s.done ? 'd' : s.cur ? 'c' : ''}">${s.done ? '✓' : s.cur ? '➤' : '•'} ${s.text} ${s.prog}</div>`).join('')}${j.reward ? `<div class="rw">Recompensa: ${j.reward.gold || 0} de ouro, ${j.reward.xp || 0} de exp</div>` : ''}</div>`).join('') : '<div class="q">Nada por aqui ainda.</div>');
+  qj.querySelector('#qjl').innerHTML = (done ? '' : `<div class="q rw">${chapterTitle}</div>` + items) + (list.length ? list.map(j => `<div class="q"><b>${j.main ? '★ ' : ''}${j.title}</b>${j.s === 'available' ? ' <i>(nova — clique em Conversar)</i>' : ''}<div class="rw">${j.desc}</div>${j.steps.map(s => `<div class="s ${s.done ? 'd' : s.cur ? 'c' : ''}">${s.done ? '✓' : s.cur ? '➤' : '•'} ${s.text} ${s.prog}</div>`).join('')}${j.reward ? `<div class="rw">Recompensa: ${j.reward.gold || 0} de ouro, ${j.reward.xp || 0} de exp</div>` : ''}</div>`).join('') : '<div class="q">Nada por aqui ainda.</div>');
 }
 
 function refresh() {
   if (!qt) return;
-  qt.innerHTML = Q.tracker().slice(0, 3).map(t => `<div><span class="t">${t.main ? '★ ' : ''}${t.title}</span>${t.isNew ? ' <span class="n">NOVA</span>' : ''}<div class="o">➤ ${t.text} ${t.prog}</div></div>`).join('');
+  qt.innerHTML = Q.tracker().sort((a,b)=>(b.part||1)-(a.part||1)).slice(0, 3).map(t => `<div><span class="t">${t.main ? '★ ' : ''}${t.title}</span>${t.isNew ? ' <span class="n">NOVA</span>' : ''}<div class="o">➤ ${t.text} ${t.prog}</div></div>`).join('');
   if (qj && qj.classList.contains('on')) renderJournal();
   markTags();
 }
@@ -112,6 +114,13 @@ export function questTick(dt) {
   if (qbT > 0) { qbT -= dt; if (qbT <= 0) qb.classList.remove('on'); }
   if (!introDone && !gameState.ccOpen && gameState.N) {
     introDone = true;
+    if(Q.status('boss_orc')==='done'){
+      const title=Q.status('p2_ultima_voz')==='done'?'Parte II concluída — O Eco sob as Cinzas':PART2_TITLE;
+      qb.innerHTML=`<small>HINÁRIA — A fronteira continua</small><b>${title}</b>`;qb.classList.add('on');qbT=4;
+      markTags();return;
+    }
+    // Continuing an existing adventure must not repeat the opening narration.
+    if(Q.status('c1_ratos')!=='available'){markTags();return;}
     qb.innerHTML = `<small>HINÁRIA — Vilarrubra</small><b>${CHAPTER_1.title}</b>`; qb.classList.add('on'); qbT = 5;
     say('Faz três noites que os grilos calaram em Vilarrubra. Os ratos fogem dos campos, os cães uivam para o leste e o ar tem um cheiro de ferro e sonho.', 'npc');
     say('Bram, o ferreiro, mandou chamar você. Ele fica ao lado da casa grande, ao norte. Chegue perto e use o botão <b>Conversar</b> para falar com ele.', 'npc');
@@ -131,7 +140,7 @@ export function reconcileDefeatedBossQuests() {
   if(reconcilingBosses || gameState.suspendLegacyPersistence || !gameState.defeatedBosses?.size)return;
   reconcilingBosses=true;
   try {
-    for(const [bossId,id,k] of [['troll_ancient','boss_troll','troll'],['orc_king','boss_orc','orc']]) {
+    for(const [bossId,id,k] of [['troll_ancient','boss_troll','troll'],['orc_king','boss_orc','orc'],['sentinela_eco','p2_ultima_voz','troll']]) {
       if(!gameState.defeatedBosses.has(bossId) || Q.status(id)!=='active')continue;
       const state=JSON.parse(Q.serialize()).q[id],definition=QUESTS.find(q=>q.id===id);
       const step=definition?.steps[state?.step];

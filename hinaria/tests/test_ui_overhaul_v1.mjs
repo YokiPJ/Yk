@@ -4,7 +4,7 @@ import { fileURLToPath } from 'node:url';
 import { dirname, resolve, join } from 'node:path';
 const root=resolve(dirname(fileURLToPath(import.meta.url)),'..');
 const read=x=>readFileSync(join(root,x),'utf8');
-const html=read('index.html'),main=read('src/main.js'),code=read('src/ui/hudOverhaulV1.js'),css=read('assets/ui/hud-overhaul-v1.css');
+const html=read('index.html'),main=read('src/core/bootGame.js'),code=read('src/ui/hudOverhaulV1.js'),css=read('assets/ui/hud-overhaul-v1.css');
 assert.match(html,/assets\/ui\/hud-overhaul-v1\.css/);
 assert.match(main,/initHudOverhaulV1\(\)/);
 for(const id of ['arsenal-btn','chr','qbtn','hinaria-lore-button','perf-open']) assert.match(code,new RegExp(`data-original="${id}"`));

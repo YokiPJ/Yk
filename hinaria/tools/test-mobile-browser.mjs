@@ -42,7 +42,7 @@ try{
    });
    assert.equal(state.overflow,false);assert.equal(state.gameCanvases,1);assert.equal(state.hud.backend,'canvas2d');
    assert.ok(state.hud.width*state.hud.height<=state.viewport[0]*state.viewport[1],JSON.stringify({hud:state.hud,viewport:state.viewport}));
-   assert.ok(state.drawingPixels<=1_000_000);assert.equal(state.graphics.frameLimit,30);
+   assert.ok(state.drawingPixels<=state.graphics.deviceProfile.pixelBudget,'drawing buffer respects the current mobile pixel budget');assert.equal(state.graphics.frameLimit,30);
    const joy=await page.locator('#joy').boundingBox(),dock=await page.locator('#ui-combat-dock').boundingBox();
    assert.ok(joy&&dock);assert.ok(joy.x+joy.width<=dock.x||dock.x+dock.width<=joy.x||joy.y+joy.height<=dock.y||dock.y+dock.height<=joy.y,'thumb controls must not overlap');
    await page.screenshot({path:out+`/mobile-${width}x${height}.png`,fullPage:true});layouts.push(state);

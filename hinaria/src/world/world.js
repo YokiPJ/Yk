@@ -12,12 +12,28 @@ import {createEnvironmentV2, getV2EnvironmentTexture} from '../assets/environmen
 import { buildVillageDressingV3, updateVillageModelsV3 } from '../assets/villageModelsV3.js';
 import {addSurface, decorateTerrainCanvas} from '../assets/hinariaTextures.js';
 import { registerChunkVisual } from './chunkVisibility.js';
+import { PART2_LAYOUT, PART2_SPAWNS } from '../content/part2.js';
 
-// Seeded random for reproducible world
+// Seeded random for reproducible world. Gameplay draws never consume layout/visual RNG.
 let seed = 11;
+let runtimeSeed = 11;
 const R = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
-export const rnd = (a, b) => a + R() * (b - a);
+const worldRnd = (a, b) => a + R() * (b - a);
+const worldRi = (a, b) => Math.floor(worldRnd(a, b + 1));
+export const rnd = (a, b) => a + ((runtimeSeed = (runtimeSeed * 16807) % 2147483647) / 2147483647) * (b - a);
 export const ri = (a, b) => Math.floor(rnd(a, b + 1));
+export const WORLD_GENERATION_VERSION = 2;
+export function normalizeWorldSeed(value = 11) {
+    if (typeof value === 'number') {
+        if (!Number.isSafeInteger(value)) throw new Error('A semente deve ser um número inteiro seguro.');
+        return Math.abs(value) % 2147483647 || 1;
+    }
+    if (typeof value !== 'string' || !value.trim() || value.length > 80)
+        throw new Error('A semente deve ser um número inteiro ou texto de até 80 caracteres.');
+    let hash = 2166136261;
+    for (const character of value) hash = Math.imul(hash ^ character.codePointAt(0), 16777619) >>> 0;
+    return hash % 2147483647 || 1;
+}
 
 // World constants
 const W = CONFIG.WORLD_SIZE;
@@ -68,7 +84,9 @@ function house(x, z, w, d, o = {}) {
     gameState.HO.push(Object.assign({ x, z, w, d }, o));
     for (let i = Math.ceil(x - w / 2 + 0.01); i <= Math.floor(x + w / 2 - 0.01); i++)
         for (let j = Math.ceil(z - d / 2 + 0.01); j <= Math.floor(z + d / 2 - 0.01); j++) blk(i, j);
-    clr(x, z + d / 2 + 1, 1.5);
+    // Protect the side approach as well as the doorstep. The smith's doorway
+    // otherwise becomes a pocket between two houses when an oak fills x=23.
+    clr(x, z + d / 2 + 1, 2.2);
 }
 
 // Road drawing
@@ -88,15 +106,118 @@ function road(pts, r, ty) {
 }
 
 // Vegetation scatter helper
-const tint = (a, b) => ri(a, b) * 65793;
+const tint = (a, b) => worldRi(a, b) * 65793;
 const nearClr = (x, z) => gameState.CLR.some(c => Math.hypot(x - c[0], z - c[1]) < c[2]);
-const sc = (t, x, z, o) => ob(t, x + rnd(-0.28, 0.28), z + rnd(-0.28, 0.28), Object.assign({ r: R() * 6.28, c: tint(180, 255) }, o));
+const sc = (t, x, z, o) => ob(t, x + worldRnd(-0.28, 0.28), z + worldRnd(-0.28, 0.28), Object.assign({ r: R() * 6.28, c: tint(180, 255), procedural:true }, o));
 const FC = [0xff7aa8, 0xfff070, 0xc9a0ff, 0xffffff, 0x8ab4f8];
+
+function floodReachableWorld() {
+    const reached = new Uint8Array(W * W), queue = new Uint32Array(W * W);
+    if (gameState.B[13]?.[15]) throw new Error('A geração bloqueou o ponto inicial de Vilarrubra.');
+    let length=1;queue[0]=13*W+15;reached[queue[0]]=1;
+    for (let cursor=0;cursor<length;cursor++) {
+        const tile=queue[cursor],x=Math.floor(tile/W),z=tile%W;
+        for (let dx=-1;dx<=1;dx++) for (let dz=-1;dz<=1;dz++) {
+            const nx=x+dx,nz=z+dz;
+            if ((!dx&&!dz)||nx<0||nz<0||nx>=W||nz>=W||gameState.B[nx][nz]||reached[nx*W+nz])continue;
+            if (dx&&dz&&(gameState.B[x+dx][z]||gameState.B[x][z+dz]))continue;
+            reached[nx*W+nz]=1;queue[length++]=nx*W+nz;
+        }
+    }
+    return reached;
+}
+
+function worldObjectives() {
+    const goals=[];
+    const point=(name,x,z)=>{if(x>=0&&z>=0&&x<W&&z<W)goals.push({name,cells:[x*W+z],minimum:1});};
+    point('Bram',17,9);point('Yoki',6,6);
+    for(const h of gameState.HO)point('Porta: '+h.district,Math.round(h.x),Math.round(h.z+h.d/2+1));
+    function within(name,x,z,r){
+        const cells=[];
+        for(let a=Math.max(0,Math.floor(x-r));a<=Math.min(W-1,Math.ceil(x+r));a++)
+            for(let b=Math.max(0,Math.floor(z-r));b<=Math.min(W-1,Math.ceil(z+r));b++)
+                if(Math.hypot(x-a,z-b)<r)cells.push(a*W+b);
+        if(cells.length)goals.push({name,cells,minimum:1});
+    }
+    for(const l of gameState.LM)within(l.n,l.x,l.z,l.r);
+    for(const c of gameState.CH)within('Baú: '+c.n,c.x,c.z,1.8);
+    for(const zone of PART2_SPAWNS){
+        const cells=[];
+        for(let x=Math.max(0,zone.x0);x<=Math.min(W-1,zone.x1);x++)
+            for(let z=Math.max(0,zone.z0);z<=Math.min(W-1,zone.z1);z++)
+                if(zone.zn.includes(gameState.ZN[x][z]))cells.push(x*W+z);
+        if(cells.length)goals.push({name:'Encontro: '+zone.id,cells,minimum:zone.n});
+    }
+    return goals;
+}
+
+/** Repair only randomly scattered blockers. Structures, water, bridge rails,
+ * chests and designed props are impassable even to the repair search. */
+function ensureWorldRoutes(structuralCollision) {
+    let reached=floodReachableWorld();
+    const removable=new Set(gameState.OB.filter(o=>o.procedural&&BLK.has(o.t)&&!o.nb)
+        .map(o=>Math.round(o.x)*W+Math.round(o.z)));
+    const removed=new Set(),repairs=[];
+    function search(candidates){
+        const targets=new Set(candidates),distance=new Float64Array(W*W).fill(Infinity);
+        const previous=new Int32Array(W*W).fill(-1),heap=[];
+        function push(tile,cost){let index=heap.length;heap.push([tile,cost]);while(index){const parent=(index-1)>>1;if(heap[parent][1]<=cost)break;heap[index]=heap[parent];index=parent;}heap[index]=[tile,cost];}
+        function pop(){const first=heap[0],last=heap.pop();if(heap.length){let index=0;while(index*2+1<heap.length){let child=index*2+1;if(child+1<heap.length&&heap[child+1][1]<heap[child][1])child++;if(heap[child][1]>=last[1])break;heap[index]=heap[child];index=child;}heap[index]=last;}return first;}
+        const start=13*W+15;distance[start]=0;push(start,0);
+        while(heap.length){
+            const [tile,cost]=pop();if(cost!==distance[tile])continue;
+            if(targets.has(tile)){
+                const path=[];for(let node=tile;node!==-1;node=previous[node])path.push(node);
+                return path;
+            }
+            const x=Math.floor(tile/W),z=tile%W;
+            for(const [dx,dz] of [[1,0],[-1,0],[0,1],[0,-1]]){
+                const nx=x+dx,nz=z+dz,n=nx*W+nz;
+                if(nx<=0||nz<=0||nx>=W-1||nz>=W-1||gameState.G[nx][nz]===3)continue;
+                if(gameState.B[nx][nz]&&(structuralCollision[nx][nz]||!removable.has(n)))continue;
+                const ground=gameState.G[nx][nz],next=cost+1+([1,2,4].includes(ground)?0:2)+(gameState.B[nx][nz]?1000000:0);
+                if(next<distance[n]){distance[n]=next;previous[n]=tile;push(n,next);}
+            }
+        }
+        return null;
+    }
+    const objectives=worldObjectives();
+    for(const objective of objectives){
+        let available=objective.cells.filter(cell=>reached[cell]).length;
+        while(available<objective.minimum){
+            const path=search(objective.cells.filter(cell=>!reached[cell]));
+            if(!path)throw new Error('Nenhuma rota segura até '+objective.name+' (semente '+gameState.worldSeed+').');
+            let cleared=0;
+            for(const cell of path){const x=Math.floor(cell/W),z=cell%W;if(gameState.B[x][z]){gameState.B[x][z]=0;removed.add(cell);cleared++;}}
+            if(!cleared)throw new Error('Falha ao reparar a rota de '+objective.name+'.');
+            repairs.push({target:objective.name,removedCells:cleared});reached=floodReachableWorld();
+            available=objective.cells.filter(cell=>reached[cell]).length;
+        }
+    }
+    const before=gameState.OB.length;
+    gameState.OB=gameState.OB.filter(o=>!(o.procedural&&BLK.has(o.t)&&removed.has(Math.round(o.x)*W+Math.round(o.z))));
+    Object.assign(gameState.worldGenerationDiagnostics,{objectives:objectives.length,routeRepairs:repairs,
+        routeVegetationRemoved:before-gameState.OB.length,reachableCells:reached.reduce((sum,n)=>sum+n,0)});
+    return reached;
+}
 
 /**
  * Generate the complete world
  */
-export function generateWorld() {
+export function generateWorld({seed: requestedSeed = 11} = {}) {
+    const worldSeed = normalizeWorldSeed(requestedSeed);
+    // Logical regeneration is supported before rendering. Replacing terrain data
+    // underneath existing meshes would desynchronize visuals and collision.
+    if (gameState.ground || gameState.waterMesh || gameState.worldChunks?.size)
+        throw new Error('O mundo já possui geometria. Recarregue antes de gerar outra semente.');
+    for (const key of ['G','ZN','B','OB','CLR','HO','CH','LM','BRG','HS']) gameState[key] = [];
+    gameState.byT = {};
+    gameState.RC = null; gameState.HG = null; gameState._vst = null;
+    gameState.worldSeed = worldSeed;
+    gameState.worldGenerationVersion = WORLD_GENERATION_VERSION;
+    gameState.worldGenerationDiagnostics = {seed:worldSeed,version:WORLD_GENERATION_VERSION};
+    seed = worldSeed;
+    runtimeSeed = ((worldSeed ^ 0x51f15e) >>> 0) % 2147483647 || 1;
     // Initialize arrays
     for (let x = 0; x < W; x++) {
         gameState.G.push(new Uint8Array(W));
@@ -151,7 +272,7 @@ export function generateWorld() {
         for (let z = z0; z <= z1; z++)
             for (let x = Math.floor(xr(z)) - 3; x <= Math.floor(xr(z)) + 3; x++)
                 if (gameState.G[x][z] === 3) { gameState.G[x][z] = 4; gameState.B[x][z] = 0; a = Math.min(a, x); b = Math.max(b, x); }
-        gameState.BRG.push({ x0: a, x1: b, z0, z1 });
+        if (a <= b) gameState.BRG.push({ x0: a, x1: b, z0, z1 });
         // The detailed bridge has guardrails near its +/-Z edges. Keep the
         // center lane crossable but do not allow entities to walk through
         // those rails or stand on the river surface beside the deck.
@@ -197,7 +318,7 @@ export function generateWorld() {
         const ch = x >= 56 && x <= 60 && z >= 58 && z <= 61;
         const co = x >= 57 && x <= 58 && z <= 57;
         gameState.G[x][z] = 8;
-        if (!ch && !co) { gameState.B[x][z] = 1; ob('cliff', x + rnd(-0.2, 0.2), z + rnd(-0.2, 0.2), { s: rnd(1.5, 2.2), sy: rnd(1.3, 2.3), r: R() * 6 }); }
+        if (!ch && !co) { gameState.B[x][z] = 1; ob('cliff', x + worldRnd(-0.2, 0.2), z + worldRnd(-0.2, 0.2), { s: worldRnd(1.5, 2.2), sy: worldRnd(1.3, 2.3), r: R() * 6 }); }
     }
     
     // Shore transition
@@ -281,7 +402,7 @@ export function generateWorld() {
     for(const [x,z] of [[7,14],[8,14],[20,8],[20,9],[6,20],[23,20]])
         villageProp('barrel',x,z,'storage',{r:R()*6});
     for(const [x,z] of [[8,19],[9,19],[15,7],[15,6],[23,21]])
-        villageProp('crate',x,z,'storage',{r:R()*6,s:rnd(.85,1.1)});
+        villageProp('crate',x,z,'storage',{r:R()*6,s:worldRnd(.85,1.1)});
 
     // LIGHTING: fully remove the old village 'torch' objects. Low-profile
     // crafted lanterns give each district a consistent medieval visual language.
@@ -305,7 +426,7 @@ export function generateWorld() {
             villageProp('oak',x,z,'village orchard',{s:.78+R()*.15,c:tint(165,215)});
     }
     for(const [x,z] of [[19.5,14],[19.8,16.2],[6.8,8.1],[7.8,8.4]])
-        villageProp('flower',x,z,'garden',{nb:1,c:FC[ri(0,4)],s:1.2});
+        villageProp('flower',x,z,'garden',{nb:1,c:FC[worldRi(0,4)],s:1.2});
 
     // Transition path clearings: ensure the visual paths are not swallowed by
     // the subsequent forest scatter, especially on the southbound quest route.
@@ -326,13 +447,13 @@ export function generateWorld() {
     for (let x = 45; x <= 55; x++) for (let z = 7; z <= 17; z++)
         if (x === 45 || x === 55 || z === 7 || z === 17) {
             if ((x === 45 && z >= 11 && z <= 13) || (z === 17 && x >= 49 && x <= 51) || (x === 55 && z >= 11 && z <= 12) || R() < 0.22) continue;
-            ob('wall', x, z, { r: (z === 7 || z === 17) ? 0 : Math.PI / 2, sy: rnd(0.35, 1.15) });
+            ob('wall', x, z, { r: (z === 7 || z === 17) ? 0 : Math.PI / 2, sy: worldRnd(0.35, 1.15) });
         }
-    for (const [x, z] of [[47, 9], [53, 9], [47, 15], [53, 15], [50, 15]]) ob('pillar', x, z, { sy: R() < 0.5 ? 1 : rnd(0.35, 0.7) });
+    for (const [x, z] of [[47, 9], [53, 9], [47, 15], [53, 15], [50, 15]]) ob('pillar', x, z, { sy: R() < 0.5 ? 1 : worldRnd(0.35, 0.7) });
     ob('altar', 50, 9, {});
     chs(50, 10, 90, 'Santuário das Ruínas');
     for (const [x, z] of [[44, 10], [44, 14], [48, 18], [52, 18]]) ob('torch', x, z, {});
-    for (const [x, z] of [[59, 3], [61, 3], [61, 5]]) ob('pillar', x, z, { sy: rnd(0.5, 1) });
+    for (const [x, z] of [[59, 3], [61, 3], [61, 5]]) ob('pillar', x, z, { sy: worldRnd(0.5, 1) });
     chs(60, 4, 70, 'Cripta Escondida');
     clr(50, 12, 4); clr(46, 12, 2.5); clr(60, 5, 2.5); clr(57, 8, 0.8);
     
@@ -347,7 +468,7 @@ export function generateWorld() {
     
     for (let x = 42; x <= 46; x++) for (let z = 38; z <= 42; z++)
         if ((x === 42 || x === 46 || z === 38 || z === 42) && !(x === 44 && z === 42) && !(x === 42 && z === 40) && R() > 0.15)
-            ob('wall', x, z, { r: (z === 38 || z === 42) ? 0 : Math.PI / 2, sy: rnd(0.5, 1.3) });
+            ob('wall', x, z, { r: (z === 38 || z === 42) ? 0 : Math.PI / 2, sy: worldRnd(0.5, 1.3) });
     ob('pillar', 44, 40, { sy: 1 });
     clr(44, 40, 2.2);
     ob('torch', 43, 43, {});
@@ -374,7 +495,7 @@ export function generateWorld() {
     clr(10, 41, 2.8);
     for (let i = 0; i < 46; i++) {
         const a = R() * 6.28, d = Math.sqrt(R()) * 2.6;
-        ob('flower', 10 + Math.cos(a) * d, 41 + Math.sin(a) * d, { c: FC[ri(0, 4)], s: 1.3 });
+        ob('flower', 10 + Math.cos(a) * d, 41 + Math.sin(a) * d, { c: FC[worldRi(0, 4)], s: 1.3 });
     }
     
     ob('altar', 7, 59, {});
@@ -453,6 +574,23 @@ export function generateWorld() {
         ob('tent', x+3,z,{r:1.1}); ob('fire',x+4,z+2,{});
     }
 
+    // Parte II occupies existing frontier land and shares the original nav grid.
+    // Filter by bounds so historical 64x64 tooling does not create phantom POIs.
+    const inside=(x,z)=>x>0&&z>0&&x<W-1&&z<W-1;
+    for(const landmark of PART2_LAYOUT.landmarks)
+        if(inside(landmark.x,landmark.z))lm(landmark.n,landmark.x,landmark.z,landmark.r);
+    for(const clearing of PART2_LAYOUT.clearings)
+        if(inside(clearing[0],clearing[1]))clr(...clearing);
+    for(const route of PART2_LAYOUT.roads)
+        if(route.pts.every(([x,z])=>inside(x,z)))road(route.pts,route.r,route.ty);
+    for(const {t,x,z,...style} of PART2_LAYOUT.props)
+        if(inside(x,z))ob(t,x,z,{...style,region:PART2_LAYOUT.id});
+
+    // Snapshot designed obstacles before scatter. A repair may prune a random
+    // tree, but may never tunnel through a house, forge, altar or bridge rail.
+    for(let fx=16;fx<=18;fx++)for(let fz=5;fz<=7;fz++)blk(fx,fz);
+    const structuralCollision=gameState.B.map(row=>row.slice());
+
     // --- Procedural vegetation ---
     for (let x = 0; x < W; x++) for (let z = 0; z < W; z++) {
         const q = gameState.ZN[x][z], g = gameState.G[x][z];
@@ -460,11 +598,11 @@ export function generateWorld() {
         const bd2 = x === 1 || z === 1 || x === W - 2 || z === W - 2;
         
         if (bd) {
-            if (g !== 3) gameState.OB.push({ t: q >= 4 ? 'rock' : 'pine', x, z, r: R() * 6, s: rnd(1, 1.4), c: tint(150, 230) });
+            if (g !== 3) gameState.OB.push({ t: q >= 4 ? 'rock' : 'pine', x, z, r: R() * 6, s: worldRnd(1, 1.4), c: tint(150, 230) });
             continue;
         }
         if (bd2 && R() < 0.5 && !gameState.B[x][z] && (g === 0 || g === 5 || g === 6 || g === 8) && !nearClr(x, z)) {
-            ob(q >= 4 ? 'rock' : 'pine', x, z, { s: rnd(0.9, 1.3), r: R() * 6, c: tint(150, 230) });
+            ob(q >= 4 ? 'rock' : 'pine', x, z, { s: worldRnd(0.9, 1.3), r: R() * 6, c: tint(150, 230), procedural:true });
             continue;
         }
         if (gameState.B[x][z] || g === 1 || g === 2 || g === 3 || g === 4 || g === 7 || nearClr(x, z)) continue;
@@ -474,15 +612,15 @@ export function generateWorld() {
         if ((x >= LEGACY_MAP_SIZE || z >= LEGACY_MAP_SIZE) && r < .10) continue;
         if (g === 9) { if (r < 0.05) sc('srock', x, z, {}); continue; }
         if (q === 0) {
-            if (ev(x, z) > 0.72 && r < 0.3) sc('oak', x, z, { s: rnd(0.9, 1.2) });
-            else if (r < 0.1) sc('flower', x, z, { c: FC[ri(0, 4)] });
+            if (ev(x, z) > 0.72 && r < 0.3) sc('oak', x, z, { s: worldRnd(0.9, 1.2) });
+            else if (r < 0.1) sc('flower', x, z, { c: FC[worldRi(0, 4)] });
             else if (r < 0.2) sc('tuft', x, z, {});
         } else if (q === 1) {
-            if (r < 0.04) sc(R() < 0.6 ? 'pine' : 'oak', x, z, { s: rnd(0.85, 1.3) });
+            if (r < 0.04) sc(R() < 0.6 ? 'pine' : 'oak', x, z, { s: worldRnd(0.85, 1.3) });
             else if (r < 0.075) sc('bush', x, z, {});
-            else if (r < 0.095) sc('rock', x, z, { s: rnd(0.9, 1.4) });
+            else if (r < 0.095) sc('rock', x, z, { s: worldRnd(0.9, 1.4) });
             else if (r < 0.13) sc('srock', x, z, {});
-            else if (r < 0.24) sc('flower', x, z, { c: FC[ri(0, 4)] });
+            else if (r < 0.24) sc('flower', x, z, { c: FC[worldRi(0, 4)] });
             else if (r < 0.36) sc('tuft', x, z, {});
         } else if (q === 2) {
             // V4 groves instead of uniformly noisy tree scatter. Density varies
@@ -496,18 +634,18 @@ export function generateWorld() {
                     }
                 }
             if (trailEdge) {
-                if (r < 0.13) sc('flower', x, z, { c: FC[ri(0, 4)], s: 0.8 });
+                if (r < 0.13) sc('flower', x, z, { c: FC[worldRi(0, 4)], s: 0.8 });
                 else if (r < 0.32) sc('tuft', x, z, { s: 0.7 });
                 continue;
             }
             const grove = (Math.sin(x * 0.37) + Math.cos(z * 0.43) + Math.sin((x + z) * 0.18)) / 3;
             const trees = Math.max(0.09, Math.min(0.38, 0.22 + grove * 0.2));
-            if (r < trees * 0.77) sc('pine', x, z, { s: rnd(0.85, 1.45), c: tint(120, 210) });
-            else if (r < trees) sc('oak', x, z, { s: rnd(0.9, 1.4), c: tint(130, 210) });
+            if (r < trees * 0.77) sc('pine', x, z, { s: worldRnd(0.85, 1.45), c: tint(120, 210) });
+            else if (r < trees) sc('oak', x, z, { s: worldRnd(0.9, 1.4), c: tint(130, 210) });
             else if (r < trees + 0.06) sc('bush', x, z, { c: tint(120, 200) });
             else if (r < trees + 0.077) sc('log', x, z, {});
             else if (r < trees + 0.095) sc('rock', x, z, {});
-            else if (r < trees + 0.13) sc('flower', x, z, { c: FC[ri(0, 4)] });
+            else if (r < trees + 0.13) sc('flower', x, z, { c: FC[worldRi(0, 4)] });
             else if (r < trees + 0.26) sc('tuft', x, z, { c: tint(110, 190) });
         } else if (q === 4) {
             if (x >= 56 && r < 0.4) sc(R() < 0.5 ? 'oak' : 'bush', x, z, { c: tint(130, 210) });
@@ -516,27 +654,32 @@ export function generateWorld() {
             else if (r < 0.1) sc('srock', x, z, {});
             else if (r < 0.18) sc('tuft', x, z, {});
         } else if (q === 5) {
-            if (r < 0.075) sc('dead', x, z, { s: rnd(0.8, 1.3), c: tint(140, 220) });
-            else if (r < 0.145) sc('rock', x, z, { s: rnd(1, 1.7), c: tint(120, 200) });
+            if (r < 0.075) sc('dead', x, z, { s: worldRnd(0.8, 1.3), c: tint(140, 220) });
+            else if (r < 0.145) sc('rock', x, z, { s: worldRnd(1, 1.7), c: tint(120, 200) });
             else if (r < 0.2) sc('srock', x, z, {});
             else if (r < 0.22) sc('tuft', x, z, { c: tint(110, 170) });
         } else if (q === 6) {
-            if (r < 0.05) sc('rock', x, z, { s: rnd(1, 1.6), c: tint(100, 170) });
+            if (r < 0.05) sc('rock', x, z, { s: worldRnd(1, 1.6), c: tint(100, 170) });
             else if (r < 0.11) sc('srock', x, z, {});
         }
     }
     
     // Frontier gates: terrain paint and collision must agree at the old 64-tile boundary.
     // Only clear the narrow seams x=62..65 or z=62..65, never the village or bosses.
+    const clearedFrontier=new Set();
     for (const [axis,coord] of [['z',22],['z',35],['x',20],['x',44]]) {
         for (let delta=-1; delta<=1; delta++) for (let seam=62; seam<=65; seam++) {
             const x = axis === 'z' ? coord+delta : seam;
             const z = axis === 'z' ? seam : coord+delta;
-            if (!gameState.G[x] || gameState.G[x][z] === 3 || gameState.G[x][z] === 4) continue;
+            if (x<=0||z<=0||x>=W-1||z>=W-1||gameState.G[x][z] === 3 || gameState.G[x][z] === 4 || structuralCollision[x][z]) continue;
             gameState.B[x][z] = 0;
+            clearedFrontier.add(x*W+z);
             if (gameState.G[x][z] !== 7 && gameState.G[x][z] !== 8) gameState.G[x][z] = 1;
         }
     }
+    const beforeFrontier=gameState.OB.length;
+    gameState.OB=gameState.OB.filter(o=>!(o.procedural&&BLK.has(o.t)&&clearedFrontier.has(Math.round(o.x)*W+Math.round(o.z))));
+    gameState.worldGenerationDiagnostics.frontierVegetationRemoved=beforeFrontier-gameState.OB.length;
 
     // Never let decorative vegetation close the middle of a bridge.
     // Newly extended river meanders can leave a shore tile between the two
@@ -550,23 +693,9 @@ export function generateWorld() {
     gameState.OB = gameState.OB.filter(o => !(
         BLK.has(o.t) && bridgeCenter(Math.round(o.x), Math.round(o.z))));
 
-    // V6: forge footprint must be present BEFORE flood-fill/pathfinding.
-    // A 3x3 physical building; its door stands outside the blocked tiles.
-    for (let fx=16; fx<=18; fx++) for (let fz=5; fz<=7; fz++) blk(fx, fz);
-
-    // --- Reachability check (flood fill 8-dir, no corner cutting) ---
-    const RC = new Uint8Array(W * W);
-    { const q = [13 * W + 15]; RC[13 * W + 15] = 1;
-        for (let h = 0; h < q.length; h++) {
-            const c = q[h], x = (c / W) | 0, z = c % W;
-            for (let dx = -1; dx <= 1; dx++) for (let dz = -1; dz <= 1; dz++) {
-                const nx = x + dx, nz = z + dz;
-                if ((!dx && !dz) || nx < 0 || nz < 0 || nx >= W || nz >= W || RC[nx * W + nz] || gameState.B[nx][nz]) continue;
-                if (dx && dz && (gameState.B[x + dx][z] || gameState.B[x][z + dz])) continue;
-                RC[nx * W + nz] = 1; q.push(nx * W + nz);
-            }
-        }
-    }
+    // Validate actual objective interaction radii, not just arbitrary open land.
+    // The old pass silently filled an isolated doorway with bushes instead.
+    const RC=ensureWorldRoutes(structuralCollision);
     gameState.RC = RC;
     
     // Block unreachable areas
@@ -594,14 +723,25 @@ export function generateWorld() {
         gameState.HG[iy * (W + 1) + ix] = h;
     }
     
-    console.log('[World] World generated successfully');
+    gameState.worldGenerationDiagnostics.objects=gameState.OB.length;
+    console.log('[World] World generated successfully · seed '+gameState.worldSeed+' · generator '+WORLD_GENERATION_VERSION);
 }
 
 /**
  * Build Three.js meshes for the world
  */
 export function buildWorldMeshes() {
+    for(const _phase of buildWorldMeshSteps()) { /* Preserve the synchronous tooling API. */ }
+}
+/** Allow the loading UI and input to repaint between procedural build sections. */
+export async function buildWorldMeshesAsync(yieldTask=()=>new Promise(resolve=>setTimeout(resolve,0))) {
+    for(const phase of buildWorldMeshSteps())await yieldTask(phase);
+}
+function* buildWorldMeshSteps() {
+    // Texture detail (including touch/desktop differences) cannot move spawns.
+    seed = (((gameState.worldSeed ?? 11) ^ 0x35a7f1) >>> 0) % 2147483647 || 1;
     initAssets();
+    yield 'assets';
     // Visual-only switches: collision, pathfinding, quest/spawn coordinates unchanged.
     const envV2 = (typeof window === 'undefined' || (window.HINARIA_CENARIOS_V2 !== false && new URLSearchParams(window.location.search).get('visual')!=='classico'));
     const texturedMats = new Map();
@@ -644,7 +784,7 @@ export function buildWorldMeshes() {
     for (let x = 0; x < W; x++) for (let z = 0; z < W; z++) {
         let c = BC[gameState.G[x][z]];
         if (gameState.G[x][z] === 0 && gameState.ZN[x][z] === 4) c = [88, 106, 66];
-        const j = ri(-7, 7);
+        const j = worldRi(-7, 7);
         lx.fillStyle = `rgb(${c[0] + j},${c[1] + j},${c[2] + j})`;
         lx.fillRect(x, z, 1, 1);
     }
@@ -652,7 +792,7 @@ export function buildWorldMeshes() {
     ctx.drawImage(lo, 0, 0, W * GS, W * GS);
     const N = W * GS;
     for (let n = 0; n < 110; n++) {
-        const px = rnd(0, N), py = rnd(0, N), r = rnd(18, 56);
+        const px = worldRnd(0, N), py = worldRnd(0, N), r = worldRnd(18, 56);
         const g = ctx.createRadialGradient(px, py, 0, px, py, r);
         g.addColorStop(0, R() < 0.5 ? 'rgba(10,30,10,.26)' : 'rgba(130,160,60,.18)');
         g.addColorStop(1, 'rgba(0,0,0,0)');
@@ -664,13 +804,13 @@ export function buildWorldMeshes() {
             const hs = g === 5 ? [85, 125] : g === 6 ? [30, 50] : [80, 115];
             const k = navigator.maxTouchPoints ? 3 : 5;
             for (let i = 0; i < k; i++) {
-                ctx.strokeStyle = `hsl(${rnd(hs[0], hs[1])},${g === 6 ? 18 : rnd(35, 55)}%,${rnd(20, 40)}%)`;
-                const a = X + rnd(0, GS), b = Z + rnd(0, GS);
-                ctx.beginPath(); ctx.moveTo(a, b); ctx.lineTo(a + rnd(-2, 2), b - rnd(2, 6)); ctx.stroke();
+                ctx.strokeStyle = `hsl(${worldRnd(hs[0], hs[1])},${g === 6 ? 18 : worldRnd(35, 55)}%,${worldRnd(20, 40)}%)`;
+                const a = X + worldRnd(0, GS), b = Z + worldRnd(0, GS);
+                ctx.beginPath(); ctx.moveTo(a, b); ctx.lineTo(a + worldRnd(-2, 2), b - worldRnd(2, 6)); ctx.stroke();
             }
             if (g === 0 && R() < 0.05) {
-                ctx.fillStyle = ['#e8d94a', '#f2f2f2', '#d96a8a', '#8ab4f8'][ri(0, 3)];
-                ctx.fillRect(X + rnd(0, GS), Z + rnd(0, GS), 2, 2);
+                ctx.fillStyle = ['#e8d94a', '#f2f2f2', '#d96a8a', '#8ab4f8'][worldRi(0, 3)];
+                ctx.fillRect(X + worldRnd(0, GS), Z + worldRnd(0, GS), 2, 2);
             }
         } else if (g === 2) {
             // V4: warmer, irregularly sized cobblestones instead of a checker grid.
@@ -679,7 +819,7 @@ export function buildWorldMeshes() {
             for (let row = 0; row < 3; row++) for (let col = -1; col < 3; col++) {
                 const xx = X + col * 6.0 + (row % 2) * 2.8;
                 const zz = Z + row * 5.3;
-                const shade = ri(126, 166);
+                const shade = worldRi(126, 166);
                 ctx.fillStyle = `rgb(${shade},${shade - 7},${shade - 17})`;
                 ctx.fillRect(xx + 0.6, zz + 0.6, 5.2, 4.45);
                 ctx.fillStyle = 'rgba(255,246,218,.12)';
@@ -687,13 +827,13 @@ export function buildWorldMeshes() {
             }
         } else if (g === 1 || g === 9) {
             ctx.fillStyle = g === 1 ? 'rgba(70,50,30,.35)' : 'rgba(255,240,200,.3)';
-            for (let i = 0; i < 3; i++) ctx.fillRect(X + rnd(0, GS), Z + rnd(0, GS), 2, 1.5);
+            for (let i = 0; i < 3; i++) ctx.fillRect(X + worldRnd(0, GS), Z + worldRnd(0, GS), 2, 1.5);
         } else if (g === 7) {
             ctx.strokeStyle = 'rgba(0,0,0,.35)'; ctx.strokeRect(X + 0.5, Z + 0.5, GS - 1, GS - 1);
-            if (R() < 0.3) { ctx.beginPath(); ctx.moveTo(X + rnd(0, GS), Z); ctx.lineTo(X + rnd(0, GS), Z + GS); ctx.stroke(); }
+            if (R() < 0.3) { ctx.beginPath(); ctx.moveTo(X + worldRnd(0, GS), Z); ctx.lineTo(X + worldRnd(0, GS), Z + GS); ctx.stroke(); }
         } else if (g === 8) {
             ctx.fillStyle = 'rgba(0,0,0,.25)';
-            for (let i = 0; i < 3; i++) ctx.fillRect(X + rnd(0, GS), Z + rnd(0, GS), 3, 2);
+            for (let i = 0; i < 3; i++) ctx.fillRect(X + worldRnd(0, GS), Z + worldRnd(0, GS), 3, 2);
         }
     }
     // The center of Vilarrubra is now a recognizable circular civic piazza.
@@ -764,6 +904,8 @@ export function buildWorldMeshes() {
     gameState.waterMesh.position.y = -0.06;
     gameState.scene.add(gameState.waterMesh);
     
+    yield 'terrain';
+
     // Instanced objects by chunk
     const CHK = 16;
     const UPV = new THREE.Vector3(0, 1, 0);
@@ -820,6 +962,7 @@ export function buildWorldMeshes() {
             if (t === 'torchf' || t === 'firef' || t === 'lamph') gameState.flick.push(im);
             registerChunkVisual(im,cx,cz);
         }
+        yield 'objects:'+t;
     }
     
     // V2 houses: consistent timber, stone and roof materials. Original V6 fallback preserved.
@@ -828,9 +971,10 @@ export function buildWorldMeshes() {
             const id = h.district?.includes('tavern') ? 'taverna' : h.w >= 3.65 ? 'casarao' : 'casa';
             const baseW=id==='casa'?3:3.75, baseD=id==='casa'?2.3:2.8;
             const factor=Math.min((h.w-.16)/baseW,(h.d-.16)/baseD);
-            if (addDetailedPrefab(id,h.x,h.z,0,Math.max(.5,factor))) continue;
+            if (addDetailedPrefab(id,h.x,h.z,0,Math.max(.5,factor))) {yield 'house';continue;}
         }
         registerChunkVisual(buildVillageHouseV6(h,gameState.getHeightAt(h.x,h.z)),h.x,h.z);
+        yield 'house';
     }
 
     // V7.6: road-edge waymarkers replace V7.5's oversized timber arches.
@@ -879,6 +1023,8 @@ export function buildWorldMeshes() {
             console.info('[Hinária] Modelos da vila V3:', placedV3.join(' | '));
         } catch (err) { console.warn('[Hinária] Modelos da vila V3 ignorados:', err); }
     }
+
+    yield 'village';
 
     // Bridges
     for (const b of gameState.BRG) {
@@ -955,6 +1101,7 @@ export function buildWorldMeshes() {
     gameState.scene.add(gameState.forge);
     
     gameState.fire = new THREE.PointLight(0xff8a3a, 1.2, 5);
+    gameState.fire.userData.worldLocalLight=true;
     gameState.fire.position.set(18.3, 0.8, 9.4);
     gameState.scene.add(gameState.fire);
     

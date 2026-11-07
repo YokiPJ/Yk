@@ -60,6 +60,7 @@ for (const [label,mutate] of [
   ['invalid house world coordinate',s=>s.house={x:96,z:15,px:0,pz:0,heading:0}],
   ['invalid house interior coordinate',s=>s.house={x:13,z:15,px:3,pz:0,heading:0}],
   ['negative awakening duration',s=>s.player.axeAwakeRemaining=-1],
+  ['negative axe proc cooldown',s=>s.player.axeProcRemaining=-1],
   ['invalid camera yaw',s=>s.player.cameraYaw='left'],
 ]) check(`reject ${label}`,()=>{const s=sample();mutate(s);assert.equal(validateSave(s).ok,false);});
 check('prototype pollution keys are rejected',()=>{
@@ -107,5 +108,20 @@ check('runtime timers, monsters, respawns and cinematics round trip',()=>{
   assert.equal(writeSave(s,storage).ok,true);assert.deepEqual(readSave(storage).data,s);
   s.world.enemies[0].hp=170;assert.equal(validateSave(s).ok,false);
   s.world.enemies[0].hp=99;s.world.respawns[0].remaining=-1;assert.equal(validateSave(s).ok,false);
+});
+check('Part II generator identity, live sentinel and historical victory survive storage',()=>{
+  const s=sample(),storage=memory();
+  s.world.seed=12345;s.world.generationVersion=2;
+  s.world.defeatedBosses=['orc_king','sentinela_eco'];
+  s.world.enemies=[{k:'troll',x:58,z:89,hp:100,max:600,bossId:'sentinela_eco',zone:14,rotation:1}];
+  s.quests.q.p2_ultima_voz={s:'active',step:1,n:0};
+  assert.equal(writeSave(s,storage).ok,true);assert.deepEqual(readSave(storage).data,s);
+  const old=sample();assert.equal(validateSave(old).ok,true,'legacy saves without a generator record stay compatible');
+  old.world.seed=11;old.world.generationVersion=1;assert.equal(validateSave(old).ok,true,'known older generator version stays readable');
+});
+for(const [label,value] of [['zero',0],['negative',-1],['fraction',1.5],['string','11'],['NaN',NaN],['infinite',Infinity],['above modulus',2147483647]])
+  check(`reject malformed world seed: ${label}`,()=>{const s=sample();s.world.seed=value;assert.equal(validateSave(s).ok,false);});
+for(const value of [0,3,1.5,'2'])check(`reject unknown generator version: ${value}`,()=>{
+  const s=sample();s.world.generationVersion=value;assert.equal(validateSave(s).ok,false);
 });
 console.log(`${checks}/${checks} verificações de save aprovadas.`);

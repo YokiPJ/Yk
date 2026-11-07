@@ -3,11 +3,15 @@
   "appName": "HINÁRIA V7",
   "webDir": "www",
   "server": {
-    "androidScheme": "https"
+    "androidScheme": "https",
+    "errorPath": "webview-error.html"
   },
   "plugins": {
     "SplashScreen": {
       "launchShowDuration": 0
     }
+  },
+  "android": {
+    "minWebViewVersion": 80
   }
 }

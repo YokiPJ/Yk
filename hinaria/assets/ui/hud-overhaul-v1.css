@@ -90,7 +90,7 @@ body.ui-v1 #combat-v2-actions #combat-v2-buttons button{min-height:39px;font-siz
 body.ui-v1 #fps-tag{font-size:11px;}
 /* Accessible single-menu surface. All original game actions remain bound to original buttons. */
 #ui1-menu-backdrop[hidden],#ui1-menu[hidden]{display:none!important;}
-#ui1-menu-backdrop{position:fixed;inset:0;z-index:39;background:#02080bc4;backdrop-filter:blur(2px);}
+#ui1-menu-backdrop{position:fixed;top:0;right:0;bottom:0;left:0;inset:0;z-index:39;background:#02080bc4;backdrop-filter:blur(2px);}
 #ui1-menu{
   position:fixed;z-index:40;left:50%;top:50%;transform:translate(-50%,-50%);
   width:min(480px,calc(100vw - 24px));max-height:min(88dvh,680px);box-sizing:border-box;

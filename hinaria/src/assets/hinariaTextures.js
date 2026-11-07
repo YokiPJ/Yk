@@ -22,10 +22,13 @@ function tex(name, kind, repeat=1) {
   textureCache.set(key,texture);
   return texture;
 }
-export function addSurface(material,name,{repeat=1,normal=false,strength=.27,neutral=false}={}){
+export function addSurface(material,name,{repeat=1,normal=false,strength=.27,neutral=false,deferNormal=false}={}){
   if(!material||!known.has(name))return material;
   material.map=tex(name,'color',repeat);
-  if(normal && (material.isMeshStandardMaterial||material.isMeshPhongMaterial)){
+  if(normal && deferNormal){
+    // World decorations load the optional normal sampler only in high detail.
+    material.userData.worldNormalSurface={name,repeat,strength};
+  }else if(normal && (material.isMeshStandardMaterial||material.isMeshPhongMaterial)){
     material.normalMap=tex(name,'normal',repeat);
     material.normalScale=new THREE.Vector2(strength,strength);
   }

@@ -38,13 +38,13 @@ const P3 = { p: [0, 0, 0], l: [0, 0, 0] }, _v = new THREE.Vector3(), _q = new TH
 const cinematicTerrainHeight = (x, z) => gameState.getHeightAt(x, z);
 
 const CSS = `
-#cs-ui{position:fixed;inset:0;z-index:60;display:none;pointer-events:auto;touch-action:manipulation;-webkit-user-select:none;user-select:none}
+#cs-ui{position:fixed;top:0;right:0;bottom:0;left:0;inset:0;z-index:60;display:none;pointer-events:auto;touch-action:manipulation;-webkit-user-select:none;user-select:none}
 #cs-ui.on{display:block}
 #cs-ui .bar{position:absolute;left:0;right:0;height:11vh;background:#000;transition:transform .45s ease}
 #cs-ui .top{top:0;transform:translateY(-100%)}#cs-ui .bot{bottom:0;transform:translateY(100%)}
 #cs-ui.on.show .top,#cs-ui.on.show .bot{transform:none}
 #cs-ui.lite .bar{transition:none}
-#cs-dark{position:absolute;inset:0;background:#000;opacity:0;transition:opacity .6s}#cs-dark.on{opacity:.55}
+#cs-dark{position:absolute;top:0;right:0;bottom:0;left:0;inset:0;background:#000;opacity:0;transition:opacity .6s}#cs-dark.on{opacity:.55}
 #cs-title{position:absolute;left:0;right:0;top:34%;text-align:center;color:#f4e8cb;text-shadow:0 2px 12px #000;opacity:0;transition:opacity .7s;padding:0 8vw}
 #cs-title.on{opacity:1}#cs-title b{display:block;font-size:clamp(26px,7vw,54px);letter-spacing:2px;color:#edc37e}#cs-title span{display:block;margin-top:8px;font-size:clamp(14px,3.6vw,22px)}
 #cs-box{position:absolute;left:50%;bottom:calc(11vh + 14px);transform:translateX(-50%);width:min(620px,92vw);box-sizing:border-box;background:linear-gradient(160deg,#343629f2,#191d1cf2);color:#f4e8cb;border:2px solid #c19b5b;border-radius:12px;padding:10px 14px;box-shadow:0 10px 36px #000c;display:none}

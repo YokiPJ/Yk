@@ -3,6 +3,7 @@
  * Para criar uma missão nova basta adicionar um objeto aqui; o motor (questSystem.js) não muda.
  * Passos: { type:'kill'|'discover'|'talk', target, count, npc, text, say, give }
  */
+import { PART2_QUESTS } from '../content/part2.js';
 export const CHAPTER_1 = { id: 'c1', title: 'Capítulo 1 — A Noite Sem Grilos' };
 
 export const QUESTS = [
@@ -118,4 +119,5 @@ export const QUESTS = [
 
 ];
 
+QUESTS.push(...PART2_QUESTS);
 export const NPC_IDS = { bram: 'N', yoki: 'Y' };

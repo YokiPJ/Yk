@@ -3,7 +3,7 @@
 #toast{position:absolute;top:max(54px,env(safe-area-inset-top,0px));left:50%;z-index:20;transform:translateX(-50%);width:max-content;max-width:min(440px,65vw);box-sizing:border-box;background:#181c1af0;border:1px solid #c8aa70;border-radius:9px;padding:7px 13px;color:#f4eacc;line-height:1.35;font-size:12px;text-align:center;box-shadow:0 3px 14px #0008;transition:opacity .25s;pointer-events:none}
 #interact-npc{position:fixed;z-index:29;left:50%;bottom:max(18%,105px);transform:translateX(-50%);background:#5d4830;color:#fff1c7;border:2px solid #edc37e;border-radius:12px;box-shadow:0 5px 20px #0009;font-weight:700;min-height:46px;max-width:65vw;display:none;padding:8px 15px;touch-action:manipulation}
 #interact-npc.on{display:block}
-#dialog-shade{position:fixed;inset:0;z-index:39;background:#04060a91;display:none}
+#dialog-shade{position:fixed;top:0;right:0;bottom:0;left:0;inset:0;z-index:39;background:#04060a91;display:none}
 #dialog-shade.on{display:block}
 #dialog-panel{position:fixed;z-index:40;top:50%;left:50%;transform:translate(-50%,-50%);display:none;flex-direction:column;width:min(520px,94vw);max-height:min(90dvh,610px);box-sizing:border-box;overflow:hidden;background:linear-gradient(160deg,#343629,#191d1c);color:#f4e8cb;border:2px solid #c19b5b;border-radius:14px;box-shadow:0 16px 55px #000c;pointer-events:auto}
 #dialog-panel.on{display:flex}

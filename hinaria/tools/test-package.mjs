@@ -18,6 +18,9 @@ if(!html.includes('https://unpkg.com/three@0.160.0/'))throw Error('CDN original 
 if(existsSync(join(cwd,'www','index.html'))){
  const offline=readFileSync(join(cwd,'www','index.html'),'utf8');
  if(offline.includes('unpkg.com')||offline.includes('fonts.googleapis.com')) throw Error('URLs online no WWW');
- if(!existsSync(join(cwd,'www','vendor','three.module.js')))throw Error('Falta Three local no WWW');
+ const build=JSON.parse(readFileSync(join(cwd,'www','build-info.json'),'utf8'));
+ if(build.compatibility?.format==='iife'){
+  if(!existsSync(join(cwd,'www','game.js'))||!offline.includes('<script defer src="game.js"></script>')||offline.includes('type="importmap"'))throw Error('Bundle Android incompleto');
+ }else if(!existsSync(join(cwd,'www','vendor','three.module.js')))throw Error('Falta Three local no WWW');
 }
 console.log('OK: projeto V7 + configuração Android + referências de assets.');

@@ -20,7 +20,7 @@ body.ui-v1 #hud>.row,body.ui-v1 #hud>.bar{display:none!important}
 .hud-meter{margin-top:6px}.hud-meter-label{display:flex;justify-content:space-between;gap:5px;align-items:center;font-size:9px;color:#b9b7b2;letter-spacing:.08em}
 #hud-statplate .hud-meter-label b{color:#e9e7df;font:600 10px/1.4 system-ui,sans-serif;letter-spacing:0;font-variant-numeric:tabular-nums}
 .hud-meter-track{--hud-fill:0%;position:relative;isolation:isolate;height:8px;margin-top:3px;background:#020306;border:1px solid #78777570;border-radius:3px;overflow:hidden}
-.hud-meter-track i{display:block;position:absolute;inset:0 auto 0 0;width:var(--hud-fill);height:100%;border-radius:2px;transition:width .16s linear}
+.hud-meter-track i{display:block;position:absolute;top:0;right:auto;bottom:0;left:0;inset:0 auto 0 0;width:var(--hud-fill);height:100%;border-radius:2px;transition:width .16s linear}
 .hud-health .hud-meter-fill{background:linear-gradient(90deg,#7c1929,#d45c63)}
 .hud-mana .hud-meter-fill{background:linear-gradient(90deg,#29467c,#8eb7da)}
 .hud-experience .hud-meter-fill{background:linear-gradient(90deg,#777263,#d4cdb2)}

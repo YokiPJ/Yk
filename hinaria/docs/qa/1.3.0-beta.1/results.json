@@ -1,0 +1,176 @@
+{
+  "status": "PASS",
+  "version": "1.3.0-beta.1",
+  "prerelease": true,
+  "verifiedAtUTC": "2026-11-07T15:05:39.538632+00:00",
+  "regressionTests": {
+    "passed": 54,
+    "failed": 0,
+    "report": "regression-tests.txt"
+  },
+  "linkedGameModules": 80,
+  "proceduralGeneration": {
+    "seeds": 128,
+    "generatorVersion": 2,
+    "status": "PASS",
+    "report": "procedural-generation.json"
+  },
+  "gameBrowser": {
+    "passed": 9,
+    "failed": 0,
+    "report": "game-browser.json"
+  },
+  "bootFaultInjection": {
+    "passed": 7,
+    "failed": 0,
+    "report": "boot-browser.json"
+  },
+  "bundleBrowser": {
+    "passed": 2,
+    "failed": 0,
+    "legacyDOMAndCSSInjection": true,
+    "forcedWebGL1": true,
+    "report": "bundle-browser.json"
+  },
+  "mobileBrowser": {
+    "status": "PASS",
+    "report": "mobile-browser.json"
+  },
+  "gameplay": {
+    "passed": 3,
+    "failed": 0,
+    "report": "gameplay.json"
+  },
+  "part2": {
+    "passed": 4,
+    "failed": 0,
+    "quests": 3,
+    "report": "part2-browser.json",
+    "fixtures": "Part I completion and level22 prepared in an explicit save fixture; teleports and1HP targets accelerate real Part II quest, discovery, manual combat and persistence systems"
+  },
+  "releasePipeline": {
+    "passed": 7,
+    "failed": 0,
+    "command": "python3 .github/tests/test_release_pipeline.py -v"
+  },
+  "renderComparison": {
+    "fixture": "Current Chromium/SwiftShader; emulated 844x390 touch, fixed DPR1 and camera. Compares the delivered scenes; generator2 changes decorations. Counters are not physical phone FPS.",
+    "drawingBuffer": [
+      844,
+      390
+    ],
+    "locations": [
+      {
+        "location": "village",
+        "position": [
+          13,
+          15
+        ],
+        "camera": [
+          21,
+          11,
+          24
+        ],
+        "before": {
+          "drawCalls": 670,
+          "triangles": 209794,
+          "pointLights": 29
+        },
+        "after": {
+          "drawCalls": 354,
+          "triangles": 181038,
+          "pointLights": 3
+        },
+        "drawCallReductionPercent": 47.16
+      },
+      {
+        "location": "forest",
+        "position": [
+          15,
+          35
+        ],
+        "camera": [
+          23,
+          11,
+          44
+        ],
+        "before": {
+          "drawCalls": 558,
+          "triangles": 243686,
+          "pointLights": 16
+        },
+        "after": {
+          "drawCalls": 460,
+          "triangles": 247134,
+          "pointLights": 3
+        },
+        "drawCallReductionPercent": 17.56
+      },
+      {
+        "location": "ruins",
+        "position": [
+          44,
+          38
+        ],
+        "camera": [
+          52,
+          11,
+          47
+        ],
+        "before": {
+          "drawCalls": 736,
+          "triangles": 200044,
+          "pointLights": 9
+        },
+        "after": {
+          "drawCalls": 425,
+          "triangles": 166458,
+          "pointLights": 3
+        },
+        "drawCallReductionPercent": 42.26
+      }
+    ],
+    "texturesBefore": 37,
+    "texturesAfter": 22
+  },
+  "apk": {
+    "status": "PASS",
+    "file": "HINARIA_1.3.0_BETA1_DEBUG.apk",
+    "bytes": 14924470,
+    "sha256": "cbf619094348fa2646468546733426b31f9523466f036c98991239f5915d503c",
+    "package": "br.com.hinaria.rpg",
+    "versionCode": 6,
+    "versionName": "1.3.0-beta.1",
+    "minSDK": 23,
+    "targetSDK": 35,
+    "certificateSHA256": "9cdb501eedf49aad4fc660d4571a98f6b0bbdb718e702c3c725e0aa0f47750af",
+    "v1Signed": true,
+    "v2Signed": true,
+    "previousAPKBytes": 21134883,
+    "sizeReductionPercent": 29.38,
+    "minimumWebView": 80,
+    "webAssetsVerified": 210,
+    "webBuild": {
+      "version": "1.3.0-beta.1",
+      "target": "mobile",
+      "compatibility": {
+        "format": "iife",
+        "target": "chrome80",
+        "imports": "bundled",
+        "bytes": 1994826
+      },
+      "fingerprint": "9e41816bb379",
+      "created": "2026-11-07T15:08:53.249Z"
+    }
+  },
+  "limitations": [
+    "No physical Android phone execution",
+    "No real Chrome80/WebView80 execution; compatibility uses current Chromium with missing DOM API/CSS inset and WebGL1 injections",
+    "Part I completion, teleports and1HP enemies are explicit fixtures for Part II integration; actual dialogues, quest logic, manual attack and persistence remain active"
+  ],
+  "runtimeEquivalence": {
+    "status": "PASS",
+    "report": "runtime-equivalence.json",
+    "runtimeBundleSHA256": "cbb8b463833c4b61d3ef7b25d9bddde377160423122e3ee4b9c12d17e5a680ee"
+  }
+}

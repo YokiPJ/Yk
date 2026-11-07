@@ -13,7 +13,7 @@ export function trapFocus(root, event) {
   if (event.key !== 'Tab') return;
   const items = [...root.querySelectorAll('button:not([disabled]),input:not([disabled]),select:not([disabled]),a[href],[tabindex="0"]')].filter(el => el.getClientRects().length);
   if (!items.length) { event.preventDefault(); root.focus(); return; }
-  const first=items[0],last=items.at(-1);
+  const first=items[0],last=items[items.length-1];
   if(event.shiftKey && (document.activeElement===first || !root.contains(document.activeElement))) {event.preventDefault();last.focus();}
   else if(!event.shiftKey && (document.activeElement===last || !root.contains(document.activeElement))) {event.preventDefault();first.focus();}
 }

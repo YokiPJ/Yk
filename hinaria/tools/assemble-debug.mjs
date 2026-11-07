@@ -1,5 +1,5 @@
 import { spawnSync } from 'node:child_process';
-import { existsSync, copyFileSync, mkdirSync, readFileSync } from 'node:fs';
+import { existsSync, copyFileSync, mkdirSync, readFileSync, rmSync } from 'node:fs';
 import { resolve, join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { javaTrustStore } from './java-trust.mjs';
@@ -27,6 +27,9 @@ if (proxyValue) {
   if (trustStore && existsSync(trustStore)) args.push(`-Djavax.net.ssl.trustStore=${trustStore}`);
 }
 args.push('assembleDebug');
+// Recreate the signed ZIP instead of carrying unused gaps from incremental
+// packaging of replaced assets. Keep compilation/dependency caches intact.
+rmSync(join(android,'app','build','outputs','apk','debug'),{recursive:true,force:true});
 const r=spawnSync(win?'gradlew.bat':gradlew,args,{cwd:android,stdio:'inherit',shell:win});
 if (r.error) throw r.error;
 if (r.status!==0) process.exit(r.status||1);

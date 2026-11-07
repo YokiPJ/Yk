@@ -7,7 +7,7 @@ export const GAME_IDENTITY = {
     NAME: 'HINÁRIA',
     SUBTITLE: 'Um Mundo Além dos Sonhos',
     STARTING_CITY: 'Vilarrubra',
-    VERSION: '1.2.2-mobile' ,
+    VERSION: '1.3.0-beta.1' ,
 };
 
 export const CONFIG = {

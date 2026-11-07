@@ -8,6 +8,8 @@ import {SAVE_KEY} from '../src/core/saveManager.js';
 import {createQuestSystem} from '../src/quest/questSystem.js';
 import {QUESTS} from '../src/quest/questData.js';
 import {ensureArsenal} from '../src/player/arsenal.js';
+import {applyAxeImpact} from '../src/combat/replayAxeRules.js';
+import {PART2_SPAWNS,part2SpawnTarget} from '../src/content/part2.js';
 
 const originalStorage=Object.getOwnPropertyDescriptor(globalThis,'localStorage');
 const clone=value=>JSON.parse(JSON.stringify(value));
@@ -21,6 +23,7 @@ function setup() {
   const data=new Map(),storage={getItem:k=>data.get(k)??null,setItem:(k,v)=>data.set(k,String(v))};
   Object.defineProperty(globalThis,'localStorage',{configurable:true,value:storage});
   Object.assign(gameState,new GameState());
+  gameState.worldSeed=11;gameState.worldGenerationVersion=2;
   gameState.P={name:'Aventureiro',kind:'p',mesh:mesh(),path:[],x:13,z:15,cls:'kn',sk:0,ar:0,
     hp:96,max:96,mana:40,mm:40,lv:1,xp:0,gold:0,cds:[0,0,0,0],cd:0,rc:0,b:{},st:{}};
   gameState.ents=[gameState.P];
@@ -29,10 +32,12 @@ function setup() {
   gameState.CH=[{x:14,z:17,o:0,lid:{rotation:{x:0}}}];
   const removed=[];gameState.scene={remove:item=>removed.push(item)};
   const quests=createQuestSystem(QUESTS,{level:()=>gameState.P.lv,discovered:n=>gameState.LM.some(l=>l.n===n&&l.f)});
-  const spawnZones=[{k:'rat',n:1},{k:'troll',n:1,bossId:'troll_ancient'},{k:'orc',n:1,bossId:'orc_king'}];
+  const spawnZones=[{k:'rat',n:1},{k:'troll',n:1,bossId:'troll_ancient'},{k:'orc',n:1,bossId:'orc_king'},...PART2_SPAWNS],spawnCalls=[];
   let lore=[],cutscenes=[],fog=[],creatorCalls=0;
-  function spawnEnemy(k,zone) {
+  function spawnEnemy(k,zone,options) {
+    spawnCalls.push({k,zone,options});
     if(zone.bossId&&gameState.defeatedBosses.has(zone.bossId))return null;
+    if(zone.activeQuest&&part2SpawnTarget(zone,JSON.parse(quests.serialize()))<=0)return null;
     const e={kind:'m',k,x:22,z:25,tx:22,tz:25,hp:100,max:100,bossId:zone.bossId||null,zd:zone,
       mesh:mesh(),tag:{remove(){}}};
     gameState.ents.push(e);return e;
@@ -45,7 +50,7 @@ function setup() {
     closeDialogue:()=>gameState.dialogueOpen=false,closeArsenal:()=>gameState.arsenalOpen=false,
     leaveHouse:()=>gameState.insideHouse=false,cancelCutscenes:()=>gameState.cutsceneActive=false,
     houseSnapshot:()=>null};
-  return {storage,services,quests,spawnZones,spawnEnemy,removed,get creatorCalls(){return creatorCalls;}};
+  return {storage,services,quests,spawnZones,spawnEnemy,spawnCalls,removed,get creatorCalls(){return creatorCalls;}};
 }
 
 let checks=0;
@@ -145,6 +150,34 @@ try {
     gameState.dialogueOpen=true;assert.equal(saveGame().ok,false);
     assert.equal(f.storage.getItem(SAVE_KEY),before);
   });
+  check('loading an earlier session restores the awakened axe proc timer relative to saved time',()=>{
+    const f=setup();initGameFlow(f.services);startNewGame();finishCharacterCreation();
+    gameState.t=88;
+    Object.assign(gameState.P,{axeAwakeUntil:100,axeAwakeCooldown:114,axeProcNext:89.25});
+    const saved=createSaveSnapshot();
+    gameState.t=1000;gameState.P.axeProcNext=1001;
+    assert.equal(applySaveSnapshot(saved).ok,true);
+    assert.equal(gameState.P.axeProcNext,89.25,'proc cooldown must not retain the later session clock');
+    assert.equal(createSaveSnapshot().player.axeProcRemaining,1.25);
+    const victim={hp:100,st:{}};
+    const impact=now=>applyAxeImpact({P:gameState.P,target:victim,weapon:{kind:'axe'},now});
+    assert.equal(impact(88),false,'saved interval still prevents an immediate repeated proc');
+    assert.equal(impact(89.25),true,'awakened power resumes at the saved deadline');
+    assert.equal(victim.st.stun,.85);
+    delete saved.player.axeProcRemaining;
+    gameState.P.axeProcNext=1001;
+    assert.equal(applySaveSnapshot(saved).ok,true,'older saves remain compatible');
+    assert.equal(gameState.P.axeProcNext,88,'older saves resume with the axe proc available');
+    assert.equal(impact(88),true);
+  });
+  check('new games and loaded sessions discard temporary enemy-pattern reads',()=>{
+    const f=setup();initGameFlow(f.services);startNewGame();finishCharacterCreation();
+    const saved=createSaveSnapshot();
+    gameState.P.replayRead={enemyKind:'rat',expires:1000};
+    assert.equal(applySaveSnapshot(saved).ok,true);assert.equal(gameState.P.replayRead,undefined);
+    gameState.P.replayRead={enemyKind:'rat',expires:1000};
+    assert.equal(startNewGame().ok,true);assert.equal(gameState.P.replayRead,undefined);
+  });
   check('return to title closes gameplay and clears held input',()=>{
     const f=setup();initGameFlow(f.services);startNewGame();finishCharacterCreation();
     gameState.keys={w:1};gameState.jx=1;gameState.P.path=[[14,15]];
@@ -153,6 +186,37 @@ try {
     assert.deepEqual(gameState.keys,{});assert.equal(gameState.jx,0);assert.deepEqual(gameState.P.path,[]);
     assert.equal(gameState.arsenalOpen,false);assert.equal(gameState.dialogueOpen,false);
     assert.equal(canAcceptGameplayInput(),false);
+  });
+  check('generator identity is saved and a mismatched map is rejected before mutating the adventure',()=>{
+    const f=setup();gameState.worldSeed=12345;initGameFlow(f.services);startNewGame();finishCharacterCreation();
+    gameState.P.gold=321;const saved=createSaveSnapshot();
+    assert.equal(saved.world.seed,12345);assert.equal(saved.world.generationVersion,2);
+    assert.equal(applySaveSnapshot(saved).ok,true);
+    const before=createSaveSnapshot(),entities=gameState.ents.slice();
+    const wrong=clone(saved);wrong.world.seed=54321;wrong.player.gold=0;
+    const rejected=applySaveSnapshot(wrong);assert.equal(rejected.ok,false);assert.match(rejected.error,/semente/i);
+    assert.equal(gameState.P.gold,321);assert.deepEqual(gameState.ents,entities);
+    assert.deepEqual(createSaveSnapshot().world,before.world);assert.equal(gameState.worldSeed,12345);
+  });
+  check('old saves without world identity and new Part II victories remain loadable',()=>{
+    const f=setup();initGameFlow(f.services);startNewGame();finishCharacterCreation();
+    const saved=createSaveSnapshot();delete saved.world.seed;delete saved.world.generationVersion;
+    saved.world.defeatedBosses.push('sentinela_eco');
+    assert.equal(applySaveSnapshot(saved).ok,true);
+    assert.equal(gameState.defeatedBosses.has('sentinela_eco'),true);
+    assert.equal(gameState.ents.some(enemy=>enemy.bossId==='sentinela_eco'),false);
+  });
+  check('loading a nearby encounter explicitly requests restoring mode and preserves saved coordinates',()=>{
+    const f=setup();initGameFlow(f.services);startNewGame();finishCharacterCreation();
+    const saved=createSaveSnapshot();saved.player.x=58;saved.player.z=88;
+    saved.quests.q.p2_ultima_voz={s:'active',step:0,n:0};
+    saved.world.enemies=[{k:'troll',x:58,z:89,hp:65,max:100,bossId:'sentinela_eco',zone:4,rotation:1.2}];
+    f.spawnCalls.length=0;
+    assert.equal(applySaveSnapshot(saved).ok,true);
+    assert.equal(f.spawnCalls.length,1);assert.deepEqual(f.spawnCalls[0].options,{restoring:true});
+    const restored=gameState.ents.find(enemy=>enemy.bossId==='sentinela_eco');assert.ok(restored);
+    assert.deepEqual([restored.x,restored.z,restored.hp],[58,89,65]);
+    assert.ok(Math.hypot(restored.x-gameState.P.x,restored.z-gameState.P.z)<8);
   });
   console.log(`${checks}/${checks} verificações do fluxo aprovadas.`);
 } finally {

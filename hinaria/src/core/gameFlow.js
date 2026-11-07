@@ -114,10 +114,13 @@ function releaseDynamicMesh(mesh) {
   for(const material of materials)material.dispose?.();
 }
 function clearTransient() {
+  gameState.part2Director?.reset();
   services.leaveHouse?.();
   services.cancelCutscenes?.();
   services.clearVfx?.();
   resetGameplayInput();
+  // Pattern reads belong to the current combat encounter, not another session.
+  if (gameState.P) delete gameState.P.replayRead;
   for (const p of gameState.pr) if (p.m || p.mesh) {gameState.scene?.remove(p.m || p.mesh);releaseDynamicMesh(p.m || p.mesh);}
   for (const d of gameState.dead) if (d.m) {gameState.scene?.remove(d.m);releaseDynamicMesh(d.m);}
   for (const f of gameState.fl) (f.d || f.el)?.remove?.();
@@ -152,7 +155,7 @@ function populateEnemies(world) {
     for (const saved of world.enemies) {
       const zone=zones[saved.zone];
       if(!zone || zone.k!==saved.k || (zone.bossId && gameState.defeatedBosses.has(zone.bossId))) continue;
-      const e=services.spawnEnemy?.(saved.k,zone);
+      const e=services.spawnEnemy?.(saved.k,zone,{restoring:true});
       if(!e) continue;
       const pos=safePosition(saved.x,saved.z,{x:e.x,z:e.z});
       e.x=pos.x;e.z=pos.z;e.tx=Math.round(e.x);e.tz=Math.round(e.z);
@@ -222,11 +225,13 @@ export function createSaveSnapshot() {
   player.cameraYaw=Number(gameState.yaw)||0;
   player.axeAwakeRemaining=Math.max(0,(P.axeAwakeUntil||0)-gameState.t);
   player.axeCooldownRemaining=Math.max(0,(P.axeAwakeCooldown||0)-gameState.t);
+  player.axeProcRemaining=Math.max(0,(P.axeProcNext||0)-gameState.t);
   const zones=services.spawnZones || [];
   return {
     schemaVersion:1,timestamp:new Date().toISOString(),identity:{name:(P.name||'Aventureiro').slice(0,80)},player,
     quests:JSON.parse(services.quests.serialize()),lore:services.loreSnapshot?.()||[],cutscenes:services.cutsceneSnapshot?.()||[],
-    world:{time:gameState.t,discovered:gameState.LM.filter(l=>l.f).map(l=>l.n),chests:gameState.CH.filter(c=>c.o).map(c=>`${c.x}:${c.z}`),
+    world:{time:gameState.t,seed:gameState.worldSeed||11,generationVersion:gameState.worldGenerationVersion||2,
+      discovered:gameState.LM.filter(l=>l.f).map(l=>l.n),chests:gameState.CH.filter(c=>c.o).map(c=>`${c.x}:${c.z}`),
       defeatedBosses:[...gameState.defeatedBosses],fog:services.snapshotFog?.() || [],
       enemies:gameState.ents.filter(e=>e.kind==='m'&&e.hp>0).map(e=>({k:e.k,x:e.x,z:e.z,hp:e.hp,max:e.max,bossId:e.bossId,zone:zones.indexOf(e.zd),rotation:Number(e.mesh?.rotation.y)||0})).filter(e=>e.zone>=0),
       respawns:gameState.enemyRespawns.map(r=>({kind:r.kind,zone:zones.indexOf(r.zone),remaining:Math.max(0,r.due-gameState.t)})).filter(r=>r.zone>=0)},
@@ -251,6 +256,8 @@ export function applySaveSnapshot(data) {
   const checked=validateSave(data);
   if(!checked.ok) return checked;
   if(!gameState.P || !services.classes) return {ok:false,error:'O mundo ainda está inicializando.'};
+  if(data.world.seed!==undefined&&data.world.seed!==(gameState.worldSeed||11))
+    return {ok:false,error:'Este save usa outra semente de mundo. Reabra o jogo para preparar o mapa correto.'};
   // Reject unknown quest definitions/steps through the real quest engine before touching the scene.
   const before=services.quests.serialize();
   gameState.suspendLegacyPersistence=true;
@@ -270,6 +277,7 @@ export function applySaveSnapshot(data) {
     P.b=P.b||{};P.st=P.st||{};P.cds=P.cds||[0,0,0,0];P.at=0;P.fl=0;P.kc='';P.rk=-1;
     P.axeAwakeUntil=gameState.t+(saved.axeAwakeRemaining||0);
     P.axeAwakeCooldown=gameState.t+(saved.axeCooldownRemaining||0);
+    P.axeProcNext=gameState.t+(saved.axeProcRemaining||0);
     delete P._hinariaDeathProcessed;
     services.ensureArsenal?.(P);services.applyAppearance?.(P);
     if(P.mesh) P.mesh.rotation.y=Number(saved.rotation)||0;

@@ -2,6 +2,7 @@
  * All geometry is procedural. No browser/CDN fetches or new textures are required. */
 import * as THREE from 'three';
 import {addSurface} from './hinariaTextures.js';
+import {mergeStaticGeometry} from '../world/staticBatch.js';
 const C={
  wood:0x805333,woodLight:0xaf7641,woodDark:0x4d3023,stone:0xa7a69f,stone2:0x777f86,stoneDark:0x555f68,plaster:0xe9d7b7,
  blue:0x31588a,blueLight:0x4474ae,red:0xb74c35,redLight:0xd6764c,green:0x38683a,greenLight:0x5f9c4c,greenDeep:0x23472d,
@@ -56,7 +57,8 @@ const mat=(hex,opts={})=>{
   [C.leaf]:'foliage',[C.leaf2]:'foliage',
   [C.iron]:'metal_iron',[C.ironLight]:'metal_silver'
  })[hex];
- if(surface)addSurface(m,surface,{normal:true,strength:.18,neutral:surface!=='leather'});
+ m.userData.worldQuality=true;
+ if(surface)addSurface(m,surface,{normal:true,deferNormal:true,strength:.18,neutral:surface!=='leather'});
  else if(pattern)m.map=patternTexture(pattern);
  matCache.set(key,m);return m;
 };
@@ -74,8 +76,9 @@ function leaf(p,x,y,z,scale=1,c=C.leaf,rz=0){const o=ell(p,x,y,z,.16*scale,.075*
 function boulder(p,x,y,z,r=1,c=C.stone2){const o=ell(p,x,y,z,r*.70,r*.55,r*.70,c,7);o.rotation.set(.2,.4,.18);return o}
 function lantern(p,x,y,z,animated){const l=group(p,x,y,z);box(l,0,.23,0,.21,.055,.21,C.iron);box(l,0,-.22,0,.23,.07,.23,C.iron);box(l,0,0,0,.16,.38,.16,C.gold);
  const glass=mat(0xffc35b,{glow:0xff9d24,intensity:1.2});const glow=add(l,new THREE.BoxGeometry(.13,.30,.13),glass);
+ glass.userData.dynamicMaterial=true; // the flicker callback retains this exact material
  for(const xx of [-.095,.095])for(const zz of [-.095,.095])box(l,xx,0,zz,.024,.44,.024,C.iron);
- cone(l,0,.31,0,.17,.14,C.iron,4);const light=new THREE.PointLight(0xffae46,.6,3);light.position.y=0;l.add(light);
+ cone(l,0,.31,0,.17,.14,C.iron,4);const light=new THREE.PointLight(0xffae46,.6,3);light.userData.worldLocalLight=true;light.position.y=0;l.add(light);
  if(animated)animated.push((t)=>{glass.emissiveIntensity=1.0+.15*Math.sin(t*9);});return l}
 function grass(p,span=1,count=7){for(let i=0;i<count;i++){const a=i*2.399,s=span*(.5+.32*((i*13)%7)/7);const g=cone(p,Math.sin(a)*s,.09,Math.cos(a)*s,.07,.2,i%3?C.greenLight:C.green,4);g.rotation.z=.12*Math.sin(a)}}
 function stoneBase(p,w=2,d=1.7){box(p,0,.12,0,w,.24,d,C.stoneDark);box(p,0,.25,0,w+.03,.06,d+.03,C.stone2)}
@@ -86,7 +89,7 @@ function gableRoof(p,w,d,y,raise,c1,c2){const rw=w/2+.20, dz=d/2+.2,theta=Math.a
     const u=(row+.5)/5;const midx=side*rw*u,midy=y+raise*(1-u)+.06;
     const o=new THREE.Object3D();o.position.set(midx,midy,(col-3)*((d+.4)/7));o.rotation.z=side===-1?theta:-theta;o.updateMatrix();ms.push(o.matrix.clone());
  }
- for(let k=0;k<2;k++){const ids=ms.filter((_,i)=>i%3===k||k===1&&i%3===2);const inst=new THREE.InstancedMesh(g,mat(colors[k]),ids.length);ids.forEach((m,i)=>inst.setMatrixAt(i,m));p.add(inst);inst.castShadow=true;inst.receiveShadow=true}
+ for(let k=0;k<2;k++){const ids=ms.filter((_,i)=>i%3===k||k===1&&i%3===2);const inst=new THREE.InstancedMesh(g,mat(colors[k]),ids.length);inst.userData.batchInstances=true;ids.forEach((m,i)=>inst.setMatrixAt(i,m));p.add(inst);inst.castShadow=true;inst.receiveShadow=true}
  }
  box(p,0,y+raise+.035,0,.12,.1,d+.5,C.woodLight);
  // Visible triangular gable ends, matching the plaster walls
@@ -239,30 +242,16 @@ function buildAsset(id){const root=new THREE.Group();const animators=[];
  root.userData.environmentId=id;return root;}
 
 
-function mergeGeometries(geometries){
- const arrays={position:[],normal:[],uv:[]};
- for(const g of geometries){for(const k of Object.keys(arrays)){
-    const a=g.getAttribute(k);if(!a)return null;
-    for(let i=0;i<a.array.length;i++)arrays[k].push(a.array[i]);
- }}
- const combined=new THREE.BufferGeometry();
- combined.setAttribute('position',new THREE.Float32BufferAttribute(arrays.position,3));
- combined.setAttribute('normal',new THREE.Float32BufferAttribute(arrays.normal,3));
- combined.setAttribute('uv',new THREE.Float32BufferAttribute(arrays.uv,2));
- return combined;
-}
-
 // Reduce each static prefab to one draw call per material wherever geometry permits.
 function batchPrefab(root){
  root.updateMatrixWorld(true);
  const lists=new Map();
- root.traverse(o=>{if(!o.isMesh||o.isInstancedMesh||o.material.transparent)return;
+ root.traverse(o=>{if(!o.isMesh||o.isInstancedMesh||o.material.transparent||o.material.userData.dynamicMaterial)return;
    const g=o.geometry;if(!g?.getAttribute('position')||!g.getAttribute('uv')||!g.getAttribute('normal'))return;
    const arr=lists.get(o.material)||[];arr.push(o);lists.set(o.material,arr);
  });
  for(const [material,meshes] of lists){if(meshes.length<2)continue;
-   const geos=meshes.map(m=>{let g=m.geometry.clone();g.applyMatrix4(m.matrixWorld);if(g.index){const nonIndexed=g.toNonIndexed();g.dispose();g=nonIndexed;}return g});
-   const merged=mergeGeometries(geos);geos.forEach(g=>g.dispose());if(!merged)continue;
+   const merged=mergeStaticGeometry(meshes,root);
    const mesh=new THREE.Mesh(merged,material);mesh.castShadow=false;mesh.receiveShadow=true;mesh.name='PrefabBatched';
    for(const original of meshes){original.parent.remove(original);original.geometry.dispose();}
    root.add(mesh);
@@ -270,11 +259,13 @@ function batchPrefab(root){
  return root;
 }
 export const ENV_V2_IDS=['casa','casarao','ferraria','cabana','taverna','torre','mercado','poco','ponte','cerca','portao','carroca','caixas','barris','sacos','lanterna','placas','fogueira','bigorna','rochas','tocos','cogumelos','arbustos','pinheiro','arvore','bandeiras','totem','runa'];
+const prefabCache=new Map();
 export function createEnvironmentV2(id){
  if(!ENV_V2_IDS.includes(id))return null;
+ if(prefabCache.has(id))return prefabCache.get(id).clone(true);
  const model=buildAsset(id);
  model.name='HINARIA_ENV_V2_'+id;
- return batchPrefab(model);
+ batchPrefab(model);prefabCache.set(id,model);return model.clone(true);
 }
 
 export function getV2EnvironmentTexture(kind){return patternTexture(kind);}

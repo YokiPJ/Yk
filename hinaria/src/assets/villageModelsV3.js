@@ -6,6 +6,7 @@
  */
 import * as THREE from 'three';
 import { addSurface } from './hinariaTextures.js';
+import {mergeStaticGeometry} from '../world/staticBatch.js';
 
 // ---------- Materiais (mesmas texturas do restante do jogo) ----------
 const FALLBACK = { wood_planks: 0x9a6a3f, bark: 0x5a3b28, rock: 0x8a8d90, cave_rock: 0x5f666c, cobblestone: 0x8d8f8c,
@@ -18,7 +19,8 @@ function M(surface, tint, o = {}) {
   if (matCache.has(key)) return matCache.get(key);
   const m = new THREE.MeshStandardMaterial({ color: tint ?? FALLBACK[surface] ?? 0xffffff, roughness: o.rough ?? 0.86,
     metalness: o.metal ?? 0, flatShading: true, emissive: o.glow ?? 0x000000, transparent: !!o.alpha, opacity: o.alpha ?? 1 });
-  if (surface) addSurface(m, surface, { normal: !o.alpha, strength: 0.18, neutral: tint == null });
+  m.userData.worldQuality=true;
+  if (surface) addSurface(m, surface, { normal: !o.alpha, deferNormal:true, strength: 0.18, neutral: tint == null });
   matCache.set(key, m); return m;
 }
 const wood = M('wood_planks'), woodL = M('wood_planks', 0xe8c89a), woodD = M('bark'), crate = M('crate_wood');
@@ -117,6 +119,7 @@ function fonte(r, anims) {
   cyl(r, 0, 0.85, 0, 0.2, 0.28, 0.8, stone, 10); cyl(r, 0, 1.38, 0, 0.64, 0.26, 0.2, stone, 12);
   const bowl = put(r, new THREE.CylinderGeometry(0.56, 0.56, 0.03, 14), water, 0, 1.46, 0);
   cyl(r, 0, 1.72, 0, 0.1, 0.14, 0.45, stone, 8); ell(r, 0, 2.02, 0, 0.17, 0.2, 0.17, stone);
+  pool.userData.dynamicTransform=true;bowl.userData.dynamicTransform=true;
   const fx = keep(grp(r)); const ringMats = [];
   for (let i = 0; i < 2; i++) {
     const mt = new THREE.MeshBasicMaterial({ color: 0xcff4f8, transparent: true, opacity: 0.6 }); ringMats.push(mt);
@@ -181,21 +184,13 @@ export const VILLAGE_V3_IDS = Object.keys(BUILDERS);
 
 // ---------- Fusão de geometria (1 malha por material; partes animadas ficam soltas) ----------
 function inKeep(o, root) { for (let p = o.parent; p && p !== root; p = p.parent) if (p.userData.keep) return true; return false; }
-function merge(geos) {
-  const a = { position: [], normal: [], uv: [] };
-  for (const g of geos) for (const k of Object.keys(a)) { const at = g.getAttribute(k); if (!at) return null; for (let i = 0; i < at.array.length; i++) a[k].push(at.array[i]); }
-  const m = new THREE.BufferGeometry();
-  m.setAttribute('position', new THREE.Float32BufferAttribute(a.position, 3)); m.setAttribute('normal', new THREE.Float32BufferAttribute(a.normal, 3)); m.setAttribute('uv', new THREE.Float32BufferAttribute(a.uv, 2));
-  return m;
-}
 function batch(root) {
   root.updateMatrixWorld(true);
   const lists = new Map();
-  root.traverse(o => { if (!o.isMesh || o.material.transparent || inKeep(o, root)) return; (lists.get(o.material) || lists.set(o.material, []).get(o.material)).push(o); });
+  root.traverse(o => { if (!o.isMesh || o.material.transparent || o.material.userData.dynamicMaterial || inKeep(o, root)) return; (lists.get(o.material) || lists.set(o.material, []).get(o.material)).push(o); });
   for (const [material, meshes] of lists) {
     if (meshes.length < 2) continue;
-    const geos = meshes.map(m => { let g = m.geometry.clone(); g.applyMatrix4(m.matrixWorld); if (g.index) { const n = g.toNonIndexed(); g.dispose(); g = n; } return g; });
-    const merged = merge(geos); geos.forEach(g => g.dispose()); if (!merged) continue;
+    const merged=mergeStaticGeometry(meshes,root);
     const mesh = new THREE.Mesh(merged, material); mesh.castShadow = false; mesh.receiveShadow = true; mesh.name = 'VillageV3Batched';
     for (const o of meshes) { o.parent.remove(o); o.geometry.dispose(); }
     root.add(mesh);
@@ -207,15 +202,21 @@ function batch(root) {
 const live = new Set(); let clock = 0;
 export function updateVillageModelsV3(dt) {
   if (!live.size) return; clock += dt;
-  for (const r of live) if (r.visible) for (const fn of r.userData.anims) fn(clock);
+  for (const r of live) {
+    let visible=true;for(let node=r;node;node=node.parent)if(!node.visible){visible=false;break;}
+    if(visible)for(const fn of r.userData.anims)fn(clock);
+  }
 }
 
+const prefabCache=new Map();
 export function createVillageModelV3(id) {
   const build = BUILDERS[id]; if (!build) return null;
+  if(prefabCache.has(id))return prefabCache.get(id).clone(true);
   const root = new THREE.Group(), anims = [];
   build(root, anims); batch(root);
   root.name = 'HINARIA_V3_' + id; root.userData.environmentId = id;
   if (anims.length) { root.userData.anims = anims; live.add(root); }
+  else prefabCache.set(id,root);
   return root;
 }
 

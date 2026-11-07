@@ -2,7 +2,7 @@ const fs=require('node:fs'),path=require('node:path'),assert=require('node:asser
 const root=path.resolve(__dirname,'..');
 const read=f=>fs.readFileSync(path.join(root,f),'utf8');
 const combat=read('src/combat/combat.js'),bridge=read('src/vfx/claudeVfxBridge.js');
-const loop=read('src/core/loop.js'),main=read('src/main.js');
+const loop=read('src/core/loop.js'),main=read('src/core/bootGame.js');
 for(const obsolete of ['hitVfx.js','skillVfx.js','vfxJsImpact.js']) {
  assert.equal(fs.existsSync(path.join(root,'src/vfx',obsolete)),false,`VFX antigo ainda existe: ${obsolete}`);
  assert(!combat.includes(obsolete),'nenhum import de VFX legado');

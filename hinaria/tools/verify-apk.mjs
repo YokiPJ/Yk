@@ -20,6 +20,8 @@ export function verifyApk(apkPath, webDirectory) {
   assert.equal(packed.version, expected.version, 'APK desatualizado: versão web diferente');
   assert.equal(packed.fingerprint, expected.fingerprint, 'APK desatualizado: fingerprint web diferente');
   assert.equal(packed.target,'mobile','O APK precisa usar a build mobile, sem laboratórios');
+  assert.equal(packed.compatibility?.format,'iife','O APK precisa do bundle compatível sem import maps');
+  assert.ok(!new TextDecoder().decode(entry('index.html')).includes('type="importmap"'),'Import map não pode ser pré-requisito no Android');
   assert.ok(!Object.keys(manifest).some(name=>name.startsWith('studio/')||name.endsWith('.jar')),'Ferramentas de desenvolvimento não devem entrar no APK');
   assert.deepEqual(JSON.parse(decoder.decode(entry('build-manifest.json'))), manifest, 'Manifesto diferente no APK');
   for (const [name, digest] of Object.entries(manifest)) {

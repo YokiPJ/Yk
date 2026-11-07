@@ -1,10 +1,15 @@
 """Prepare a delivery branch without publishing or touching existing releases."""
 from pathlib import Path
-import hashlib, json, re, shutil, subprocess, argparse
+import hashlib, json, re, shutil, subprocess, argparse, sys
 
 GAME = Path(__file__).resolve().parent.parent
 ROOT = GAME.parent
 RELEASE = json.loads((GAME / 'release.json').read_text(encoding='utf-8'))
+sys.path.insert(0, str(ROOT / '.github/scripts'))
+from release_policy import publication_policy
+policy = publication_policy(RELEASE['tag'], RELEASE.get('prerelease', False))
+if RELEASE['tag'] != 'v' + RELEASE['version']:
+    raise RuntimeError('A versão e a tag da release precisam corresponder.')
 parser=argparse.ArgumentParser()
 parser.add_argument('--adopt-draft-source',help='Commit exato de um draft criado por esta preparação anteriormente')
 options=parser.parse_args()
@@ -37,13 +42,13 @@ checksum = lambda path: hashlib.sha256(path.read_bytes()).hexdigest()
 (target / 'SHA256SUMS.txt').write_text(''.join(checksum(path) + '  ' + path.name + '\n' for path in files), encoding='utf-8')
 files = sorted(path for path in target.iterdir() if path.is_file())
 manifest = {'schemaVersion':1, 'repository':RELEASE['repository'], 'tag':RELEASE['tag'],
-            'title':RELEASE['title'], 'source_commit':source,
+            'title':RELEASE['title'], 'source_commit':source, 'prerelease':policy['prerelease'],
             'assets':[{'name':path.name,'bytes':path.stat().st_size,'sha256':checksum(path)} for path in files]}
 if options.adopt_draft_source:
     run('git','merge-base','--is-ancestor',options.adopt_draft_source,source)
     manifest['adopt_draft_markers']=['<!-- hinaria-release:'+RELEASE['tag']+':'+options.adopt_draft_source+' -->']
 (target / 'release-manifest.json').write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
-for relative in ['.github/workflows/publish-release.yml', '.github/scripts/publish-release.py']:
+for relative in ['.github/workflows/publish-release.yml', '.github/scripts/publish-release.py', '.github/scripts/release_policy.py']:
     destination = target / relative
     destination.parent.mkdir(parents=True, exist_ok=True)
     shutil.copy2(ROOT / relative, destination)

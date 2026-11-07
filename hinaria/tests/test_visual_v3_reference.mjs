@@ -8,7 +8,7 @@ const axe=file('src/player/replayAxeModel.js');
 const world=file('src/vfx/worldAtmosphereV3.js');
 const interiors=file('src/world/houseInteriors.js');
 const loop=file('src/core/loop.js');
-const main=file('src/main.js');
+const main=file('src/core/bootGame.js');
 const settings=file('src/ui/performanceUI.js');
 const html=file('index.html');
 assert.match(world,/new THREE\.Points\(geometry,material\)/,'ambient uses one Points draw call');

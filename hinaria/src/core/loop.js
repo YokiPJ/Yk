@@ -39,6 +39,10 @@ export function initLoop() {
 
 let lastLoopError=0;
 const framePacer=createFramePacer();
+function renderWorld(){
+    gameState.worldLightBudget?.update(gameState.P?.x,gameState.P?.z);
+    gameState.renderer.render(gameState.scene,gameState.camera);
+}
 function gameLoop(now){
     const limit=['PAUSED','DIALOGUE','DEAD'].includes(gameState.flow)?Math.min(30,getFrameLimit()):getFrameLimit();
     if(!framePacer.shouldRender(now,limit)){requestAnimationFrame(gameLoop);return;}
@@ -71,7 +75,7 @@ function tickGameFrame(now) {
         if (gameState.insideHouse) tickHouse(0);
         else {
             if (mode === 'CHARACTER_CREATION') updateCamera(d0);
-            gameState.renderer.render(gameState.scene, gameState.camera);
+            renderWorld();
         }
         updateDialogueUI();
         tickPerformance(frameSeconds);
@@ -89,7 +93,7 @@ function tickGameFrame(now) {
         if (gameState.insideHouse) tickHouse(0);
         else {
             cutsceneCameraPass(gameState.camera);
-            gameState.renderer.render(gameState.scene, gameState.camera);
+            renderWorld();
         }
         tickPerformance(frameSeconds);
         tickDiagnostics(frameSeconds);
@@ -107,6 +111,7 @@ function tickGameFrame(now) {
         return;
     }
     gameState.t += dt;
+    gameState.part2Director?.tick(dt);
     for (let i=gameState.enemyRespawns.length-1;i>=0;i--) {
         const pending=gameState.enemyRespawns[i];
         if(pending.due<=gameState.t) {
@@ -221,7 +226,7 @@ function tickGameFrame(now) {
     
     // Render
     cutsceneCameraPass(gameState.camera);
-    gameState.renderer.render(gameState.scene, gameState.camera);
+    renderWorld();
     requestAnimationFrame(gameLoop);
 }
 

@@ -9,9 +9,10 @@ import {fileURLToPath} from 'node:url';
 const root=resolve(dirname(fileURLToPath(import.meta.url)),'..'),out=process.env.HINARIA_GAMEPLAY_ARTIFACTS||'/tmp/hinaria-gameplay';mkdirSync(out,{recursive:true});
 const port=Number(process.env.HINARIA_TEST_PORT||8096),base=`http://127.0.0.1:${port}`;
 const server=spawn(process.execPath,['server.js',...(process.argv.includes('--offline')?['--offline']:[])],{cwd:root,env:{...process.env,PORT:String(port)},stdio:'ignore'});
-let browser;const results=[];
+let browser,page;const results=[],errors=[];
+const waitTitle=page=>page.waitForFunction(()=>window.HINARIA_BOOT?.state==='ready'&&window.gameState?.flow==='TITLE'&&!document.getElementById('play').disabled,null,{timeout:60000});
 async function play(page){
-  await page.waitForFunction(()=>window.gameState?.flow==='TITLE',null,{timeout:45000});
+  await waitTitle(page);
   await page.locator('#title-settings').click();await page.locator('#perf-quality').selectOption('low');await page.locator('#perf-close').click();
   await page.locator('#play').click();await page.locator('#go').click();
   await page.waitForFunction(()=>gameState.cutsceneActive||gameState.t>.4,null,{timeout:45000});
@@ -21,7 +22,7 @@ async function play(page){
 try{
   for(let i=0;i<100;i++){try{if((await fetch(base)).ok)break;}catch{}await new Promise(r=>setTimeout(r,100));}
   browser=await chromium.launch({executablePath:process.env.CHROMIUM_PATH||'/usr/bin/chromium',headless:true,args:['--no-sandbox','--disable-dev-shm-usage','--enable-unsafe-swiftshader','--use-angle=swiftshader']});
-  const page=await browser.newPage({viewport:{width:900,height:600},reducedMotion:'reduce'}),errors=[];
+  page=await browser.newPage({viewport:{width:900,height:600},reducedMotion:'reduce'});
   const wait=page.waitForFunction.bind(page);page.waitForFunction=(fn,arg,opt={})=>wait(fn,arg,{polling:100,...opt});
   page.on('pageerror',e=>errors.push(e.message));page.on('dialog',d=>d.accept());
   await page.goto(base,{waitUntil:'domcontentloaded'});await play(page);
@@ -33,7 +34,10 @@ try{
   const options=await page.locator('#dialog-options button').allTextContents();
   const quests=page.locator('#dialog-options button').filter({hasText:/miss|tarefa|ajud/i}).first();
   if(await quests.count()){await quests.click();const accept=page.locator('#dialog-options button').filter({hasText:/aceit|sim/i}).first();if(await accept.count())await accept.click();}
-  const questState=await page.evaluate(async()=>JSON.parse((await import('./src/quest/quests.js')).Q.serialize()));
+  // Observe the record written by the running game. Importing quests.js here
+  // would create a second quest engine when the APK uses its bundled script.
+  const questState=await page.evaluate(()=>JSON.parse(localStorage.getItem('hinaria.quests.exploration.v2'))?.quests);
+  assert.ok(questState,'quest acceptance persists the real running engine');
   assert.ok(Object.keys(questState.q).length>0,'NPC dialogue activates an actual quest');
   await page.locator('#dialog-close-top').click();await page.waitForFunction(()=>gameState.flow==='PLAYING');
   results.push({name:'real Bram dialogue, quest acceptance and close',status:'passed',fixture:'teleported player to actual Bram; all choices via DOM input',options,questState});
@@ -46,7 +50,7 @@ try{
   await page.locator('[data-action="save"]').click();
   const savedHouse=await page.evaluate(()=>JSON.parse(localStorage.getItem('hinaria.fullgame.v1')));
   assert.ok(savedHouse.house,'real house interior is part of the save');
-  await page.reload({waitUntil:'domcontentloaded'});await page.waitForFunction(()=>gameState.flow==='TITLE');
+  await page.reload({waitUntil:'domcontentloaded'});await waitTitle(page);
   await page.locator('#title-continue').click();await page.waitForFunction(()=>gameState.insideHouse===true);
   assert.equal(await page.evaluate(()=>gameState.P.cls),savedHouse.player.cls);
   results.push({name:'real house entry/save/reload/Continue restores interior',status:'passed',fixture:'teleported to actual house doorway',house,snapshot:savedHouse.house});
@@ -66,11 +70,16 @@ try{
   await page.locator('#ui-hud-menu-btn').click();await page.locator('[data-action="save"]').click();
   const defeated=await page.evaluate(()=>JSON.parse(localStorage.getItem('hinaria.fullgame.v1')));
   assert.ok(defeated.world.defeatedBosses.includes(bossFixture.id));
-  await page.reload({waitUntil:'domcontentloaded'});await page.waitForFunction(()=>gameState.flow==='TITLE');await page.locator('#title-continue').click();
+  await page.reload({waitUntil:'domcontentloaded'});await waitTitle(page);await page.locator('#title-continue').click();
   await page.waitForFunction(()=>gameState.flow==='PLAYING');
   assert.equal(await page.evaluate(id=>gameState.ents.some(e=>e.bossId===id&&e.hp>0),bossFixture.id),false);
   assert.equal(await page.evaluate(()=>gameState.P.gold),defeated.player.gold,'boss restore never repeats reward');
   results.push({name:'explicit frontal boss kill + save/reload does not respawn or reward twice',status:'passed',fixture:'actual boss set to 1 HP/stunned and player teleported in front',bossId:bossFixture.id});
   assert.deepEqual(errors,[]);console.log('PASS 3/3 gameplay round trips (explicit fixtures; actual NPC/quest/house/manual combat/save systems).');
-}catch(error){results.push({name:'runner',status:'failed',error:error.stack});console.error(error);process.exitCode=1;}
+}catch(error){
+  const state=await page?.evaluate(()=>({diagnostics:window.HINARIA_QA?.snapshot?.(),boot:window.HINARIA_BOOT,
+    flow:window.gameState?.flow,time:window.gameState?.t,hidden:document.hidden})).catch(()=>null);
+  await page?.screenshot({path:join(out,'failure.png')}).catch(()=>{});
+  results.push({name:'runner',status:'failed',error:error.stack,state,errors});console.error(error);process.exitCode=1;
+}
 finally{writeFileSync(join(out,'results.json'),JSON.stringify({executedAt:new Date().toISOString(),results},null,2));await browser?.close();server.kill('SIGTERM');}

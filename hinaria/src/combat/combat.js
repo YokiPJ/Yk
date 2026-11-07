@@ -4,6 +4,7 @@ import { findForwardEnemy, hasLineOfSight } from './forwardHit.js';
  */
 
 import { Q } from '../quest/quests.js';
+import { PART2_SPAWNS, PART2_BOSS_VISUALS, part2SpawnTarget } from '../content/part2.js';
 import { notifyBossVictory } from '../cutscene/cutsceneSystem.js';
 import { refreshQuestUI } from '../quest/questUI.js';
 import * as THREE from 'three';
@@ -51,6 +52,8 @@ export const SPAWN_ZONES = [
     // Chefes são spawns adicionais, não substituem monstros das missões.
     { k: 'troll', n: 1, x0: 40, z0: 28, x1: 60, z1: 48, zn: [5], level: 14, boss: true, bossId: 'troll_ancient', title: 'Troll Ancião' },
     { k: 'orc', n: 1, x0: 53, z0: 53, x1: 62, z1: 62, zn: [6], level: 20, boss: true, bossId: 'orc_king', title: 'Rei dos Orcs' },
+    // Append story zones: full saves retain the indices of all existing zones.
+    ...PART2_SPAWNS,
 ];
 
 /**
@@ -76,15 +79,16 @@ export function enemyStatsForZone(kind, zone = {}) {
 /**
  * Spawn an enemy
  */
-export function spawnEnemy(kind, zone) {
+export function spawnEnemy(kind, zone, {restoring=false}={}) {
     if (zone.bossId && gameState.defeatedBosses?.has(zone.bossId)) return null;
+    if (zone.activeQuest && part2SpawnTarget(zone,JSON.parse(Q.serialize()))<=0) return null;
     const K = enemyStatsForZone(kind, zone);
     let x, z, n = 0;
     do {
         x = ri(zone.x0, zone.x1);
         z = ri(zone.z0, zone.z1);
         n++;
-    } while (n < 400 && (occ(x, z) || !gameState.RC[x * gameState.W + z] || !zone.zn.includes(gameState.ZN[x][z]) || Math.hypot(x - gameState.P.tx, z - gameState.P.tz) < 8));
+    } while (n < 400 && (occ(x, z) || !gameState.RC[x * gameState.W + z] || !zone.zn.includes(gameState.ZN[x][z]) || (!restoring && Math.hypot(x - gameState.P.tx, z - gameState.P.tz) < 8)));
     if (n >= 400) return null;
     
     const mesh = createEnemyMesh(kind,zone.bossId);
@@ -118,10 +122,28 @@ export function spawnEnemy(kind, zone) {
  */
 function createEnemyMesh(kind,bossId=null) {
     // Boss-specific models use exact existing entity identifiers; stats/AI/quests unchanged.
-    const bossVisual = bossId==='troll_ancient'?'troll_ancient':bossId==='orc_king'?'orc_king':null;
+    const variant=PART2_BOSS_VISUALS[bossId];
+    const bossVisual = (typeof variant==='string'?variant:variant?.model) || (bossId==='troll_ancient'?'troll_ancient':bossId==='orc_king'?'orc_king':null);
     if (bossVisual) {
         const mesh=createCharacterVisualV2(bossVisual);
-        if (mesh) return mesh;
+        if (mesh) {
+            if(variant){
+                // Palette ownership stays with this boss; shared original models remain intact.
+                const materials=new Map(),tint=new THREE.Color(variant.tint??0x709caf);
+                mesh.traverse(part=>{
+                    if(!part.isMesh)return;
+                    const recolor=original=>{
+                        if(!materials.has(original)){
+                            const material=original.clone();material.color?.lerp(tint,.38);materials.set(original,material);
+                        }
+                        return materials.get(original);
+                    };
+                    part.material=Array.isArray(part.material)?part.material.map(recolor):recolor(part.material);
+                });
+                mesh.name='SentinelaDoEco';
+            }
+            return mesh;
+        }
     }
     // This will use the rig system from player.js
     const rig = buildEnemyRig(kind);
@@ -204,7 +226,8 @@ function buildRat() {
     }
     const blob=new THREE.Mesh(new THREE.CircleGeometry(.38,12),new THREE.MeshBasicMaterial({color:0x000000,transparent:true,opacity:.25}));
     blob.rotation.x=-Math.PI/2;blob.position.y=.018;group.add(blob);
-    group.traverse(o=>{if(o.isMesh)o.frustumCulled=false;});
+    // Rigid pieces inherit their animated joint transforms. Keep Three's
+    // bounding-sphere culling so offscreen rats submit no draw calls.
     return group;
 }
 
@@ -312,7 +335,7 @@ export function killEnemy(enemy) {
     if (enemy.isBoss && enemy.bossId) {
         if (!gameState.defeatedBosses) gameState.defeatedBosses = new Set();
         gameState.defeatedBosses.add(enemy.bossId);
-    } else {
+    } else if (!enemy.zd?.activeQuest) {
         if (!gameState.enemyRespawns) gameState.enemyRespawns = [];
         gameState.enemyRespawns.push({kind:enemy.k,zone:enemy.zd,due:gameState.t+K.rs});
     }
@@ -321,7 +344,7 @@ export function killEnemy(enemy) {
     // Queue the cinematic before quest callbacks/UI can interrupt the flow.
     // Does not change rewards, boss progression or respawn rules.
     if (enemy.isBoss) notifyBossVictory(enemy);
-    Q.emit('kill', { k: enemy.k, bossId: enemy.bossId });
+    Q.emit('kill', { k: enemy.k, bossId: enemy.bossId, region:enemy.zd?.region });
 }
 
 /**

@@ -4,11 +4,12 @@ import vm from 'node:vm';
 import { clearBossView } from '../src/cutscene/cameraOcclusion.js';
 import { gameState } from '../src/core/gameState.js';
 import { SCENES } from '../src/cutscene/scenes.js';
+import { PART2_LAYOUT, PART2_SPAWNS } from '../src/content/part2.js';
 const read = s => fs.readFileSync(new URL('../'+s,import.meta.url),'utf8');
 const world = read('src/world/world.js');
 const fragment = world.slice(world.indexOf('// Seeded random for reproducible world'),world.indexOf('/**\n * Build Three.js meshes for the world')).replaceAll('export const ','const ').replaceAll('export function ','function ');
 const state = {G:[],ZN:[],B:[],OB:[],CLR:[],HO:[],CH:[],LM:[],BRG:[],HS:[],ents:[],P:null,W:96};
-vm.runInNewContext(fragment+'\ngenerateWorld();',{CONFIG:{WORLD_SIZE:96},gameState:state,console});
+vm.runInNewContext(fragment+'\ngenerateWorld();',{CONFIG:{WORLD_SIZE:96},gameState:state,console,PART2_LAYOUT,PART2_SPAWNS});
 assert.equal(state.BRG.length,4);
 for (const b of state.BRG) {
   const cz=Math.round((b.z0+b.z1)/2);

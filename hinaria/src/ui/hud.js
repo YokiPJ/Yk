@@ -9,6 +9,7 @@ import { gameState } from '../core/gameState.js';
 import { saveArsenalProgress, equippedWeapon } from '../player/arsenal.js';
 import { CLASSES, SKINS, ARMORS, POWERS, setClass, updateSkillUI, showFloatingText, buildCharacterCreatorUI } from '../player/player.js';
 import { deriveHudState, deriveBossEncounter } from './hudData.js';
+import { PART2_LAYOUT } from '../content/part2.js';
 
 const ZNM = CONFIG.ZONE_NAMES;
 const ATG = CONFIG.ATMOSPHERE_COLORS.map(c => new THREE.Color(c));
@@ -138,7 +139,9 @@ export function updateHudTelemetry(force = false) {
     telemetryTime = now;
     const P = gameState.P;
     if (!P) return null;
-    const zone = gameState.insideHouse ? 'Interior · Vilarrubra' : ZNM[gameState.ZN[P.tx]?.[P.tz] ?? 0] || 'Vilarrubra';
+    const bounds=PART2_LAYOUT.bounds;
+    const inPart2=P.x>=bounds.x0&&P.x<=bounds.x1&&P.z>=bounds.z0&&P.z<=bounds.z1;
+    const zone = gameState.insideHouse ? 'Interior · Vilarrubra' : inPart2?'Vale do Eco · Parte II':ZNM[gameState.ZN[P.tx]?.[P.tz] ?? 0] || 'Vilarrubra';
     const state = deriveHudState(P, { classes: CLASSES, armors: ARMORS, powers: POWERS, skins: SKINS, weapon: equippedWeapon(P) }, zone);
     const e = hudElements;
     text(e['hud-class'], state.className); text(e['hud-level'], `NÍVEL ${state.level}`);

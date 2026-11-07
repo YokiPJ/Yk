@@ -22,7 +22,7 @@ function houseFade(){
   if(typeof document==='undefined'||!document.body)return;
   let veil=document.getElementById('hinaria-house-fade');
   if(!veil){veil=document.createElement('div');veil.id='hinaria-house-fade';
-    veil.style.cssText='position:fixed;inset:0;background:#070c15;pointer-events:none;opacity:0;z-index:51;transition:opacity .26s ease';
+    veil.style.cssText='position:fixed;top:0;right:0;bottom:0;left:0;inset:0;background:#070c15;pointer-events:none;opacity:0;z-index:51;transition:opacity .26s ease';
     document.body.append(veil);}
   veil.style.transition='none';veil.style.opacity='.85';
   void veil.offsetWidth;veil.style.transition='opacity .26s ease';veil.style.opacity='0';

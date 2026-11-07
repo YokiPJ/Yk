@@ -35,7 +35,7 @@ function loadSound(key) {
   if (loading.has(key)) return loading.get(key);
   const ctx = createContext();
   if (!ctx) return Promise.resolve(null);
-  const url = new URL(`../../assets/audio/sfx/${key}.wav`, import.meta.url);
+  const url = new URL(`assets/audio/sfx/${key}.wav`, document.baseURI);
   const task = fetch(url)
     .then(response => {
       if (!response.ok) throw new Error(`SFX HTTP ${response.status}: ${key}`);

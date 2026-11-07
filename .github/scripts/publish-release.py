@@ -2,12 +2,14 @@
 from pathlib import Path
 import hashlib, json, os, re, subprocess, tempfile
 from urllib.parse import quote
+from release_policy import publication_policy
 
 manifest = json.loads(Path('release-manifest.json').read_text(encoding='utf-8'))
 repository, tag, source = manifest['repository'], manifest['tag'], manifest['source_commit']
+policy = publication_policy(tag, manifest.get('prerelease', False))
 if repository != 'YokiPJ/Yk' or os.environ.get('GITHUB_REPOSITORY') != repository:
     raise RuntimeError('Repositório inesperado')
-if not re.fullmatch(r'v\d+\.\d+\.\d+', tag) or not re.fullmatch(r'[0-9a-f]{40}', source):
+if not re.fullmatch(r'[0-9a-f]{40}', source):
     raise RuntimeError('Tag ou commit inválido')
 if os.environ.get('GITHUB_REF_NAME') != 'releases/' + tag:
     raise RuntimeError('Ramo de distribuição inesperado')
@@ -93,7 +95,7 @@ try:
     current = release()
     if current and not any(value in (current.get('body') or '') for value in owned_markers):
         raise RuntimeError('Já existe uma release de outra publicação nesta tag; preservada')
-    payload={'tag_name':tag,'target_commitish':source,'name':manifest['title'],'body':notes,'draft':True,'prerelease':False}
+    payload={'tag_name':tag,'target_commitish':source,'name':manifest['title'],'body':notes,'draft':True,'prerelease':policy['prerelease']}
     if current is None:
         stage='create draft'
         current=api_json('POST',f'repos/{repository}/releases',payload)
@@ -127,14 +129,15 @@ try:
             raise RuntimeError('Anexos enviados divergem da preparação')
     if current['draft']:
         stage='publish by release ID'
-        current=api_json('PATCH',f'repos/{repository}/releases/{release_id}',{'draft':False,'make_latest':'true'})
+        current=api_json('PATCH',f'repos/{repository}/releases/{release_id}',{'draft':False,**policy})
     current=read_release(release_id)
-    if current['draft'] or current['tag_name']!=tag or tag_commit()!=source:
+    if current['draft'] or current['tag_name']!=tag or tag_commit()!=source or current.get('prerelease') is not policy['prerelease']:
         raise RuntimeError('Publicação/tag não confirmada')
     published = {asset['name']: asset for asset in current['assets']}
     if not set(expected).issubset(published):
         raise RuntimeError('Release publicada sem todos os anexos')
     proof = {'status':'published', 'release_id':release_id, 'tag':tag, 'source_commit':source, 'tag_commit':tag_commit(),
+        'prerelease':current['prerelease'], 'make_latest_requested':policy['make_latest'],
         'url':current['html_url'], 'run_url':f"https://github.com/{repository}/actions/runs/{os.environ['GITHUB_RUN_ID']}",
         'assets':[{'name':name,'sha256':digest,'bytes':published[name]['size'],
                    'download_url':published[name]['browser_download_url']} for name,digest in expected.items()]}

@@ -1,6 +1,7 @@
 /** Same HUD drawing commands on mobile, using one transparent Canvas2D layer. */
 export function createCanvasHudBackend(win = window, doc = document) {
   const canvas = doc.createElement('canvas');
+  canvas.id='hud-pixi';
   const ctx = canvas.getContext('2d', { alpha:true, desynchronized:true });
   if (!ctx) throw new Error('Canvas2D indisponível');
   let raf = 0, running = false, last = null, hasPath = false;

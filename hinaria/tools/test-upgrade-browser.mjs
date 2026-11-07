@@ -397,7 +397,7 @@ async function fallback() {
   const session = await createPage({ blockPixi: true, inject: () => {
     const original = HTMLCanvasElement.prototype.getContext;
     HTMLCanvasElement.prototype.getContext = function(type, ...args) {
-      if ((this.id === 'title-three' || this.id === 'hud-pixi-canvas' || this.id === 'hud-pixi') && /webgl/i.test(type)) return null;
+      if ((this.id === 'title-three' || this.id === 'hud-pixi-canvas' || this.id === 'hud-pixi') && /webgl|2d/i.test(type)) return null;
       return original.call(this, type, ...args);
     };
   } });

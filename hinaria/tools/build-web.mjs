@@ -8,6 +8,7 @@ import { readdirSync, statSync } from 'node:fs';
 import { localizeHTML, webDependencies } from './web-dependencies.mjs';
 import { createHash } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
+import {bundleMobile} from './bundle-mobile.mjs';
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const out = join(root,'www');
 const release=JSON.parse(readFileSync(join(root,'release.json'),'utf8'));
@@ -36,6 +37,15 @@ html = localizeHTML(html);
 rmSync(out, {recursive:true,force:true});
 mkdirSync(join(out,'vendor'),{recursive:true});
 for (const d of ['src','assets',...(!gameOnly?['studio']:[])]) cpSync(join(root,d),join(out,d),{recursive:true});
+if(gameOnly){
+  const audio=JSON.parse(readFileSync(join(root,'mobile-assets/audio/manifest.json'),'utf8'));
+  for(const track of audio.tracks){
+    const source=join(root,'assets/audio',track.name),mobile=join(root,'mobile-assets/audio',track.name);
+    const sha=file=>createHash('sha256').update(readFileSync(file)).digest('hex');
+    if(sha(source)!==track.sourceSHA256||sha(mobile)!==track.mobileSHA256)throw new Error('Atualize a variante de áudio mobile: '+track.name);
+    copyFileSync(mobile,join(out,'assets/audio',track.name));
+  }
+}
 // The packaged app cannot contain its own APK. The full project serves it from
 // downloads/; a standalone www build keeps only the Java tool download.
 if(!gameOnly){
@@ -47,14 +57,18 @@ if(!gameOnly){
     `href="https://github.com/${release.repository}/releases/download/${release.tag}/${release.apk}"`
   ));
 }
-copyFileSync(vendor,join(out,'vendor','three.module.js'));
-copyFileSync(animeVendor,join(out,'vendor','anime.es.js'));
-copyFileSync(pixiVendor,join(out,'vendor','pixi.min.mjs'));
-copyFileSync(join(root,'node_modules',webDependencies['capacitor-core.js']),join(out,'vendor','capacitor-core.js'));
+if(!gameOnly){
+  copyFileSync(vendor,join(out,'vendor','three.module.js'));
+  copyFileSync(animeVendor,join(out,'vendor','anime.es.js'));
+  copyFileSync(pixiVendor,join(out,'vendor','pixi.min.mjs'));
+  copyFileSync(join(root,'node_modules',webDependencies['capacitor-core.js']),join(out,'vendor','capacitor-core.js'));
+}
+copyFileSync(join(root,'webview-error.html'),join(out,'webview-error.html'));
 mkdirSync(join(out,'vendor','licenses'),{recursive:true});
 for (const [name,license] of Object.entries({three:'three/LICENSE',pixi:'pixi.js/LICENSE',anime:'animejs/LICENSE.md',capacitor:'@capacitor/core/LICENSE'}))
   copyFileSync(join(root,'node_modules',license),join(out,'vendor','licenses',name+'.txt'));
 writeFileSync(join(out,'index.html'),html);
+const compatibility=gameOnly?await bundleMobile(root,out):{format:'esm',target:'modern',imports:'importmap'};
 // Include every source/asset/vendor in release identity, including new UI/save modules.
 const manifest = {};
 function inventory(dir) {
@@ -67,6 +81,6 @@ function inventory(dir) {
 inventory(out);
 const fingerprint = createHash('sha256').update(JSON.stringify(manifest)).digest('hex').slice(0,12);
 writeFileSync(join(out,'build-manifest.json'),JSON.stringify(manifest,null,2));
-writeFileSync(join(out,'build-info.json'),JSON.stringify({version:release.version,target:gameOnly?'mobile':'full',fingerprint,created:new Date().toISOString()},null,2));
+writeFileSync(join(out,'build-info.json'),JSON.stringify({version:release.version,target:gameOnly?'mobile':'full',compatibility,fingerprint,created:new Date().toISOString()},null,2));
 console.log('HINÁRIA upgrade · '+Object.keys(manifest).length+' arquivos · SHA256 '+fingerprint);
 console.log(`WebView offline: ${out}`);

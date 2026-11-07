@@ -7,7 +7,7 @@ import * as THREE from 'three';
 import { gameState } from '../core/gameState.js';
 const CHUNK=16;
 const keyOf=(x,z)=>`${Math.floor(x/CHUNK)},${Math.floor(z/CHUNK)}`;
-let previousKey='', previousWide=false;
+let previousKey='', previousWide=false, previousMap=null;
 
 export function registerChunkVisual(object,x,z){
   if(!object)return null;
@@ -27,8 +27,8 @@ export function updateChunkVisibility(x,z,cinema=false){
   const disabled=typeof location!=='undefined' && new URLSearchParams(location.search).get('stream')==='0';
   const wide=!!cinema||disabled;
   const cx=Math.floor(x/CHUNK),cz=Math.floor(z/CHUNK),key=`${cx},${cz}`;
-  if(previousKey===key && previousWide===wide)return;
-  previousKey=key;previousWide=wide;
+  if(previousMap===map && previousKey===key && previousWide===wide)return;
+  previousMap=map;previousKey=key;previousWide=wide;
   let count=0;
   for(const [chunkKey,group] of map){
     const [gx,gz]=chunkKey.split(',').map(Number);

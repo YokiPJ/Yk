@@ -5,7 +5,7 @@ const root=new URL('../src/vfx/',import.meta.url);
 for(const old of ['skillVfx.js','hitVfx.js','vfxJsImpact.js']) assert.equal(existsSync(new URL(old,root)),false);
 const bridge=load('src/vfx/claudeVfxBridge.js');
 const combat=load('src/combat/combat.js');
-const main=load('src/main.js');
+const main=load('src/core/bootGame.js');
 const loop=load('src/core/loop.js');
 const html=load('index.html');
 const build=load('tools/build-web.mjs');
