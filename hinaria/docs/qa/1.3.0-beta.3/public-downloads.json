@@ -1,0 +1,25 @@
+{
+  "status": "PASS",
+  "verifiedAtUTC": "2026-11-07T20:16:14.944204+00:00",
+  "releaseURL": "https://github.com/YokiPJ/Yk/releases/tag/v1.3.0-beta.3",
+  "sourceCommit": "aadd9b16e74acc939833c93e3a26203dd5baf3ca",
+  "tagCommit": "aadd9b16e74acc939833c93e3a26203dd5baf3ca",
+  "publishedAssetsVerified": 13,
+  "publicDownloads": [
+    {
+      "file": "HINARIA_ALVO_AUTOMATICO_1.3.0-beta.3.zip",
+      "httpStatus": 200,
+      "bytes": 538754,
+      "sha256": "b7d8a28266a054a46797fb3e07c74bd0afa21d46365a659b76580959aa6aad3f",
+      "url": "https://github.com/YokiPJ/Yk/releases/download/v1.3.0-beta.3/HINARIA_ALVO_AUTOMATICO_1.3.0-beta.3.zip"
+    },
+    {
+      "file": "HINARIA_1.3.0_BETA3_DEBUG.apk",
+      "httpStatus": 200,
+      "bytes": 14927931,
+      "sha256": "a7e1d8bd4fe7a324be2c7056b1f07928e8dfe5ea3d699e87623ec2a6e65880ff",
+      "url": "https://github.com/YokiPJ/Yk/releases/download/v1.3.0-beta.3/HINARIA_1.3.0_BETA3_DEBUG.apk"
+    }
+  ],
+  "latestStableURL": "https://github.com/YokiPJ/Yk/releases/tag/v1.2.2"
+}

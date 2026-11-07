@@ -18,3 +18,5 @@ CHROMIUM_PATH=/usr/bin/chromium node tools/test-bundle-browser.mjs
 ```
 
 `CHROMIUM_PATH` é opcional quando o navegador do Playwright está instalado. O teste dos ZIPs usa HINARIA_SOURCE_ARCHIVE, HINARIA_PATCH_ARCHIVE, HINARIA_PREVIOUS_ARCHIVE e HINARIA_STARTUP_ARTIFACTS. Veja results.json e os relatórios individuais para os limites do ambiente.
+
+Publicação concluída: [v1.3.0-beta.3](https://github.com/YokiPJ/Yk/releases/tag/v1.3.0-beta.3) pelo [workflow](https://github.com/YokiPJ/Yk/actions/runs/42410068163). Os 13 anexos foram baixados e comparados pela automação; o APK e o patch também foram baixados pelos links públicos, com HTTP 200, tamanho e SHA256 correspondentes. `final-package.json` confirma que os arquivos finais do jogo coincidem com a árvore testada. `public-downloads.json` registra os downloads e a preservação da 1.2.2 como estável.
