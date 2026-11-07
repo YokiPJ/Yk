@@ -23,7 +23,7 @@ const test={P:{hp:40,cls:'pa',x:0,z:0,lv:2,bonus:0,cd:0,at:0,b:{},path:[],mesh:{
   getHeightAt:()=>0,ents:[],B:[],ccOpen:false,arsenalOpen:false,dialogueOpen:false,insideHouse:false,cutsceneActive:false,tgt:null};
 let hits=0,projectiles=0,combo=0,swing=0;
 const enemy={hp:30,x:0,z:1,kind:'m'};test.ents=[enemy];
-const sandbox={gameState:test,active:()=>false,combatV2:{},freeDodge:{active:false},findForwardEnemy:(st,pl,range)=>st.ents.find(e=>e.hp>0 && e.z>pl.z && Math.hypot(e.x-pl.x,e.z-pl.z)<=range) || null,requestCombatV2Attack(){combo++;return true;},
+const sandbox={gameState:test,active:()=>false,combatV2:{},freeDodge:{active:false},syncCombatClass(){},attackAim:{begin:(st,pl,range)=>st.ents.find(e=>e.hp>0 && Math.hypot(e.x-pl.x,e.z-pl.z)<=range) || null},requestCombatV2Attack(){combo++;return true;},
  equippedWeapon(){return {kind:'bow',range:5}},near(a,b){return Math.hypot(a.x-b.x,a.z-b.z)},
  CLASSES:{pa:{dmg:[3,3],col:0xffffff},kn:{dmg:[3,3]},so:{dmg:[3,3],col:0xff7a2a}},ri(a,b){return a},
  playClaudeVfx(){swing++},dealDamage(P,T,d){hits++;T.hp-=d},fireProjectile(P,T,color,cb){projectiles++;cb()},Math};

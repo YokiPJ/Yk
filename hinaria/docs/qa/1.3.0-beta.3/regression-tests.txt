@@ -1,0 +1,61 @@
+
+> hinaria-v7-android@1.3.0-beta.3 test:qa
+> node tools/run-qa.mjs
+
+PASS test_advanced_houses_balance.mjs
+PASS test_arsenal_v7.mjs
+PASS test_attack_aim.mjs
+PASS test_attack_aim_bridge.mjs
+PASS test_class_swap_cooldowns.cjs
+PASS test_claude_class_map.mjs
+PASS test_claude_only_runtime.mjs
+PASS test_combat_v2_animation.mjs
+PASS test_combat_v2_phase1.mjs
+PASS test_cutscene_collision_hotfix.mjs
+PASS test_cutscene_terrain_context.mjs
+PASS test_dodge_all_classes_v2.mjs
+PASS test_enemy_restore_spawn.mjs
+PASS test_entity_tags.mjs
+PASS test_equipment_model_fitting.mjs
+PASS test_homing_arrows.mjs
+PASS test_homing_target_and_vfx.mjs
+PASS test_interior_animated_v2.mjs
+PASS test_label_anchor_v72.mjs
+PASS test_legacy_css.mjs
+PASS test_machado_replay.mjs
+PASS test_manual_combat_vfx.cjs
+PASS test_minimap_no_stretch.mjs
+PASS test_mobile_controls.cjs
+PASS test_mobile_light_bundle.mjs
+PASS test_mobile_render_budget.mjs
+PASS test_mobile_v74.mjs
+PASS test_music_loop_boss.mjs
+PASS test_no_target_combat_ui_v2.mjs
+PASS test_part2_director.mjs
+PASS test_part2_quests.mjs
+PASS test_procedural_generation.mjs
+PASS test_qa_lore_upgrade.mjs
+PASS test_rat_frustum.mjs
+PASS test_story_cutscenes_extended.mjs
+PASS test_texture_integration.mjs
+PASS test_ui_overhaul_v1.mjs
+PASS test_upgrade_boss_hud.mjs
+PASS test_upgrade_boss_persistence.mjs
+PASS test_upgrade_classic.mjs
+PASS test_upgrade_flow.mjs
+PASS test_upgrade_hud.mjs
+PASS test_upgrade_manual_front.mjs
+PASS test_upgrade_polish.mjs
+PASS test_upgrade_save.mjs
+PASS test_v1080_village_bosses.mjs
+PASS test_v75_visual_models.mjs
+PASS test_v76_houses.mjs
+PASS test_v77_materials_market.mjs
+PASS test_v78_buttons_houses.mjs
+PASS test_v78_house_runtime.mjs
+PASS test_v79_balance.mjs
+PASS test_vfx_sfx_pack.cjs
+PASS test_visual_v3_reference.mjs
+PASS test_world_build_steps.mjs
+PASS test_world_render_budget.mjs
+56/56 testes aprovados.

@@ -10,7 +10,7 @@ let calls=0;
 const P={x:0,z:0,cls:'pa',hp:100,at:0,path:[],mesh:{rotation:{y:0}},b:{}};
 const gs={P,ccOpen:false,arsenalOpen:false,dialogueOpen:false,insideHouse:false,cutsceneActive:false,keys:{},jx:0,jz:0,yaw:0};
 const controller={cfg:{dodgeCost:28,dodgeCooldown:.95,dodgeSpeed:5.7,dodgeDuration:.4,dodgeIFrameStart:.075,dodgeIFrameEnd:.265,staminaRegen:17},requestDodge(){calls++;return true;}};
-const sb={gameState:gs,combatV2:controller,active(){return false;},showFloatingText(){},say(){},Math};
+const sb={gameState:gs,combatV2:controller,attackAim:{clear(){}},syncCombatClass(){},active(){return false;},showFloatingText(){},say(){},Math};
 vm.runInNewContext(cut+'\nthis.test={requestCombatV2Dodge,getDodgeMotion,tickFreeDodge,abortCombatDodgeOnCollision,freeDodge};',sb);
 const {test}=sb;
 assert.equal(test.requestCombatV2Dodge(),true,'Paladin can dodge');

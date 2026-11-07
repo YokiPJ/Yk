@@ -1,5 +1,7 @@
 # Documentação
 
+- [Alvo automático Beta 3](MOBILE_1.3.0-beta.3.md): seleção em 360°, giro ao atacar e comportamento dos combos.
+- [Notas da Beta 3](releases/1.3.0-beta.3/RELEASE_NOTES.md) e [resultados](qa/1.3.0-beta.3/results.json).
 - [Correção de inicialização Beta 2](releases/1.3.0-beta.2/RELEASE_NOTES.md): entrada automática, bibliotecas locais e patch para Beta 1.
 
 - [BETA_PARTE_II.md](BETA_PARTE_II.md): acesso, missões, locais e roteiro de teste da continuação.

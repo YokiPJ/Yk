@@ -82,7 +82,7 @@ try{
   browser=await chromium.launch({executablePath:process.env.CHROMIUM_PATH||undefined,headless:true,args:['--no-sandbox','--disable-dev-shm-usage','--use-angle=swiftshader','--enable-unsafe-swiftshader']});
   const full=join(temp,'full');await extract(archive,full);
   await play(full,'full-static-root');await play(full,'full-node-server',true);
-  if(patch&&previous){const updated=join(temp,'patched');await extract(previous,updated);await extract(patch,updated);await play(updated,'patch-over-beta1');}
+  if(patch&&previous){const updated=join(temp,'patched');await extract(previous,updated);await extract(patch,updated);await play(updated,'patch-over-previous-beta');}
   // A partial node_modules folder must not be mistaken for installed libraries.
   await rm(join(full,'hinaria/vendor'),{recursive:true});await mkdir(join(full,'hinaria/node_modules'));
   const child=spawn(process.execPath,['server.js'],{cwd:join(full,'hinaria'),env:{...process.env,PORT:'0'},stdio:['ignore','pipe','pipe']});let log='';

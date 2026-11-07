@@ -7,42 +7,71 @@ import { equippedWeapon } from '../player/arsenal.js';
 import { dealDamage, fireProjectile } from './combat.js';
 import { say } from '../ui/hud.js';
 import { playClaudeVfx } from '../vfx/claudeVfxBridge.js';
-import { findForwardEnemy } from './forwardHit.js';
+import { AttackAimController } from './attackAim.js';
 import { applyAxeImpact } from './replayAxeSystem.js';
 import { combatV2, isKnightCombatV2, setCombatV2Enabled, FEATURE_FLAGS } from './combatV2.js';
 
 const active = () => isKnightCombatV2(gameState.P, equippedWeapon(gameState.P));
 let previousClass = null;
+let previousPlayer = null;
+const attackAim = new AttackAimController();
 let lastHUD = '';
 let lastSwingSerial = 0;
 const COMBAT_PREF_KEY = 'hinaria.v110.combat_v2_enabled';
 const ri = (a, b) => Math.floor(a + Math.random() * (b - a + 1));
 
+function syncCombatClass(P) {
+  if (previousPlayer === P && previousClass === P.cls) return;
+  combatV2.resetActions();
+  freeDodge.active = false;
+  attackAim.clear();
+  previousPlayer = P;
+  previousClass = P.cls;
+}
+
+function aimCombo(P) {
+  return attackAim.begin(gameState, P, equippedWeapon(P).range + .25, combatV2.eventSerial);
+}
+
+/** Movement may continue while a swing faces its victim; dodge owns its direction. */
+export function getAttackFacing() {
+  const P = gameState.P;
+  if (!P || P.hp <= 0 || (gameState.flow && gameState.flow !== 'PLAYING') ||
+      gameState.ccOpen || gameState.arsenalOpen || gameState.dialogueOpen ||
+      gameState.insideHouse || gameState.cutsceneActive || getDodgeMotion() ||
+      !(active() ? combatV2.attacking : P.at > 0)) return null;
+  return attackAim.facing(gameState, P);
+}
+
 export function requestCombatV2Attack() {
   const P = gameState.P;
-  if (!P || (gameState.flow && gameState.flow !== 'PLAYING') || !active() || freeDodge.active || gameState.ccOpen || gameState.arsenalOpen || gameState.dialogueOpen || gameState.insideHouse || gameState.cutsceneActive) return false;
-  if (P.hp <= 0 || (P.at > 0 && !combatV2.attacking && !combatV2.isDodging)) return false;
+  if (!P || (gameState.flow && gameState.flow !== 'PLAYING') || !active() || gameState.ccOpen || gameState.arsenalOpen || gameState.dialogueOpen || gameState.insideHouse || gameState.cutsceneActive) return false;
+  syncCombatClass(P);
+  if (freeDodge.active || P.hp <= 0 || (P.at > 0 && !combatV2.attacking && !combatV2.isDodging)) return false;
   const ok = combatV2.requestAttack();
   if (ok) {
+    // A buffered input belongs to the next swing, not the current victim.
+    aimCombo(P);
     P.path.length = 0;
     P.at = 1;
   }
   return ok;
 }
 
-/** Ataque MANUAL em qualquer classe. V2 continua exclusivo do Cavaleiro com espada.
+/** Ataque por input, com direção automática em qualquer classe. V2 é do Cavaleiro.
  * NUNCA é chamado pelo loop automaticamente; somente pelo input do jogador.
  * Preserva fórmulas, cooldown antigo, projéteis e recompensas originais.
  */
 export function requestManualAttack() {
   const P = gameState.P;
   if (!P || (gameState.flow && gameState.flow !== 'PLAYING') || gameState.ccOpen || gameState.arsenalOpen || gameState.dialogueOpen || gameState.insideHouse || gameState.cutsceneActive || P.hp <= 0) return false;
+  syncCombatClass(P);
   if (active()) return requestCombatV2Attack();
   if (P.cd > 0 || P.at > 0 || freeDodge.active) return false;
   const weapon = equippedWeapon(P);
   const range = weapon?.range ?? 1;
-  // O input explícito consulta somente o cone frontal, alcance e linha de visão.
-  const T = findForwardEnemy(gameState, P, range);
+  // Escolhe e encara o inimigo antes de animar/disparar. Não altera o alcance.
+  const T = attackAim.begin(gameState, P, range);
   // An empty swing still animates and consumes its cooldown.
   if (!T) {
     P.cd = weapon?.kind==='sword' ? .76 : weapon?.kind==='bow' ? .86 : weapon?.kind==='axe' ? 1.03 : .94;
@@ -97,6 +126,7 @@ function tickFreeDodge(dt,P) {
 export function requestCombatV2Dodge() {
   const P = gameState.P;
   if (!P || (gameState.flow && gameState.flow !== 'PLAYING') || gameState.ccOpen || gameState.arsenalOpen || gameState.dialogueOpen || gameState.insideHouse || gameState.cutsceneActive || P.hp<=0) return false;
+  syncCombatClass(P);
   if (P.at > 0 && !combatV2.attacking) return false;
   let mx = (+Boolean(gameState.keys.d || gameState.keys.ArrowRight) - +Boolean(gameState.keys.a || gameState.keys.ArrowLeft)) + (gameState.jx || 0);
   let mz = (+Boolean(gameState.keys.s || gameState.keys.ArrowDown) - +Boolean(gameState.keys.w || gameState.keys.ArrowUp)) + (gameState.jz || 0);
@@ -115,6 +145,7 @@ export function requestCombatV2Dodge() {
     ok=true;
   }
   if (ok) {
+    attackAim.clear();
     if(P.path)P.path.length=0;
     P.vx = P.vz = 0;
     const dir=useCombo?combatV2.dodgeDir:freeDodge.dir;
@@ -127,18 +158,18 @@ export function requestCombatV2Dodge() {
 
 export function tickCombatV2(dt) {
   const P = gameState.P;
-  if (!P) return;
-  if (previousClass !== P.cls) { combatV2.resetActions(); freeDodge.active=false; previousClass = P.cls; }
+  if (!P) { attackAim.clear(); return; }
+  syncCombatClass(P);
   tickFreeDodge(dt,P);
-  if (!active()) { if (combatV2.state !== 'idle') combatV2.resetActions(); P.combatV2Stage = undefined; updateCombatV2HUD(); return; }
-  if ((gameState.flow && gameState.flow !== 'PLAYING') || gameState.ccOpen || gameState.arsenalOpen || gameState.dialogueOpen || gameState.insideHouse || gameState.cutsceneActive) {
-    combatV2.resetActions(); updateCombatV2HUD(); return;
+  if ((gameState.flow && gameState.flow !== 'PLAYING') || gameState.ccOpen || gameState.arsenalOpen || gameState.dialogueOpen || gameState.insideHouse || gameState.cutsceneActive || P.hp <= 0) {
+    combatV2.resetActions(); attackAim.clear(); updateCombatV2HUD(); return;
   }
+  if (!active()) { if (combatV2.state !== 'idle') combatV2.resetActions(); if (P.at <= 0) attackAim.clear(); P.combatV2Stage = undefined; updateCombatV2HUD(); return; }
+  if (combatV2.attacking) aimCombo(P);
   combatV2.tick(dt, (step, index) => {
     // Um único impacto por golpe. A função de dano original ainda resolve
     // críticos, guarda, morte, XP, drops, recompensas e objetivos.
-    const range = equippedWeapon(P).range + .25;
-    const T = findForwardEnemy(gameState, P, range);
+    const T = attackAim.resolveImpact(gameState, P);
     if (!T) return;
     // VFX do combo no local atingido, não acima da cabeça do jogador.
     playClaudeVfx(index===2?'slash_triple':index===1?'slash_cross':'slash',{x:T.x,y:gameState.getHeightAt(T.x,T.z)+.8,z:T.z,mesh:P.mesh},{x:T.x+(T.x-P.x)*.08,y:gameState.getHeightAt(T.x,T.z)+.8,z:T.z+(T.z-P.z)*.08},.56);
@@ -148,10 +179,13 @@ export function tickCombatV2(dt) {
     dealDamage(P, T, damage);
     if (index === 2) showFloatingText(T, 'COMBO 3!', '#ffd76b');
   });
+  // tick() can start a queued combo step; it acquires a fresh victim once.
+  if (combatV2.attacking) aimCombo(P);
+  else attackAim.clear();
   if (combatV2.attacking && combatV2.eventSerial !== lastSwingSerial) {
     lastSwingSerial = combatV2.eventSerial;
     // Evita duplicar VFX: com alvo o corte será disparado pelo evento de impacto.
-    if(!findForwardEnemy(gameState,P,equippedWeapon(P).range+.25)){
+    if(!attackAim.current(gameState,P)){
       const yaw=Number(P.mesh?.rotation?.y)||0,fx=Math.sin(yaw),fz=Math.cos(yaw);
       playClaudeVfx(combatV2.stepIndex===2?'slash_triple':combatV2.stepIndex===1?'slash_cross':'slash',{x:P.x+fx*.85,y:gameState.getHeightAt(P.x+fx*.85,P.z+fz*.85)+.8,z:P.z+fz*.85,mesh:P.mesh},null,.52);
     }
@@ -179,6 +213,7 @@ export function isCombatV2Invulnerable(attacker=null) {
 }
 export function cancelCombatV2() {
   const wasAttacking = combatV2.attacking;
+  attackAim.clear();
   freeDodge.active=false;
   if (combatV2.state !== 'idle') combatV2.resetActions();
   if (gameState.P) {
@@ -235,11 +270,10 @@ export function updateCombatV2HUD() {
     quick.setAttribute('aria-pressed', String(on));
   }
   const hint = document.getElementById('combat-v2-hint');
-  if (hint) hint.textContent = gameState.P?.cls !== 'kn' ? 'Ataque manual (J/Espaço)'
-    : enabled ? 'Combo (J) · Esquiva (K)' : 'Ataque manual (J/Espaço)';
+  if (hint) hint.textContent = enabled ? 'Alvo automático · Combo (J)' : 'Alvo automático · J/Espaço';
   if (!visible) return;
   const attack = document.getElementById('combat-v2-attack');
-  if (attack) { attack.hidden = false; attack.textContent = enabled ? '⚔ Golpe' : '⚔ Atacar'; attack.setAttribute('aria-label','Ataque manual, tecla J ou Espaço'); }
+  if (attack) { attack.hidden = false; attack.textContent = enabled ? '⚔ Golpe' : '⚔ Atacar'; attack.setAttribute('aria-label','Atacar com alvo automático, tecla J ou Espaço'); }
   const dodgeButton = document.getElementById('combat-v2-dodge');
   if (dodgeButton) dodgeButton.hidden = false;
   const staminaUI = document.getElementById('combat-v2-stamina-wrap');

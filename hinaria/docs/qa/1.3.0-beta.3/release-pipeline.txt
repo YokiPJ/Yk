@@ -1,0 +1,12 @@
+test_beta_flag_source_commit_and_policy_are_delivered (test_release_pipeline.PreparationTests.test_beta_flag_source_commit_and_policy_are_delivered) ... ok
+test_beta_publishes_by_ids_without_replacing_latest_stable (test_release_pipeline.PublisherTests.test_beta_publishes_by_ids_without_replacing_latest_stable) ... ok
+test_existing_tag_with_other_source_is_preserved (test_release_pipeline.PublisherTests.test_existing_tag_with_other_source_is_preserved) ... ok
+test_remote_channel_mismatch_is_never_confirmed (test_release_pipeline.PublisherTests.test_remote_channel_mismatch_is_never_confirmed) ... ok
+test_stable_publication_keeps_existing_latest_behavior (test_release_pipeline.PublisherTests.test_stable_publication_keeps_existing_latest_behavior) ... ok
+test_invalid_tags_and_channels_fail_before_publication (test_release_pipeline.ReleasePolicyTests.test_invalid_tags_and_channels_fail_before_publication) ... ok
+test_stable_and_beta_channels (test_release_pipeline.ReleasePolicyTests.test_stable_and_beta_channels) ... ok
+
+----------------------------------------------------------------------
+Ran 7 tests in 0.026s
+
+OK

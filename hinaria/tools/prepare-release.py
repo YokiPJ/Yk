@@ -56,7 +56,10 @@ with tempfile.TemporaryDirectory(prefix='hinaria-runtime-') as directory:
         run('git','merge-base','--is-ancestor',previous,source)
         changed=run('git','diff','--name-only','--diff-filter=ACMR',previous,source).splitlines()
         changed=[name for name in changed if not name.startswith('hinaria/docs/qa/')]
-        patch=target / ('HINARIA_CORRECAO_INICIO_' + RELEASE['version'] + '.zip')
+        patch_name=RELEASE.get('patch_name', 'HINARIA_CORRECAO_INICIO_' + RELEASE['version'] + '.zip')
+        if not re.fullmatch(r'[A-Za-z0-9_.-]+\.zip',patch_name):
+            raise RuntimeError('Nome de patch inválido: use um nome ZIP sem diretórios.')
+        patch=target / patch_name
         run('git','archive','--format=zip','--output='+str(patch),source,*changed)
         attach_runtime(patch)
         with zipfile.ZipFile(patch,'a',compression=zipfile.ZIP_DEFLATED) as zipped:

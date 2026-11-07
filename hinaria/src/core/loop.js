@@ -24,7 +24,7 @@ import { tickLore } from '../lore/loreSystem.js';
 import { updateChunkVisibility } from '../world/chunkVisibility.js';
 import { updateGameAudio } from '../audio/gameAudio.js';
 import { combatV2 } from '../combat/combatV2.js';
-import { tickCombatV2, cancelCombatV2, getDodgeMotion, abortCombatDodgeOnCollision } from '../combat/combatV2Bridge.js';
+import { tickCombatV2, cancelCombatV2, getDodgeMotion, abortCombatDodgeOnCollision, getAttackFacing } from '../combat/combatV2Bridge.js';
 import { tickReplayAxe } from '../combat/replayAxeSystem.js';
 import { tickVisualAtmosphere } from '../vfx/worldAtmosphereV3.js';
 import { tickClaudeVfx } from '../vfx/claudeVfxBridge.js';
@@ -140,10 +140,10 @@ function tickGameFrame(now) {
     if (gameState.ccOpen) mx = mz = 0;
     const man = mx !== 0 || mz !== 0;
     
-    // No selection, proximity auto-target, lock-on or enemy ring.
+    // No persistent target selection or enemy ring; aim lives only during a swing.
     gameState.tgt = null;
 
-    // Combate 100% manual: nunca aplica dano ou dispara projéteis automaticamente.
+    // Ataques exigem input; a direção é assistida durante o golpe.
     // O loop só avança a FSM do Combo V2, que requer input explícito de ataque.
     tickCombatV2(dt);
 
@@ -290,6 +290,8 @@ function movePlayer(dt, mx, mz) {
         stepEntity(P, dt, vmax);
         if (!P.path.length && Math.hypot(P.tx - P.x, P.tz - P.z) < 0.001) P.stp = 0;
     }
+    const attackFacing = getAttackFacing();
+    if (attackFacing !== null) P.mesh.rotation.y = attackFacing;
     
     P.spd += (Math.hypot(P.x - ox, P.z - oz) / dt - P.spd) * Math.min(1, dt * 18);
     if (P.spd < 0.02) P.spd = 0;
