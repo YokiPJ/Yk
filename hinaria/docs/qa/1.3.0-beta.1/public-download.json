@@ -1,0 +1,12 @@
+{
+  "status": "PASS",
+  "verifiedAtUTC": "2026-11-07T15:17:40.478059+00:00",
+  "url": "https://github.com/YokiPJ/Yk/releases/download/v1.3.0-beta.1/HINARIA_1.3.0_BETA1_DEBUG.apk",
+  "httpStatus": 200,
+  "bytes": 14924470,
+  "sha256": "cbf619094348fa2646468546733426b31f9523466f036c98991239f5915d503c",
+  "releaseURL": "https://github.com/YokiPJ/Yk/releases/tag/v1.3.0-beta.1",
+  "prerelease": true,
+  "latestStableURL": "https://github.com/YokiPJ/Yk/releases/tag/v1.2.2",
+  "authenticatedSessionUsed": false
+}

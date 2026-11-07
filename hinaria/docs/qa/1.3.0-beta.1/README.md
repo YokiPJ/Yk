@@ -17,3 +17,5 @@ APK: 14924470 bytes; SHA256 `cbf619094348fa2646468546733426b31f9523466f036c98991
 [Resultados completos](results.json) · [Geração](procedural-generation.json) · [Parte II](part2-browser.json) · [Mobile](mobile-browser.json) · [Assinatura](apk-signature.txt)
 
 A limpeza final de espaços no fonte preservou todos os bytes do bundle e dos recursos usados em execução; [comparação dos manifestos](runtime-equivalence.json). Os relatórios mantêm a identidade observada no teste.
+
+[Beta publicada](https://github.com/YokiPJ/Yk/releases/tag/v1.3.0-beta.1) · [Confirmação da publicação](release-proof.json) · [Download público HTTP 200 e SHA256](public-download.json). A rota latest continua apontando para 1.2.2.
