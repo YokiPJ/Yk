@@ -1,8 +1,0 @@
-/* Optional transparent visual layer. All text and controls remain native DOM. */
-#hud-pixi{position:fixed;top:0;right:0;bottom:0;left:0;inset:0;width:100%;height:100%;z-index:13;pointer-events:none;touch-action:none}
-#hud-danger{position:fixed;top:0;right:0;bottom:0;left:0;inset:0;z-index:10;pointer-events:none;opacity:0;box-shadow:inset 0 0 100px 18px #b3262d99}
-body.hud-pixi .hud-meter-track>.hud-meter-fill,body.hud-pixi .hud-meter-track>.hud-meter-trail{opacity:0}
-body.ui-v1 #hot button{background:linear-gradient(145deg,#26272df0,#0e1015f2)!important;border:1px solid #94928c99!important;color:#ece9e2!important;box-shadow:inset 0 0 0 2px #0007}
-body.ui-v1 #hot button .skill-key{color:#c9ccd1}
-body.ui-v1 #hot button .skill-cd{color:#fff;text-shadow:0 1px 3px #000}
-@media(prefers-reduced-motion:reduce){#hud-danger{box-shadow:inset 0 0 70px 10px #b3262d88}}

@@ -1,6 +1,0 @@
-{
-  "longPressActions": 2,
-  "closedDiagonalCornerVisible": true,
-  "audioNullPreferenceError": "Cannot read properties of null (reading 'enabled')",
-  "goldPenaltyAt3B": 3323741824
-}

@@ -1,2 +1,0 @@
-PASS integração projeto: jogo, 4 HTMLs, 6 imagens, links e downloads.
-PASS pacote mobile: jogo offline; laboratórios e JAR fora do APK.

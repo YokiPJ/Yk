@@ -1,8 +1,0 @@
-{
-  "release": "1.3.0-beta.1",
-  "freshArchiveWithoutNodeModules": true,
-  "threeStatus": 404,
-  "rootIndexIncluded": false,
-  "bundledThreeIncluded": false,
-  "archiveSHA256": "21adb04ebf40c6f4c71247aff572dccc5d37d45dd3e821bb1383e6c9793e5294"
-}

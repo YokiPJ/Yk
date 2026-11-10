@@ -1,9 +1,0 @@
-node_modules/
-www/
-android/.gradle/
-android/build/
-android/app/build/
-APK_GERADO/
-
-.local/
-qa-evidence/
