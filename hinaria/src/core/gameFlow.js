@@ -5,6 +5,7 @@ import { gameState } from './gameState.js';
 import { readSave, writeSave, getSaveInfo as readSaveInfo, validateSave } from './saveManager.js';
 
 let services = {}, installed = false;
+let newCharacterPending = false;
 const el = id => globalThis.document?.getElementById(id);
 const modes = new Set(['BOOT','TITLE','CHARACTER_CREATION','PLAYING','PAUSED','DIALOGUE','CUTSCENE','DEAD']);
 const copy = value => JSON.parse(JSON.stringify(value));
@@ -72,6 +73,7 @@ export function setPaused(paused) {
 
 export function initGameFlow(dependencies = {}) {
   services = {...services,...dependencies};
+  newCharacterPending = false;
   if (!installed) {
     installed = true;
     globalThis.document?.addEventListener('visibilitychange', () => {
@@ -200,15 +202,17 @@ export function startNewGame() {
     gameState.L?.set(P.x,gameState.getHeightAt(P.x,P.z),P.z);
     services.updateHUD?.();services.updateSkillUI?.();services.refreshQuestUI?.();services.resetQuestIntro?.();
     gameState.sessionStarted=true;gameState.ccOpen=true;gameState.pauseRequested=false;
+    newCharacterPending=true;
     services.buildCharacterCreatorUI?.();
     transitionTo('CHARACTER_CREATION');
     return {ok:true};
-  } catch(error) { return {ok:false,error:'Não foi possível iniciar: '+error.message}; }
+  } catch(error) { newCharacterPending=false; return {ok:false,error:'Não foi possível iniciar: '+error.message}; }
   finally { gameState.suspendLegacyPersistence=false; }
 }
 
 export function finishCharacterCreation() {
   if(!gameState.P || !gameState.sessionStarted) return {ok:false,error:'Inicie uma sessão antes de jogar.'};
+  if(newCharacterPending){gameState.P.hp=gameState.P.max;gameState.P.mana=gameState.P.mm;newCharacterPending=false;}
   gameState.ccOpen=false;gameState.pauseRequested=false;gameState.sessionStarted=true;
   transitionTo('PLAYING');
   return {ok:true};
@@ -255,6 +259,7 @@ export function getSaveInfo() { return readSaveInfo(); }
 export function applySaveSnapshot(data) {
   const checked=validateSave(data);
   if(!checked.ok) return checked;
+  data=checked.data;
   if(!gameState.P || !services.classes) return {ok:false,error:'O mundo ainda está inicializando.'};
   if(data.world.seed!==undefined&&data.world.seed!==(gameState.worldSeed||11))
     return {ok:false,error:'Este save usa outra semente de mundo. Reabra o jogo para preparar o mapa correto.'};
@@ -266,6 +271,9 @@ export function applySaveSnapshot(data) {
     closeModals();clearTransient();clearEnemies();resetWorldProgress(data.world);
     const P=gameState.P,saved=data.player,c=services.classes[saved.cls];
     const pos=safePosition(saved.x,saved.z);
+    // Older snapshots may omit optional fields; never inherit another session's
+    // powers, equipment, effects or cooldowns when restoring them.
+    Object.assign(P,{rl:0,rc:0,cd:0,cds:[0,0,0,0],b:{},st:{},ownedWeapons:[],equippedWeapons:{},skillLevels:{},reg:0,stp:0});
     const fields=['cls','lv','xp','gold','rl','rc','cd','cds','b','st','ownedWeapons','equippedWeapons','skillLevels'];
     for(const key of fields) if(saved[key]!==undefined) P[key]=copy(saved[key]);
     P.name=data.identity.name;
@@ -286,7 +294,7 @@ export function applySaveSnapshot(data) {
     services.restoreLore?.(data.lore||[]);services.restoreCutscenes?.(data.cutscenes||[]);
     populateEnemies(data.world);
     services.updateHUD?.();services.updateSkillUI?.();services.refreshQuestUI?.();
-    gameState.ccOpen=false;gameState.pauseRequested=false;gameState.sessionStarted=true;
+    gameState.ccOpen=false;gameState.pauseRequested=false;gameState.sessionStarted=true;newCharacterPending=false;
     transitionTo('PLAYING');
     if(data.house) services.restoreHouse?.(data.house);
     return {ok:true};
@@ -305,7 +313,7 @@ export function continueGame() { return loadGame(); }
 
 export function returnToTitle() {
   closeModals();services.leaveHouse?.();services.cancelCutscenes?.();
-  gameState.ccOpen=false;gameState.pauseRequested=false;
+  gameState.ccOpen=false;gameState.pauseRequested=false;newCharacterPending=false;
   transitionTo('TITLE');
   return {ok:true};
 }

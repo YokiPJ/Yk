@@ -109,16 +109,14 @@ export function initControls() {
     // Keyboard activates buttons via click; a swallowed pointer click cannot attack twice.
     function bindAction(button, action) {
         if (!button) return;
-        let lastPointerAt = -Infinity;
         button.addEventListener('pointerdown', e => {
             if(e.button !== undefined && e.button !== 0) return;
             e.preventDefault();
-            lastPointerAt = performance.now();
             if (gameplayInputAllowed()) action();
         });
         button.addEventListener('click', e => {
             // Keyboard click has detail===0. Pointer synthetic click shouldn't duplicate input.
-            if(e.detail !== 0 && performance.now()-lastPointerAt < 650){e.preventDefault();return;}
+            if(e.detail !== 0){e.preventDefault();return;}
             if (gameplayInputAllowed()) action();
         });
     }

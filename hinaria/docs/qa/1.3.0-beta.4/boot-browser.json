@@ -1,0 +1,286 @@
+{
+  "status": "PASS",
+  "browser": "155.0.8059.79",
+  "engine": "Chromium / SwiftShader; source bootstrap fault injection, not a physical Android phone",
+  "results": [
+    {
+      "name": "retry reaches mobile title with painted progress",
+      "status": "PASS",
+      "boot": {
+        "state": "ready",
+        "phase": "shaders",
+        "startedAt": 2171.9000000001397,
+        "phases": [
+          {
+            "id": "modules",
+            "startedAt": 2318.8000000000466,
+            "status": "ready",
+            "durationMs": 641
+          },
+          {
+            "id": "renderer",
+            "startedAt": 3060.600000000093,
+            "status": "ready",
+            "durationMs": 844.1
+          },
+          {
+            "id": "world",
+            "startedAt": 3917.5,
+            "status": "ready",
+            "durationMs": 246
+          },
+          {
+            "id": "world-meshes",
+            "startedAt": 4170.700000000186,
+            "status": "ready",
+            "durationMs": 1282
+          },
+          {
+            "id": "world-batches",
+            "startedAt": 5459,
+            "status": "ready",
+            "durationMs": 109.6
+          },
+          {
+            "id": "characters",
+            "startedAt": 5573.300000000047,
+            "status": "ready",
+            "durationMs": 219.2
+          },
+          {
+            "id": "enemies",
+            "startedAt": 5892.90000000014,
+            "status": "ready",
+            "durationMs": 2159.2
+          },
+          {
+            "id": "interface",
+            "startedAt": 8152.5,
+            "status": "ready",
+            "durationMs": 5596.4
+          },
+          {
+            "id": "shaders",
+            "startedAt": 13761.90000000014,
+            "status": "ready",
+            "durationMs": 1648
+          }
+        ],
+        "readyAt": 15477.40000000014,
+        "durationMs": 13305.5
+      },
+      "paintedPhases": [
+        "world",
+        "world-meshes",
+        "world-batches",
+        "characters",
+        "shaders"
+      ],
+      "flow": "TITLE",
+      "titleBackend": "css"
+    },
+    {
+      "name": "missing game dependency is recoverable",
+      "status": "PASS",
+      "boot": {
+        "state": "failed",
+        "phase": "modules",
+        "startedAt": 397.60000000009313,
+        "phases": [
+          {
+            "id": "modules",
+            "startedAt": 552.3000000000466,
+            "status": "failed",
+            "durationMs": 56.7
+          }
+        ],
+        "error": {
+          "name": "TypeError",
+          "message": "Failed to fetch dynamically imported module: http://127.0.0.1:46193/src/core/bootGame.js"
+        }
+      },
+      "message": "Não foi possível carregar os arquivos do jogo. Abra por INICIAR_PROJETO.bat ou execute npm run setup na pasta principal e reinicie o servidor.",
+      "errors": [],
+      "external": []
+    },
+    {
+      "name": "missing boot runtime is recoverable",
+      "status": "PASS",
+      "boot": {
+        "state": "failed",
+        "phase": "modules",
+        "startedAt": 240.4000000001397,
+        "phases": [],
+        "error": {
+          "name": "TypeError",
+          "message": "Failed to fetch dynamically imported module: http://127.0.0.1:46193/src/core/bootRuntime.js"
+        }
+      },
+      "message": "Não foi possível carregar os arquivos do jogo. Abra por INICIAR_PROJETO.bat ou execute npm run setup na pasta principal e reinicie o servidor.",
+      "errors": [],
+      "external": []
+    },
+    {
+      "name": "game syntax error is recoverable",
+      "status": "PASS",
+      "boot": {
+        "state": "failed",
+        "phase": "modules",
+        "startedAt": 291.20000000018626,
+        "phases": [
+          {
+            "id": "modules",
+            "startedAt": 457.60000000009313,
+            "status": "failed",
+            "durationMs": 6.9
+          }
+        ],
+        "error": {
+          "name": "SyntaxError",
+          "message": "Unexpected token '!'"
+        }
+      },
+      "message": "Não foi possível carregar os arquivos do jogo. Abra por INICIAR_PROJETO.bat ou execute npm run setup na pasta principal e reinicie o servidor.",
+      "errors": [],
+      "external": []
+    },
+    {
+      "name": "WebGL unavailable keeps DOM retry visible",
+      "status": "PASS",
+      "boot": {
+        "state": "failed",
+        "phase": "renderer",
+        "startedAt": 260.80000000004657,
+        "phases": [
+          {
+            "id": "modules",
+            "startedAt": 415.70000000018626,
+            "status": "ready",
+            "durationMs": 505.3
+          },
+          {
+            "id": "renderer",
+            "startedAt": 942,
+            "status": "failed",
+            "durationMs": 18
+          }
+        ],
+        "error": {
+          "name": "Error",
+          "message": "Error creating WebGL context."
+        }
+      },
+      "message": "Não foi possível preparar os gráficos. Feche outros aplicativos e tente recarregar. Se persistir, atualize o Android System WebView e o Chrome.",
+      "errors": [],
+      "external": []
+    },
+    {
+      "name": "context loss during boot stops preparation",
+      "status": "PASS",
+      "boot": {
+        "state": "failed",
+        "phase": "world",
+        "startedAt": 361.80000000004657,
+        "phases": [
+          {
+            "id": "modules",
+            "startedAt": 516.6999999999534,
+            "status": "ready",
+            "durationMs": 599.9
+          },
+          {
+            "id": "renderer",
+            "startedAt": 1122.1000000000931,
+            "status": "ready",
+            "durationMs": 96.2
+          }
+        ],
+        "contextLost": true,
+        "error": {
+          "name": "Error",
+          "message": "O contexto WebGL foi perdido durante a preparação."
+        }
+      },
+      "message": "Não foi possível preparar os gráficos. Feche outros aplicativos e tente recarregar. Se persistir, atualize o Android System WebView e o Chrome.",
+      "errors": [],
+      "external": []
+    },
+    {
+      "name": "GPU shader compilation failure keeps DOM retry visible",
+      "status": "PASS",
+      "boot": {
+        "state": "failed",
+        "phase": "shaders",
+        "startedAt": 325.5999999998603,
+        "phases": [
+          {
+            "id": "modules",
+            "startedAt": 558.3999999999069,
+            "status": "ready",
+            "durationMs": 663.3
+          },
+          {
+            "id": "renderer",
+            "startedAt": 1230.5,
+            "status": "ready",
+            "durationMs": 123.7
+          },
+          {
+            "id": "world",
+            "startedAt": 1401.6999999999534,
+            "status": "ready",
+            "durationMs": 119.2
+          },
+          {
+            "id": "world-meshes",
+            "startedAt": 1524.5999999998603,
+            "status": "ready",
+            "durationMs": 1192
+          },
+          {
+            "id": "world-batches",
+            "startedAt": 2726.899999999907,
+            "status": "ready",
+            "durationMs": 141.3
+          },
+          {
+            "id": "characters",
+            "startedAt": 2871.899999999907,
+            "status": "ready",
+            "durationMs": 124.6
+          },
+          {
+            "id": "enemies",
+            "startedAt": 3096.6999999999534,
+            "status": "ready",
+            "durationMs": 2257.6
+          },
+          {
+            "id": "interface",
+            "startedAt": 5455.5,
+            "status": "ready",
+            "durationMs": 4700.4
+          },
+          {
+            "id": "shaders",
+            "startedAt": 10168.399999999907,
+            "status": "failed",
+            "durationMs": 1754.6
+          }
+        ],
+        "shaderError": {
+          "program": "Vertex shader is not compiled.\n",
+          "vertex": "ERROR: 0:655: 'FORCED_BOOT_SHADER_COMPILATION_ERROR' : syntax error\n",
+          "fragment": "ERROR: 0:1063: 'FORCED_BOOT_SHADER_COMPILATION_ERROR' : syntax error\n"
+        },
+        "error": {
+          "name": "Error",
+          "message": "Falha ao compilar os gráficos WebGL neste dispositivo."
+        }
+      },
+      "message": "Não foi possível preparar os gráficos. Feche outros aplicativos e tente recarregar. Se persistir, atualize o Android System WebView e o Chrome.",
+      "errors": [],
+      "external": []
+    }
+  ]
+}

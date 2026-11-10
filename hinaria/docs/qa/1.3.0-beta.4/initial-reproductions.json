@@ -1,0 +1,42 @@
+{
+  "deathRespawns": [
+    {
+      "seed": 1,
+      "deathRespawnBlocked": 0,
+      "deathRespawnReachable": 1
+    },
+    {
+      "seed": 2,
+      "deathRespawnBlocked": 0,
+      "deathRespawnReachable": 1
+    },
+    {
+      "seed": 3,
+      "deathRespawnBlocked": 0,
+      "deathRespawnReachable": 1
+    },
+    {
+      "seed": 11,
+      "deathRespawnBlocked": 0,
+      "deathRespawnReachable": 1
+    },
+    {
+      "seed": 12,
+      "deathRespawnBlocked": 0,
+      "deathRespawnReachable": 1
+    },
+    {
+      "seed": 42,
+      "deathRespawnBlocked": 0,
+      "deathRespawnReachable": 1
+    }
+  ],
+  "replayAfterClassChange": {
+    "hp": 96,
+    "max": 60
+  },
+  "corruptQuest": {
+    "restored": true,
+    "stored": {}
+  }
+}

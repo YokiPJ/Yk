@@ -1,0 +1,123 @@
+{
+  "status": "PASS",
+  "executedAt": "2026-11-10T04:32:19.533Z",
+  "environment": "Chromium/SwiftShader with mobile touch; no physical Android phone",
+  "offline": true,
+  "results": [
+    {
+      "class": "kn",
+      "status": "PASS",
+      "fixture": {
+        "base": {
+          "x": 7,
+          "z": 24
+        },
+        "range": 1.25,
+        "mode": "near",
+        "time": 0.35
+      },
+      "behindYaw": 3.141592653589793,
+      "victimHP": 995,
+      "checks": [
+        "touch auto-turns and damages nearest rear enemy",
+        "no idle or repeated attack",
+        "J cannot attack through walls",
+        "Space respects equipped range"
+      ],
+      "errors": [],
+      "external": []
+    },
+    {
+      "class": "pa",
+      "status": "PASS",
+      "fixture": {
+        "base": {
+          "x": 7,
+          "z": 24
+        },
+        "range": 5,
+        "mode": "near",
+        "time": 0.3167000000000007
+      },
+      "behindYaw": 3.141592653589793,
+      "victimHP": 995,
+      "checks": [
+        "touch auto-turns and damages nearest rear enemy",
+        "no idle or repeated attack",
+        "J cannot attack through walls",
+        "Space respects equipped range"
+      ],
+      "errors": [],
+      "external": []
+    },
+    {
+      "class": "so",
+      "status": "PASS",
+      "fixture": {
+        "base": {
+          "x": 13,
+          "z": 16
+        },
+        "range": 5,
+        "mode": "near",
+        "time": 0.35
+      },
+      "behindYaw": 3.141592653589793,
+      "victimHP": 993,
+      "checks": [
+        "touch auto-turns and damages nearest rear enemy",
+        "no idle or repeated attack",
+        "J cannot attack through walls",
+        "Space respects equipped range"
+      ],
+      "errors": [],
+      "external": []
+    },
+    {
+      "class": "dr",
+      "status": "PASS",
+      "fixture": {
+        "base": {
+          "x": 7,
+          "z": 24
+        },
+        "range": 4,
+        "mode": "near",
+        "time": 0.3167000000000007
+      },
+      "behindYaw": 3.141592653589793,
+      "victimHP": 996,
+      "checks": [
+        "touch auto-turns and damages nearest rear enemy",
+        "no idle or repeated attack",
+        "J cannot attack through walls",
+        "Space respects equipped range"
+      ],
+      "errors": [],
+      "external": []
+    },
+    {
+      "class": "yo",
+      "status": "PASS",
+      "fixture": {
+        "base": {
+          "x": 13,
+          "z": 16
+        },
+        "range": 1.5,
+        "mode": "near",
+        "time": 0.3167000000000007
+      },
+      "behindYaw": 3.141592653589793,
+      "victimHP": 987,
+      "checks": [
+        "touch auto-turns and damages nearest rear enemy",
+        "no idle or repeated attack",
+        "J cannot attack through walls",
+        "Space respects equipped range"
+      ],
+      "errors": [],
+      "external": []
+    }
+  ]
+}

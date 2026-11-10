@@ -47,7 +47,7 @@ export function requestCombatV2Attack() {
   const P = gameState.P;
   if (!P || (gameState.flow && gameState.flow !== 'PLAYING') || !active() || gameState.ccOpen || gameState.arsenalOpen || gameState.dialogueOpen || gameState.insideHouse || gameState.cutsceneActive) return false;
   syncCombatClass(P);
-  if (freeDodge.active || P.hp <= 0 || (P.at > 0 && !combatV2.attacking && !combatV2.isDodging)) return false;
+  if (freeDodge.active || P.hp <= 0 || (!combatV2.attacking && P.cd > 0) || (P.at > 0 && !combatV2.attacking && !combatV2.isDodging)) return false;
   const ok = combatV2.requestAttack();
   if (ok) {
     // A buffered input belongs to the next swing, not the current victim.

@@ -1,0 +1,112 @@
+{
+  "status": "PASS",
+  "version": "1.3.0-beta.4",
+  "prerelease": true,
+  "verifiedAtUTC": "2026-11-10T04:34:46.126100+00:00",
+  "baselineCommit": "0cb2f6a9dc4d79fa36b9a5ece809ccd69f54cf62",
+  "baseline": {
+    "regressionSuites": 56,
+    "uiScenarios": 9,
+    "part2Scenarios": 4,
+    "report": "baseline-verify.txt"
+  },
+  "regressionTests": {
+    "passed": 58,
+    "failed": 0,
+    "unit": "test files, each containing multiple assertions",
+    "report": "regression-tests.txt",
+    "lineOfSightAnalyticRays": 800,
+    "directionsPerRay": 2,
+    "proceduralSeeds": 128
+  },
+  "linkedGameModules": 81,
+  "reviewBrowser": {
+    "passed": 11,
+    "failed": 0,
+    "report": "review-browser.json",
+    "fixture": "Explicit storage corruption and backup, previous-class Replay history, 1000-HP rats and stun/positions, temporary closed-corner collision, previously discovered landmarks to isolate the death penalty; actual inputs and gameplay systems."
+  },
+  "uiBrowser": {
+    "passed": 9,
+    "failed": 0,
+    "report": "ui-browser.json"
+  },
+  "gameplayRoundTrips": {
+    "passed": 3,
+    "failed": 0,
+    "report": "gameplay-browser.json"
+  },
+  "part2Browser": {
+    "passed": 4,
+    "failed": 0,
+    "report": "part2-browser.json"
+  },
+  "attackAimBrowser": {
+    "passed": 5,
+    "failed": 0,
+    "report": "attack-aim-browser.json"
+  },
+  "bootFaultInjection": {
+    "passed": 7,
+    "failed": 0,
+    "report": "boot-browser.json"
+  },
+  "bundleBrowser": {
+    "passed": 2,
+    "forcedWebGL1": true,
+    "report": "bundle-browser.json"
+  },
+  "sourceStartup": {
+    "passed": 4,
+    "withoutNodeModules": true,
+    "patchBase": "v1.3.0-beta.3",
+    "testedSourceTree": "a4135d586ae08cc3c374051a27beaa887e519a30",
+    "report": "source-startup.json"
+  },
+  "releasePipeline": {
+    "passed": 7,
+    "failed": 0,
+    "report": "release-pipeline.txt"
+  },
+  "mobileRendering": {
+    "report": "mobile-benchmark.json",
+    "fixture": "Paused scene, fixed camera, pixel ratio forced to 1 at 844x390 for comparable rendering-work counts; SwiftShader, not phone FPS",
+    "drawCalls": 354,
+    "triangles": 181038,
+    "hudBackend": "canvas2d",
+    "worldLighting": {
+      "sources": 30,
+      "slots": 2,
+      "active": 2
+    },
+    "requestedPixelRatio": 0.72
+  },
+  "apk": {
+    "file": "HINARIA_1.3.0_BETA4_DEBUG.apk",
+    "bytes": 14929420,
+    "sha256": "6429c3d2495bbc27b93f164e07e57daa859b6ae2c295ee3930f91b759bebad64",
+    "package": "br.com.hinaria.rpg",
+    "versionName": "1.3.0-beta.4",
+    "versionCode": 9,
+    "certificateSHA256": "9cdb501eedf49aad4fc660d4571a98f6b0bbdb718e702c3c725e0aa0f47750af",
+    "webBuild": {
+      "version": "1.3.0-beta.4",
+      "target": "mobile",
+      "compatibility": {
+        "format": "iife",
+        "target": "chrome80",
+        "imports": "bundled",
+        "bytes": 1998123
+      },
+      "fingerprint": "454ecc6214a7",
+      "created": "2026-11-10T04:26:41.510Z"
+    },
+    "webAssetsVerified": 211
+  },
+  "limitations": [
+    "Chromium/SwiftShader on Linux; mobile touch and WebGL1 compatibility faults are simulated",
+    "No physical Android phone or original Chrome 80 execution",
+    "Windows BAT not executed on Windows",
+    "No complete manual campaign playthrough; explicit accelerated gameplay fixtures are documented"
+  ]
+}

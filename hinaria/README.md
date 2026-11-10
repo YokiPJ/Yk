@@ -1,8 +1,8 @@
 # HINÁRIA · jogo e ferramentas
 
-Versão 1.3.0-beta.3, Three.js r160, PixiJS 8.6.6 no desktop, Canvas2D para o HUD touch e Capacitor 7 no Android.
+Versão 1.3.0-beta.4, Three.js r160, PixiJS 8.6.6 no desktop, Canvas2D para o HUD touch e Capacitor 7 no Android.
 
-O [README principal](../README.md) contém estrutura, instalação, build e publicação. As [otimizações mobile](docs/MOBILE_1.3.0-beta.3.md) têm medições e limitações. O APK beta limita a iluminação da vila, simplifica materiais do cenário e inicia sem exigir import maps no WebView.
+O [README principal](../README.md) contém estrutura, instalação, build e publicação. As [correções e otimizações mobile](docs/MOBILE_1.3.0-beta.4.md) têm medições e limitações. O APK beta limita a iluminação da vila, simplifica materiais do cenário e inicia sem exigir import maps no WebView.
 
 Nesta pasta:
 
@@ -36,7 +36,7 @@ A geração padrão usa a semente 11 e registra semente/versão no diagnóstico 
 
 Novo Jogo permite escolher uma das cinco classes. Salvar e Continuar preservam a aventura completa, incluindo o intervalo restante do poder do machado; saves antigos continuam válidos. O perfil automático mobile usa alvo de 30 FPS e mantém a preferência manual de 30/60 FPS sem apagar saves.
 
-O Android requer WebView 80 ou superior e WebGL disponível. A inicialização oferece progresso e Recarregar em caso de erro; componentes antigos recebem uma página de orientação para atualizar WebView/Chrome. O pacote Android usa versão 1.3.0-beta.3, código 8. Consulte `SHA256SUMS.txt` e `MOBILE_TEST_RESULTS.json` da release para tamanho, hash e verificação da assinatura do APK final.
+O Android requer WebView 80 ou superior e WebGL disponível. A inicialização oferece progresso e Recarregar em caso de erro; componentes antigos recebem uma página de orientação para atualizar WebView/Chrome. O pacote Android usa versão 1.3.0-beta.4, código 9. Consulte `SHA256SUMS.txt` e `MOBILE_TEST_RESULTS.json` da release para tamanho, hash e verificação da assinatura do APK final.
 
 `mobile-assets/audio/` contém as variantes Android das duas músicas de chefes. Os originais continuam em `assets/audio/`; o build confere os hashes antes de substituir as cópias em `www/`. Para gerar novas variantes, instale FFmpeg/FFprobe e execute `python3 tools/prepare-mobile-audio.py`.
 

@@ -51,6 +51,13 @@ for(const cls of ['kn','pa']) {
   assert.equal(f.hits.length,0);
 }
 {
+  const f=fixture(),T=f.enemy();f.state.ents=[T];f.P.cd=.5;
+  assert.equal(f.requestManualAttack(),false,'equipping a sword does not bypass the previous weapon cooldown');
+  assert.equal(f.hits.length,0);assert.equal(f.P.mesh.rotation.y,0);
+  f.P.cd=0;assert.equal(f.requestManualAttack(),true,'combo becomes available after the previous cooldown');
+  f.tick(3);assert.deepEqual(f.hits,[T]);
+}
+{
   const f=fixture(),T=f.enemy(),closer=f.enemy(10.4,10);f.state.ents=[T];
   assert.equal(f.requestManualAttack(),true,'first input survives initial class synchronization');
   assert.equal(f.P.mesh.rotation.y,Math.PI);

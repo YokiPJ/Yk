@@ -1,4 +1,5 @@
 /** Versioned full-game persistence. This module deliberately has no engine/DOM dependencies. */
+import { QUESTS } from '../quest/questData.js';
 export const SAVE_KEY = 'hinaria.fullgame.v1';
 export const BACKUP_KEY = `${SAVE_KEY}.backup`;
 export const SCHEMA_VERSION = 1;
@@ -6,6 +7,7 @@ const MAX_BYTES = 2 * 1024 * 1024;
 const CLASSES = Object.freeze({kn:'Cavaleiro',pa:'Paladino',so:'Feiticeiro',dr:'Druida',yo:'Yoki'});
 const ENEMY_KINDS = new Set(['rat','bandit','skeleton','troll','orc']);
 const BOSS_IDS = new Set(['troll_ancient','orc_king','sentinela_eco']);
+const QUEST_DEFINITIONS = new Map(QUESTS.map(quest => [quest.id,quest]));
 const dangerous = new Set(['__proto__', 'prototype', 'constructor']);
 const own = (value, name) => Object.prototype.hasOwnProperty.call(value, name);
 const record = value => value !== null && typeof value === 'object' && !Array.isArray(value)
@@ -85,8 +87,11 @@ export function validateSave(value) {
     }
     const q = value.quests;
     if (!record(q) || q.v !== 1 || !record(q.q) || !record(q.items) || !record(q.flags)) return fail('Missões inválidas.');
-    for (const state of Object.values(q.q)) {
+    for (const [id,state] of Object.entries(q.q)) {
       if (!record(state) || !['active','done'].includes(state.s) || !integer(state.step,0,1000) || !integer(state.n,0,1e9)) return fail('Etapa de missão inválida.');
+      const definition = QUEST_DEFINITIONS.get(id);
+      if (!definition) return fail('O save contém uma missão desconhecida. Use uma versão compatível do jogo.');
+      if (state.step > definition.steps.length || (state.s === 'active' && state.step === definition.steps.length)) return fail('Etapa de missão incompatível com o jogo.');
     }
     if (own(value,'lore') && !strings(value.lore,256)) return fail('Crônicas inválidas.');
     if (own(value,'cutscenes') && !strings(value.cutscenes,256)) return fail('Cenas vistas inválidas.');

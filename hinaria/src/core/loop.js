@@ -26,6 +26,7 @@ import { updateGameAudio } from '../audio/gameAudio.js';
 import { combatV2 } from '../combat/combatV2.js';
 import { tickCombatV2, cancelCombatV2, getDodgeMotion, abortCombatDodgeOnCollision, getAttackFacing } from '../combat/combatV2Bridge.js';
 import { tickReplayAxe } from '../combat/replayAxeSystem.js';
+import { hasLineOfSight } from '../combat/forwardHit.js';
 import { tickVisualAtmosphere } from '../vfx/worldAtmosphereV3.js';
 import { tickClaudeVfx } from '../vfx/claudeVfxBridge.js';
 
@@ -159,7 +160,7 @@ function tickGameFrame(now) {
             movePlayer(dt, mx, mz);
         } else if (e.kind === 'm') {
             // Distant mobs are dormant; near mobs retain original full-rate movement.
-            if (Math.hypot(e.x-gameState.P.x,e.z-gameState.P.z) < 36)
+            if (!(e.st?.stun > 0) && Math.hypot(e.x-gameState.P.x,e.z-gameState.P.z) < 36)
                 stepEntity(e, dt, 3.2 * e.K.sp * (e.st.slow > 0 ? 0.5 : 1));
         }
         if (e.kind !== 'm' || e.isBoss || Math.hypot(e.x - gameState.P.x, e.z - gameState.P.z) < 19)
@@ -351,7 +352,7 @@ function updateEnemyAI(dt) {
         if (worldDistance > 38) { m.path=[]; continue; }
         m.cd -= dt;
         const d = near(m, gameState.P);
-        if (d <= 1 && !inSafeZone(m.tx, m.tz)) {
+        if (d <= 1 && !inSafeZone(m.tx, m.tz) && hasLineOfSight(gameState,m.x,m.z,gameState.P.x,gameState.P.z)) {
             m.path = [];
             if (m.cd <= 0 && still(m)) { m.cd = m.K.ac; dealDamage(m, gameState.P, ri(...m.K.dmg)); }
         } else if (d <= m.K.ag && !inSafeZone(m.tx, m.tz)) {

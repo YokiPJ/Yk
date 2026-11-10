@@ -70,6 +70,13 @@ try {
     finishCharacterCreation();assert.equal(gameState.flow,'PLAYING');
     assert.equal(gameState.ccOpen,false);assert.equal(canAcceptGameplayInput(),true);
   });
+  check('new characters start with their own full resources, while later edits cannot refill them',()=>{
+    const f=setup();initGameFlow(f.services);startNewGame();
+    Object.assign(gameState.P,{cls:'so',max:60,mm:100,hp:60,mana:40});
+    finishCharacterCreation();assert.equal(gameState.P.mana,100);assert.equal(gameState.P.hp,60);
+    gameState.ccOpen=true;gameState.P.mana=12;gameState.P.hp=20;
+    finishCharacterCreation();assert.equal(gameState.P.mana,12);assert.equal(gameState.P.hp,20);
+  });
   check('pause/resume clears held keys, joystick, pointer and queued path',()=>{
     const f=setup();initGameFlow(f.services);startNewGame();finishCharacterCreation();
     Object.assign(gameState,{keys:{w:1,j:1},jx:1,jz:-1,jid:12,ptr:{12:[1,2]},pd:{x:1},pdist:30,lastTime:-100});
@@ -217,6 +224,26 @@ try {
     const restored=gameState.ents.find(enemy=>enemy.bossId==='sentinela_eco');assert.ok(restored);
     assert.deepEqual([restored.x,restored.z,restored.hp],[58,89,65]);
     assert.ok(Math.hypot(restored.x-gameState.P.x,restored.z-gameState.P.z)<8);
+  });
+  check('invalid quest steps reject the whole save before changing the running adventure',()=>{
+    const f=setup();initGameFlow(f.services);startNewGame();finishCharacterCreation();
+    f.quests.start('c1_ratos');gameState.P.gold=123;
+    const before=createSaveSnapshot(),entities=[...gameState.ents],saved=clone(before);
+    saved.quests.q.c1_ratos.step=999;saved.player.gold=999;
+    assert.equal(applySaveSnapshot(saved).ok,false);
+    assert.deepEqual(createSaveSnapshot().player,before.player);assert.deepEqual(gameState.ents,entities);
+    assert.equal(f.quests.serialize(),JSON.stringify(before.quests));
+  });
+  check('older saves do not inherit optional state from a later session',()=>{
+    const f=setup();initGameFlow(f.services);startNewGame();finishCharacterCreation();
+    const saved=createSaveSnapshot();
+    for(const field of ['b','st','rl','rc','cd','cds','ownedWeapons','equippedWeapons','skillLevels'])delete saved.player[field];
+    Object.assign(gameState.P,{b:{guard:100},st:{burn:10},rl:1,rc:20,cd:1,cds:[4,3,2,1],reg:2.99});
+    gameState.P.equippedWeapons.kn='kn_sun';gameState.P.ownedWeapons.push('kn_sun');
+    assert.equal(applySaveSnapshot(saved).ok,true);
+    assert.deepEqual(gameState.P.b,{});assert.deepEqual(gameState.P.st,{});assert.equal(gameState.P.rl,0);
+    assert.equal(gameState.P.rc,0);assert.equal(gameState.P.cd,0);assert.deepEqual(gameState.P.cds,[0,0,0,0]);
+    assert.equal(gameState.P.equippedWeapons.kn,'kn_basic');assert.equal(gameState.P.reg,0);
   });
   console.log(`${checks}/${checks} verificações do fluxo aprovadas.`);
 } finally {

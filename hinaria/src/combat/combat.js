@@ -353,7 +353,7 @@ export function killEnemy(enemy) {
 function playerDie() {
     cancelCombatV2();
     say('Você caiu. Uma sombra grande se aproxima, te levanta e diz: <b>De novo.</b>', 'npc');
-    gameState.P.gold -= gameState.P.gold >> 2;
+    gameState.P.gold -= Math.floor(gameState.P.gold / 4);
     gameState.P.hp = gameState.P.max;
     gameState.P.mana = gameState.P.mm;
     gameState.P.axeAwakeUntil = 0; // Death ends the axe's awakened state.
@@ -449,7 +449,7 @@ export function replay() {
         gameState.P.stp = 0;
         gameState.P.path = [];
     }
-    gameState.P.hp = Math.max(gameState.P.hp, h.hp);
+    gameState.P.hp = Math.min(gameState.P.max, Math.max(gameState.P.hp, h.hp));
     playClaudeVfx('teleport',{x:gameState.P.x,y:gameState.getHeightAt(gameState.P.x,gameState.P.z),z:gameState.P.z},null,.85);
     showFloatingText(gameState.P, 'Replay', '#9fc4ff');
     say('<b>Replay:</b> você volta alguns segundos no tempo.', 'npc');

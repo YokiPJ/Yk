@@ -16,6 +16,16 @@ const sample = (cls='kn') => ({
 let checks=0;
 const check=(label,fn)=>{fn();checks++;console.log(`PASS ${label}`);};
 
+check('semantically corrupt quests recover the valid backup instead of erasing progress',()=>{
+  const storage=memory(),valid=sample(),broken=sample();
+  broken.quests.q.c1_ratos={s:'active',step:999,n:0};
+  storage.setItem(BACKUP_KEY,JSON.stringify(valid));storage.setItem(SAVE_KEY,JSON.stringify(broken));
+  const result=readSave(storage);assert.equal(result.ok,true);assert.equal(result.source,'backup');
+  assert.deepEqual(result.data.quests,valid.quests);
+  const unknown=sample();unknown.quests.q.future_quest={s:'active',step:0,n:0};
+  assert.equal(validateSave(unknown).ok,false,'unknown quest definitions cannot be silently discarded');
+});
+
 for (const cls of ['kn','pa','so','dr','yo']) check(`round trip ${cls}: progress, equipment, quests, boss and exploration`,()=>{
   const storage=memory(),snapshot=sample(cls);
   storage.setItem('hinaria.v7.arsenal.v1','legacy-arsenal');

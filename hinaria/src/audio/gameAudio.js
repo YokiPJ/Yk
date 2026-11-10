@@ -7,7 +7,10 @@ import { BOSS_MUSIC_FILES } from './bossTrackConfig.js';
 
 const KEY = 'hinaria-v79-music'; // Preservar configurações de usuários antigos.
 function readPrefs() {
-  try { return JSON.parse(localStorage.getItem(KEY) || '{}'); } catch { return {}; }
+  try {
+    const value = JSON.parse(localStorage.getItem(KEY) || '{}');
+    return value && typeof value === 'object' && !Array.isArray(value) ? value : {};
+  } catch { return {}; }
 }
 const prefs = readPrefs();
 let enabled = prefs.enabled !== false;

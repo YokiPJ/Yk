@@ -1,0 +1,2236 @@
+{
+  "complete": true,
+  "executedAt": "2026-11-10T04:23:50.653Z",
+  "engine": "Chromium / SwiftShader (software rendering; not an Android device)",
+  "offline": true,
+  "base": "http://127.0.0.1:8091",
+  "passed": 9,
+  "failed": 0,
+  "results": [
+    {
+      "name": "desktop",
+      "status": "passed",
+      "durationMs": 45275
+    },
+    {
+      "name": "responsive-360x800",
+      "status": "passed",
+      "durationMs": 19753
+    },
+    {
+      "name": "responsive-390x844",
+      "status": "passed",
+      "durationMs": 19768
+    },
+    {
+      "name": "responsive-800x360",
+      "status": "passed",
+      "durationMs": 21373
+    },
+    {
+      "name": "responsive-1280x720",
+      "status": "passed",
+      "durationMs": 22211
+    },
+    {
+      "name": "responsive-1600x900",
+      "status": "passed",
+      "durationMs": 16171
+    },
+    {
+      "name": "touch",
+      "status": "passed",
+      "durationMs": 9669
+    },
+    {
+      "name": "compatibility",
+      "status": "passed",
+      "durationMs": 9052
+    },
+    {
+      "name": "fallback",
+      "status": "passed",
+      "durationMs": 12143
+    }
+  ],
+  "diagnostics": [
+    {
+      "url": "http://127.0.0.1:8091/",
+      "errors": [],
+      "failedRequests": [],
+      "externalRequests": [],
+      "consoleWarnings": [
+        "THREE.WebGLRenderer: KHR_parallel_shader_compile extension not supported.",
+        "THREE.WebGLRenderer: KHR_parallel_shader_compile extension not supported."
+      ],
+      "state": {
+        "flow": "PLAYING",
+        "time": 0.7165999999999987,
+        "drawCalls": 304,
+        "geometries": 240,
+        "textures": 18,
+        "canvases": [
+          "wrap",
+          "mm",
+          "hud-pixi"
+        ],
+        "player": {
+          "cls": "kn",
+          "hp": 96,
+          "x": 13.075,
+          "z": 15
+        },
+        "measuredDiagnostics": {
+          "version": "1.3.0-beta.4-QA",
+          "worldSize": 96,
+          "flow": "PLAYING",
+          "worldGeneration": {
+            "seed": 11,
+            "version": 2,
+            "diagnostics": {
+              "seed": 11,
+              "version": 2,
+              "frontierVegetationRemoved": 0,
+              "objectives": 47,
+              "routeRepairs": [],
+              "routeVegetationRemoved": 0,
+              "reachableCells": 7400,
+              "objects": 2462
+            }
+          },
+          "mapPosition": [
+            13.08,
+            0,
+            15
+          ],
+          "class": "kn",
+          "zone": "world",
+          "fps": 1,
+          "graphics": {
+            "mode": "low",
+            "fps": 1,
+            "fpsVisible": true,
+            "pixelRatio": 0.72,
+            "frameLimit": 30,
+            "deviceProfile": {
+              "mobile": true,
+              "economy": false,
+              "initialRatio": 0.85,
+              "maxRatio": 1,
+              "pixelBudget": 600000,
+              "targetFPS": 30,
+              "hudBackend": "canvas2d"
+            },
+            "hud": {
+              "backend": "canvas2d",
+              "width": 1280,
+              "height": 720,
+              "maxFPS": 30
+            },
+            "worldLighting": {
+              "sources": 30,
+              "slots": 3,
+              "active": 3
+            },
+            "worldMaterials": {
+              "highDetail": false,
+              "changed": 238
+            },
+            "contextState": "ready",
+            "measuredFlow": "PLAYING",
+            "frameTiming": {
+              "samples": 7,
+              "meanMs": 521.39,
+              "p50Ms": 516.6,
+              "p95Ms": 766.7,
+              "maxMs": 883.3
+            },
+            "sampleAgeMs": 62
+          },
+          "device": {
+            "platform": "Linux",
+            "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36",
+            "touchPoints": 0,
+            "logicalCores": 5,
+            "viewport": [
+              1280,
+              720
+            ],
+            "devicePixelRatio": 1,
+            "webgl": {
+              "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+              "renderer": "WebKit WebGL"
+            }
+          },
+          "heap": {
+            "usedBytes": 86691763,
+            "allocatedBytes": 128413059,
+            "limitBytes": 4395630592
+          },
+          "history": [
+            {
+              "timestamp": "2026-11-10T04:21:24.936Z",
+              "flow": "PLAYING",
+              "fps": 0,
+              "frameP95Ms": 2.2,
+              "pixelRatio": 0.72,
+              "drawCalls": 296,
+              "triangles": 173354,
+              "geometries": 232,
+              "textures": 18,
+              "usedHeapBytes": 119780166,
+              "contextState": "ready"
+            },
+            {
+              "timestamp": "2026-11-10T04:21:26.050Z",
+              "flow": "PLAYING",
+              "fps": 2,
+              "frameP95Ms": 816.6,
+              "pixelRatio": 0.72,
+              "drawCalls": 303,
+              "triangles": 174104,
+              "geometries": 239,
+              "textures": 18,
+              "usedHeapBytes": 120155249,
+              "contextState": "ready"
+            },
+            {
+              "timestamp": "2026-11-10T04:21:27.148Z",
+              "flow": "PLAYING",
+              "fps": 2,
+              "frameP95Ms": 816.6,
+              "pixelRatio": 0.72,
+              "drawCalls": 304,
+              "triangles": 174177,
+              "geometries": 240,
+              "textures": 18,
+              "usedHeapBytes": 121061513,
+              "contextState": "ready"
+            },
+            {
+              "timestamp": "2026-11-10T04:21:28.333Z",
+              "flow": "PAUSED",
+              "fps": 0,
+              "frameP95Ms": 366.6,
+              "pixelRatio": 0.72,
+              "drawCalls": 304,
+              "triangles": 174177,
+              "geometries": 240,
+              "textures": 18,
+              "usedHeapBytes": 121838790,
+              "contextState": "ready"
+            },
+            {
+              "timestamp": "2026-11-10T04:21:29.770Z",
+              "flow": "PAUSED",
+              "fps": 2,
+              "frameP95Ms": 616.7,
+              "pixelRatio": 0.72,
+              "drawCalls": 304,
+              "triangles": 174177,
+              "geometries": 240,
+              "textures": 18,
+              "usedHeapBytes": 122336029,
+              "contextState": "ready"
+            },
+            {
+              "timestamp": "2026-11-10T04:21:30.968Z",
+              "flow": "PAUSED",
+              "fps": 0,
+              "frameP95Ms": 312.6,
+              "pixelRatio": 0.72,
+              "drawCalls": 304,
+              "triangles": 174177,
+              "geometries": 240,
+              "textures": 18,
+              "usedHeapBytes": 123198083,
+              "contextState": "ready"
+            },
+            {
+              "timestamp": "2026-11-10T04:21:32.482Z",
+              "flow": "PAUSED",
+              "fps": 2,
+              "frameP95Ms": 466.7,
+              "pixelRatio": 0.72,
+              "drawCalls": 304,
+              "triangles": 174177,
+              "geometries": 240,
+              "textures": 18,
+              "usedHeapBytes": 123647954,
+              "contextState": "ready"
+            },
+            {
+              "timestamp": "2026-11-10T04:21:33.559Z",
+              "flow": "PLAYING",
+              "fps": 0,
+              "frameP95Ms": 516.6,
+              "pixelRatio": 0.72,
+              "drawCalls": 304,
+              "triangles": 174177,
+              "geometries": 240,
+              "textures": 18,
+              "usedHeapBytes": 123912021,
+              "contextState": "ready"
+            },
+            {
+              "timestamp": "2026-11-10T04:21:34.690Z",
+              "flow": "PAUSED",
+              "fps": 0,
+              "frameP95Ms": 345.1,
+              "pixelRatio": 0.72,
+              "drawCalls": 306,
+              "triangles": 174233,
+              "geometries": 242,
+              "textures": 18,
+              "usedHeapBytes": 57379023,
+              "contextState": "ready"
+            },
+            {
+              "timestamp": "2026-11-10T04:21:35.778Z",
+              "flow": "TITLE",
+              "fps": 0,
+              "frameP95Ms": 302.3,
+              "pixelRatio": 0.72,
+              "drawCalls": 0,
+              "triangles": 0,
+              "geometries": 242,
+              "textures": 18,
+              "usedHeapBytes": 58102741,
+              "contextState": "ready"
+            },
+            {
+              "timestamp": "2026-11-10T04:21:37.334Z",
+              "flow": "PLAYING",
+              "fps": 2,
+              "frameP95Ms": 516.6,
+              "pixelRatio": 0.72,
+              "drawCalls": 304,
+              "triangles": 174177,
+              "geometries": 240,
+              "textures": 18,
+              "usedHeapBytes": 85830553,
+              "contextState": "ready"
+            },
+            {
+              "timestamp": "2026-11-10T04:21:38.850Z",
+              "flow": "PLAYING",
+              "fps": 1,
+              "frameP95Ms": 766.7,
+              "pixelRatio": 0.72,
+              "drawCalls": 304,
+              "triangles": 174177,
+              "geometries": 240,
+              "textures": 18,
+              "usedHeapBytes": 86188015,
+              "contextState": "ready"
+            }
+          ],
+          "historyLimit": 120,
+          "drawCalls": 304,
+          "triangles": 174177,
+          "textures": 18,
+          "geometries": 240,
+          "totalChunks": 36,
+          "visibleChunks": 4,
+          "sceneObjects": 116,
+          "activeEnemies": 46,
+          "cutscene": null,
+          "audio": {
+            "enabled": true,
+            "unlocked": true,
+            "playing": [
+              "ambient"
+            ]
+          },
+          "lastError": null,
+          "errors": [],
+          "timestamp": "2026-11-10T04:21:40.076Z"
+        }
+      }
+    },
+    {
+      "url": "http://127.0.0.1:8091/",
+      "errors": [],
+      "failedRequests": [],
+      "externalRequests": [],
+      "consoleWarnings": [
+        "THREE.WebGLRenderer: KHR_parallel_shader_compile extension not supported."
+      ],
+      "state": {
+        "flow": "PLAYING",
+        "time": 0.6667000000000007,
+        "drawCalls": 292,
+        "geometries": 272,
+        "textures": 17,
+        "canvases": [
+          "wrap",
+          "mm",
+          "hud-pixi"
+        ],
+        "player": {
+          "cls": "kn",
+          "hp": 96,
+          "x": 13,
+          "z": 15
+        },
+        "measuredDiagnostics": {
+          "version": "1.3.0-beta.4-QA",
+          "worldSize": 96,
+          "flow": "PLAYING",
+          "worldGeneration": {
+            "seed": 11,
+            "version": 2,
+            "diagnostics": {
+              "seed": 11,
+              "version": 2,
+              "frontierVegetationRemoved": 0,
+              "objectives": 47,
+              "routeRepairs": [],
+              "routeVegetationRemoved": 0,
+              "reachableCells": 7400,
+              "objects": 2462
+            }
+          },
+          "mapPosition": [
+            13,
+            0,
+            15
+          ],
+          "class": "kn",
+          "zone": "world",
+          "fps": 4,
+          "graphics": {
+            "mode": "low",
+            "fps": 4,
+            "fpsVisible": false,
+            "pixelRatio": 0.72,
+            "frameLimit": 30,
+            "deviceProfile": {
+              "mobile": true,
+              "economy": false,
+              "initialRatio": 0.85,
+              "maxRatio": 1,
+              "pixelBudget": 600000,
+              "targetFPS": 30,
+              "hudBackend": "canvas2d"
+            },
+            "hud": {
+              "backend": "canvas2d",
+              "width": 360,
+              "height": 800,
+              "maxFPS": 30
+            },
+            "worldLighting": {
+              "sources": 30,
+              "slots": 3,
+              "active": 3
+            },
+            "worldMaterials": {
+              "highDetail": false,
+              "changed": 0
+            },
+            "contextState": "ready",
+            "measuredFlow": "PAUSED",
+            "frameTiming": {
+              "samples": 6,
+              "meanMs": 281.65,
+              "p50Ms": 283.3,
+              "p95Ms": 356.7,
+              "maxMs": 450
+            },
+            "sampleAgeMs": 27
+          },
+          "device": {
+            "platform": "Linux",
+            "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36",
+            "touchPoints": 1,
+            "logicalCores": 5,
+            "viewport": [
+              360,
+              800
+            ],
+            "devicePixelRatio": 1,
+            "webgl": {
+              "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+              "renderer": "WebKit WebGL"
+            }
+          },
+          "heap": {
+            "usedBytes": 77017446,
+            "allocatedBytes": 132005946,
+            "limitBytes": 4395630592
+          },
+          "history": [
+            {
+              "timestamp": "2026-11-10T04:21:50.183Z",
+              "flow": "CHARACTER_CREATION",
+              "fps": 0,
+              "frameP95Ms": 933.3,
+              "pixelRatio": 0.72,
+              "drawCalls": 131,
+              "triangles": 146437,
+              "geometries": 95,
+              "textures": 15,
+              "usedHeapBytes": 107780802,
+              "contextState": "ready"
+            },
+            {
+              "timestamp": "2026-11-10T04:21:51.636Z",
+              "flow": "CHARACTER_CREATION",
+              "fps": 1,
+              "frameP95Ms": 933.3,
+              "pixelRatio": 0.72,
+              "drawCalls": 131,
+              "triangles": 146437,
+              "geometries": 95,
+              "textures": 15,
+              "usedHeapBytes": 83346192,
+              "contextState": "ready"
+            },
+            {
+              "timestamp": "2026-11-10T04:21:52.656Z",
+              "flow": "CHARACTER_CREATION",
+              "fps": 1,
+              "frameP95Ms": 933.3,
+              "pixelRatio": 0.72,
+              "drawCalls": 131,
+              "triangles": 146437,
+              "geometries": 95,
+              "textures": 15,
+              "usedHeapBytes": 84121088,
+              "contextState": "ready"
+            },
+            {
+              "timestamp": "2026-11-10T04:21:53.854Z",
+              "flow": "PLAYING",
+              "fps": 0,
+              "frameP95Ms": 266.7,
+              "pixelRatio": 0.72,
+              "drawCalls": 144,
+              "triangles": 151070,
+              "geometries": 107,
+              "textures": 15,
+              "usedHeapBytes": 71965894,
+              "contextState": "ready"
+            },
+            {
+              "timestamp": "2026-11-10T04:21:55.164Z",
+              "flow": "CUTSCENE",
+              "fps": 0,
+              "frameP95Ms": 166.7,
+              "pixelRatio": 0.72,
+              "drawCalls": 332,
+              "triangles": 264522,
+              "geometries": 237,
+              "textures": 17,
+              "usedHeapBytes": 73652055,
+              "contextState": "ready"
+            },
+            {
+              "timestamp": "2026-11-10T04:21:56.232Z",
+              "flow": "PLAYING",
+              "fps": 0,
+              "frameP95Ms": 266.7,
+              "pixelRatio": 0.72,
+              "drawCalls": 332,
+              "triangles": 264522,
+              "geometries": 237,
+              "textures": 17,
+              "usedHeapBytes": 74256843,
+              "contextState": "ready"
+            },
+            {
+              "timestamp": "2026-11-10T04:21:57.256Z",
+              "flow": "PLAYING",
+              "fps": 4,
+              "frameP95Ms": 266.7,
+              "pixelRatio": 0.72,
+              "drawCalls": 279,
+              "triangles": 173194,
+              "geometries": 238,
+              "textures": 17,
+              "usedHeapBytes": 75377056,
+              "contextState": "ready"
+            },
+            {
+              "timestamp": "2026-11-10T04:21:58.482Z",
+              "flow": "PAUSED",
+              "fps": 0,
+              "frameP95Ms": 250,
+              "pixelRatio": 0.72,
+              "drawCalls": 292,
+              "triangles": 168388,
+              "geometries": 272,
+              "textures": 17,
+              "usedHeapBytes": 76551783,
+              "contextState": "ready"
+            },
+            {
+              "timestamp": "2026-11-10T04:21:59.533Z",
+              "flow": "PAUSED",
+              "fps": 4,
+              "frameP95Ms": 356.7,
+              "pixelRatio": 0.72,
+              "drawCalls": 292,
+              "triangles": 168388,
+              "geometries": 272,
+              "textures": 17,
+              "usedHeapBytes": 76966466,
+              "contextState": "ready"
+            }
+          ],
+          "historyLimit": 120,
+          "drawCalls": 292,
+          "triangles": 168388,
+          "textures": 17,
+          "geometries": 272,
+          "totalChunks": 36,
+          "visibleChunks": 4,
+          "sceneObjects": 116,
+          "activeEnemies": 46,
+          "cutscene": null,
+          "audio": {
+            "enabled": true,
+            "unlocked": true,
+            "playing": [
+              "ambient"
+            ]
+          },
+          "lastError": null,
+          "errors": [],
+          "timestamp": "2026-11-10T04:21:59.823Z"
+        }
+      }
+    },
+    {
+      "url": "http://127.0.0.1:8091/",
+      "errors": [],
+      "failedRequests": [],
+      "externalRequests": [],
+      "consoleWarnings": [
+        "THREE.WebGLRenderer: KHR_parallel_shader_compile extension not supported."
+      ],
+      "state": {
+        "flow": "PLAYING",
+        "time": 0.6166999999999989,
+        "drawCalls": 261,
+        "geometries": 259,
+        "textures": 17,
+        "canvases": [
+          "wrap",
+          "mm",
+          "hud-pixi"
+        ],
+        "player": {
+          "cls": "pa",
+          "hp": 76,
+          "x": 13,
+          "z": 15
+        },
+        "measuredDiagnostics": {
+          "version": "1.3.0-beta.4-QA",
+          "worldSize": 96,
+          "flow": "PLAYING",
+          "worldGeneration": {
+            "seed": 11,
+            "version": 2,
+            "diagnostics": {
+              "seed": 11,
+              "version": 2,
+              "frontierVegetationRemoved": 0,
+              "objectives": 47,
+              "routeRepairs": [],
+              "routeVegetationRemoved": 0,
+              "reachableCells": 7400,
+              "objects": 2462
+            }
+          },
+          "mapPosition": [
+            13,
+            0,
+            15
+          ],
+          "class": "pa",
+          "zone": "world",
+          "fps": 3,
+          "graphics": {
+            "mode": "low",
+            "fps": 3,
+            "fpsVisible": false,
+            "pixelRatio": 0.72,
+            "frameLimit": 30,
+            "deviceProfile": {
+              "mobile": true,
+              "economy": false,
+              "initialRatio": 0.85,
+              "maxRatio": 1,
+              "pixelBudget": 600000,
+              "targetFPS": 30,
+              "hudBackend": "canvas2d"
+            },
+            "hud": {
+              "backend": "canvas2d",
+              "width": 390,
+              "height": 844,
+              "maxFPS": 30
+            },
+            "worldLighting": {
+              "sources": 30,
+              "slots": 3,
+              "active": 3
+            },
+            "worldMaterials": {
+              "highDetail": false,
+              "changed": 0
+            },
+            "contextState": "ready",
+            "measuredFlow": "PAUSED",
+            "frameTiming": {
+              "samples": 6,
+              "meanMs": 331.65,
+              "p50Ms": 266.7,
+              "p95Ms": 433.3,
+              "maxMs": 456.6
+            },
+            "sampleAgeMs": 54
+          },
+          "device": {
+            "platform": "Linux",
+            "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36",
+            "touchPoints": 1,
+            "logicalCores": 5,
+            "viewport": [
+              390,
+              844
+            ],
+            "devicePixelRatio": 1,
+            "webgl": {
+              "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+              "renderer": "WebKit WebGL"
+            }
+          },
+          "heap": {
+            "usedBytes": 74545421,
+            "allocatedBytes": 136380433,
+            "limitBytes": 4395630592
+          },
+          "history": [
+            {
+              "timestamp": "2026-11-10T04:22:10.420Z",
+              "flow": "CHARACTER_CREATION",
+              "fps": 0,
+              "frameP95Ms": 549.9,
+              "pixelRatio": 0.72,
+              "drawCalls": 132,
+              "triangles": 146821,
+              "geometries": 96,
+              "textures": 15,
+              "usedHeapBytes": 105614954,
+              "contextState": "ready"
+            },
+            {
+              "timestamp": "2026-11-10T04:22:11.581Z",
+              "flow": "CHARACTER_CREATION",
+              "fps": 2,
+              "frameP95Ms": 549.9,
+              "pixelRatio": 0.72,
+              "drawCalls": 132,
+              "triangles": 146821,
+              "geometries": 96,
+              "textures": 15,
+              "usedHeapBytes": 83343464,
+              "contextState": "ready"
+            },
+            {
+              "timestamp": "2026-11-10T04:22:12.687Z",
+              "flow": "CHARACTER_CREATION",
+              "fps": 2,
+              "frameP95Ms": 549.9,
+              "pixelRatio": 0.72,
+              "drawCalls": 121,
+              "triangles": 144449,
+              "geometries": 85,
+              "textures": 15,
+              "usedHeapBytes": 68502400,
+              "contextState": "ready"
+            },
+            {
+              "timestamp": "2026-11-10T04:22:13.960Z",
+              "flow": "PLAYING",
+              "fps": 0,
+              "frameP95Ms": 294.9,
+              "pixelRatio": 0.72,
+              "drawCalls": 136,
+              "triangles": 148902,
+              "geometries": 99,
+              "textures": 15,
+              "usedHeapBytes": 69873095,
+              "contextState": "ready"
+            },
+            {
+              "timestamp": "2026-11-10T04:22:15.059Z",
+              "flow": "CUTSCENE",
+              "fps": 0,
+              "frameP95Ms": 350,
+              "pixelRatio": 0.72,
+              "drawCalls": 321,
+              "triangles": 262150,
+              "geometries": 226,
+              "textures": 17,
+              "usedHeapBytes": 71777220,
+              "contextState": "ready"
+            },
+            {
+              "timestamp": "2026-11-10T04:22:16.084Z",
+              "flow": "PLAYING",
+              "fps": 0,
+              "frameP95Ms": 300,
+              "pixelRatio": 0.72,
+              "drawCalls": 281,
+              "triangles": 172234,
+              "geometries": 226,
+              "textures": 17,
+              "usedHeapBytes": 72334695,
+              "contextState": "ready"
+            },
+            {
+              "timestamp": "2026-11-10T04:22:17.316Z",
+              "flow": "PLAYING",
+              "fps": 3,
+              "frameP95Ms": 383.3,
+              "pixelRatio": 0.72,
+              "drawCalls": 276,
+              "triangles": 173586,
+              "geometries": 252,
+              "textures": 17,
+              "usedHeapBytes": 73538036,
+              "contextState": "ready"
+            },
+            {
+              "timestamp": "2026-11-10T04:22:18.779Z",
+              "flow": "PAUSED",
+              "fps": 3,
+              "frameP95Ms": 433.3,
+              "pixelRatio": 0.72,
+              "drawCalls": 261,
+              "triangles": 169542,
+              "geometries": 259,
+              "textures": 17,
+              "usedHeapBytes": 74221538,
+              "contextState": "ready"
+            }
+          ],
+          "historyLimit": 120,
+          "drawCalls": 261,
+          "triangles": 169542,
+          "textures": 17,
+          "geometries": 259,
+          "totalChunks": 36,
+          "visibleChunks": 4,
+          "sceneObjects": 116,
+          "activeEnemies": 46,
+          "cutscene": null,
+          "audio": {
+            "enabled": true,
+            "unlocked": true,
+            "playing": [
+              "ambient"
+            ]
+          },
+          "lastError": null,
+          "errors": [],
+          "timestamp": "2026-11-10T04:22:19.653Z"
+        }
+      }
+    },
+    {
+      "url": "http://127.0.0.1:8091/",
+      "errors": [],
+      "failedRequests": [],
+      "externalRequests": [],
+      "consoleWarnings": [
+        "THREE.WebGLRenderer: KHR_parallel_shader_compile extension not supported."
+      ],
+      "state": {
+        "flow": "PLAYING",
+        "time": 0.6167000000000008,
+        "drawCalls": 485,
+        "geometries": 467,
+        "textures": 22,
+        "canvases": [
+          "wrap",
+          "mm",
+          "hud-pixi"
+        ],
+        "player": {
+          "cls": "so",
+          "hp": 60,
+          "x": 13,
+          "z": 15
+        },
+        "measuredDiagnostics": {
+          "version": "1.3.0-beta.4-QA",
+          "worldSize": 96,
+          "flow": "PLAYING",
+          "worldGeneration": {
+            "seed": 11,
+            "version": 2,
+            "diagnostics": {
+              "seed": 11,
+              "version": 2,
+              "frontierVegetationRemoved": 0,
+              "objectives": 47,
+              "routeRepairs": [],
+              "routeVegetationRemoved": 0,
+              "reachableCells": 7400,
+              "objects": 2462
+            }
+          },
+          "mapPosition": [
+            13,
+            0,
+            15
+          ],
+          "class": "so",
+          "zone": "world",
+          "fps": 3,
+          "graphics": {
+            "mode": "low",
+            "fps": 3,
+            "fpsVisible": false,
+            "pixelRatio": 0.72,
+            "frameLimit": 30,
+            "deviceProfile": {
+              "mobile": true,
+              "economy": false,
+              "initialRatio": 0.85,
+              "maxRatio": 1,
+              "pixelBudget": 600000,
+              "targetFPS": 30,
+              "hudBackend": "canvas2d"
+            },
+            "hud": {
+              "backend": "canvas2d",
+              "width": 800,
+              "height": 360,
+              "maxFPS": 30
+            },
+            "worldLighting": {
+              "sources": 30,
+              "slots": 3,
+              "active": 3
+            },
+            "worldMaterials": {
+              "highDetail": false,
+              "changed": 0
+            },
+            "contextState": "ready",
+            "measuredFlow": "PAUSED",
+            "frameTiming": {
+              "samples": 6,
+              "meanMs": 410.1,
+              "p50Ms": 383.3,
+              "p95Ms": 510.7,
+              "maxMs": 783.3
+            },
+            "sampleAgeMs": 34
+          },
+          "device": {
+            "platform": "Linux",
+            "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36",
+            "touchPoints": 1,
+            "logicalCores": 5,
+            "viewport": [
+              800,
+              360
+            ],
+            "devicePixelRatio": 1,
+            "webgl": {
+              "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+              "renderer": "WebKit WebGL"
+            }
+          },
+          "heap": {
+            "usedBytes": 78026790,
+            "allocatedBytes": 133171706,
+            "limitBytes": 4395630592
+          },
+          "history": [
+            {
+              "timestamp": "2026-11-10T04:22:29.673Z",
+              "flow": "CHARACTER_CREATION",
+              "fps": 0,
+              "frameP95Ms": 950,
+              "pixelRatio": 0.72,
+              "drawCalls": 275,
+              "triangles": 174042,
+              "geometries": 236,
+              "textures": 16,
+              "usedHeapBytes": 112972673,
+              "contextState": "ready"
+            },
+            {
+              "timestamp": "2026-11-10T04:22:31.249Z",
+              "flow": "CHARACTER_CREATION",
+              "fps": 1,
+              "frameP95Ms": 950,
+              "pixelRatio": 0.72,
+              "drawCalls": 275,
+              "triangles": 174042,
+              "geometries": 236,
+              "textures": 16,
+              "usedHeapBytes": 84489858,
+              "contextState": "ready"
+            },
+            {
+              "timestamp": "2026-11-10T04:22:32.542Z",
+              "flow": "CHARACTER_CREATION",
+              "fps": 4,
+              "frameP95Ms": 950,
+              "pixelRatio": 0.72,
+              "drawCalls": 275,
+              "triangles": 174042,
+              "geometries": 236,
+              "textures": 16,
+              "usedHeapBytes": 85408888,
+              "contextState": "ready"
+            },
+            {
+              "timestamp": "2026-11-10T04:22:33.624Z",
+              "flow": "PLAYING",
+              "fps": 0,
+              "frameP95Ms": 199.9,
+              "pixelRatio": 0.72,
+              "drawCalls": 217,
+              "triangles": 165625,
+              "geometries": 240,
+              "textures": 18,
+              "usedHeapBytes": 71586473,
+              "contextState": "ready"
+            },
+            {
+              "timestamp": "2026-11-10T04:22:34.824Z",
+              "flow": "PLAYING",
+              "fps": 4,
+              "frameP95Ms": 400,
+              "pixelRatio": 0.72,
+              "drawCalls": 242,
+              "triangles": 167835,
+              "geometries": 244,
+              "textures": 18,
+              "usedHeapBytes": 72204061,
+              "contextState": "ready"
+            },
+            {
+              "timestamp": "2026-11-10T04:22:36.233Z",
+              "flow": "CUTSCENE",
+              "fps": 3,
+              "frameP95Ms": 433.3,
+              "pixelRatio": 0.72,
+              "drawCalls": 600,
+              "triangles": 327233,
+              "geometries": 467,
+              "textures": 22,
+              "usedHeapBytes": 74450599,
+              "contextState": "ready"
+            },
+            {
+              "timestamp": "2026-11-10T04:22:37.483Z",
+              "flow": "PLAYING",
+              "fps": 0,
+              "frameP95Ms": 316.7,
+              "pixelRatio": 0.72,
+              "drawCalls": 492,
+              "triangles": 189027,
+              "geometries": 467,
+              "textures": 22,
+              "usedHeapBytes": 75629834,
+              "contextState": "ready"
+            },
+            {
+              "timestamp": "2026-11-10T04:22:38.588Z",
+              "flow": "PAUSED",
+              "fps": 0,
+              "frameP95Ms": 510.7,
+              "pixelRatio": 0.72,
+              "drawCalls": 485,
+              "triangles": 188707,
+              "geometries": 467,
+              "textures": 22,
+              "usedHeapBytes": 76973247,
+              "contextState": "ready"
+            },
+            {
+              "timestamp": "2026-11-10T04:22:40.058Z",
+              "flow": "PAUSED",
+              "fps": 3,
+              "frameP95Ms": 510.7,
+              "pixelRatio": 0.72,
+              "drawCalls": 485,
+              "triangles": 188707,
+              "geometries": 467,
+              "textures": 22,
+              "usedHeapBytes": 77782234,
+              "contextState": "ready"
+            }
+          ],
+          "historyLimit": 120,
+          "drawCalls": 485,
+          "triangles": 188707,
+          "textures": 22,
+          "geometries": 467,
+          "totalChunks": 36,
+          "visibleChunks": 4,
+          "sceneObjects": 116,
+          "activeEnemies": 46,
+          "cutscene": null,
+          "audio": {
+            "enabled": true,
+            "unlocked": true,
+            "playing": [
+              "ambient"
+            ]
+          },
+          "lastError": null,
+          "errors": [],
+          "timestamp": "2026-11-10T04:22:41.021Z"
+        }
+      }
+    },
+    {
+      "url": "http://127.0.0.1:8091/",
+      "errors": [],
+      "failedRequests": [],
+      "externalRequests": [],
+      "consoleWarnings": [
+        "THREE.WebGLRenderer: KHR_parallel_shader_compile extension not supported."
+      ],
+      "state": {
+        "flow": "PLAYING",
+        "time": 0.7000000000000001,
+        "drawCalls": 415,
+        "geometries": 395,
+        "textures": 22,
+        "canvases": [
+          "wrap",
+          "mm",
+          "hud-pixi"
+        ],
+        "player": {
+          "cls": "dr",
+          "hp": 68,
+          "x": 13,
+          "z": 15
+        },
+        "measuredDiagnostics": {
+          "version": "1.3.0-beta.4-QA",
+          "worldSize": 96,
+          "flow": "PLAYING",
+          "worldGeneration": {
+            "seed": 11,
+            "version": 2,
+            "diagnostics": {
+              "seed": 11,
+              "version": 2,
+              "frontierVegetationRemoved": 0,
+              "objectives": 47,
+              "routeRepairs": [],
+              "routeVegetationRemoved": 0,
+              "reachableCells": 7400,
+              "objects": 2462
+            }
+          },
+          "mapPosition": [
+            13,
+            0,
+            15
+          ],
+          "class": "dr",
+          "zone": "world",
+          "fps": 3,
+          "graphics": {
+            "mode": "low",
+            "fps": 3,
+            "fpsVisible": false,
+            "pixelRatio": 0.72,
+            "frameLimit": 30,
+            "deviceProfile": {
+              "mobile": true,
+              "economy": false,
+              "initialRatio": 0.85,
+              "maxRatio": 1,
+              "pixelBudget": 600000,
+              "targetFPS": 30,
+              "hudBackend": "canvas2d"
+            },
+            "hud": {
+              "backend": "canvas2d",
+              "width": 1280,
+              "height": 720,
+              "maxFPS": 30
+            },
+            "worldLighting": {
+              "sources": 30,
+              "slots": 3,
+              "active": 3
+            },
+            "worldMaterials": {
+              "highDetail": false,
+              "changed": 0
+            },
+            "contextState": "ready",
+            "measuredFlow": "PAUSED",
+            "frameTiming": {
+              "samples": 6,
+              "meanMs": 298.25,
+              "p50Ms": 266.6,
+              "p95Ms": 383.2,
+              "maxMs": 400
+            },
+            "sampleAgeMs": 42
+          },
+          "device": {
+            "platform": "Linux",
+            "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36",
+            "touchPoints": 0,
+            "logicalCores": 5,
+            "viewport": [
+              1280,
+              720
+            ],
+            "devicePixelRatio": 1,
+            "webgl": {
+              "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+              "renderer": "WebKit WebGL"
+            }
+          },
+          "heap": {
+            "usedBytes": 80829038,
+            "allocatedBytes": 137286818,
+            "limitBytes": 4395630592
+          },
+          "history": [
+            {
+              "timestamp": "2026-11-10T04:22:50.968Z",
+              "flow": "TITLE",
+              "fps": 0,
+              "frameP95Ms": 316.7,
+              "pixelRatio": 0.72,
+              "drawCalls": 0,
+              "triangles": 0,
+              "geometries": 0,
+              "textures": 0,
+              "usedHeapBytes": 59170343,
+              "contextState": "ready"
+            },
+            {
+              "timestamp": "2026-11-10T04:22:52.498Z",
+              "flow": "CHARACTER_CREATION",
+              "fps": 0,
+              "frameP95Ms": 550,
+              "pixelRatio": 0.72,
+              "drawCalls": 250,
+              "triangles": 172326,
+              "geometries": 213,
+              "textures": 16,
+              "usedHeapBytes": 106243875,
+              "contextState": "ready"
+            },
+            {
+              "timestamp": "2026-11-10T04:22:53.751Z",
+              "flow": "CHARACTER_CREATION",
+              "fps": 2,
+              "frameP95Ms": 550,
+              "pixelRatio": 0.72,
+              "drawCalls": 250,
+              "triangles": 172326,
+              "geometries": 213,
+              "textures": 16,
+              "usedHeapBytes": 84163629,
+              "contextState": "ready"
+            },
+            {
+              "timestamp": "2026-11-10T04:22:54.828Z",
+              "flow": "CHARACTER_CREATION",
+              "fps": 2,
+              "frameP95Ms": 550,
+              "pixelRatio": 0.72,
+              "drawCalls": 250,
+              "triangles": 172326,
+              "geometries": 213,
+              "textures": 16,
+              "usedHeapBytes": 84694185,
+              "contextState": "ready"
+            },
+            {
+              "timestamp": "2026-11-10T04:22:55.871Z",
+              "flow": "CHARACTER_CREATION",
+              "fps": 3,
+              "frameP95Ms": 550,
+              "pixelRatio": 0.72,
+              "drawCalls": 250,
+              "triangles": 172326,
+              "geometries": 213,
+              "textures": 16,
+              "usedHeapBytes": 85221015,
+              "contextState": "ready"
+            },
+            {
+              "timestamp": "2026-11-10T04:22:57.083Z",
+              "flow": "PLAYING",
+              "fps": 0,
+              "frameP95Ms": 233.2,
+              "pixelRatio": 0.72,
+              "drawCalls": 213,
+              "triangles": 166158,
+              "geometries": 215,
+              "textures": 16,
+              "usedHeapBytes": 74098713,
+              "contextState": "ready"
+            },
+            {
+              "timestamp": "2026-11-10T04:22:58.189Z",
+              "flow": "PLAYING",
+              "fps": 4,
+              "frameP95Ms": 333.3,
+              "pixelRatio": 0.72,
+              "drawCalls": 232,
+              "triangles": 167928,
+              "geometries": 226,
+              "textures": 18,
+              "usedHeapBytes": 74923680,
+              "contextState": "ready"
+            },
+            {
+              "timestamp": "2026-11-10T04:22:59.267Z",
+              "flow": "CUTSCENE",
+              "fps": 0,
+              "frameP95Ms": 383.3,
+              "pixelRatio": 0.72,
+              "drawCalls": 520,
+              "triangles": 295800,
+              "geometries": 395,
+              "textures": 22,
+              "usedHeapBytes": 77333654,
+              "contextState": "ready"
+            },
+            {
+              "timestamp": "2026-11-10T04:23:00.377Z",
+              "flow": "PLAYING",
+              "fps": 0,
+              "frameP95Ms": 233.4,
+              "pixelRatio": 0.72,
+              "drawCalls": 461,
+              "triangles": 187772,
+              "geometries": 395,
+              "textures": 22,
+              "usedHeapBytes": 78731357,
+              "contextState": "ready"
+            },
+            {
+              "timestamp": "2026-11-10T04:23:01.548Z",
+              "flow": "PAUSED",
+              "fps": 0,
+              "frameP95Ms": 189.6,
+              "pixelRatio": 0.72,
+              "drawCalls": 415,
+              "triangles": 184576,
+              "geometries": 395,
+              "textures": 22,
+              "usedHeapBytes": 80093071,
+              "contextState": "ready"
+            },
+            {
+              "timestamp": "2026-11-10T04:23:02.575Z",
+              "flow": "PAUSED",
+              "fps": 3,
+              "frameP95Ms": 383.2,
+              "pixelRatio": 0.72,
+              "drawCalls": 415,
+              "triangles": 184576,
+              "geometries": 395,
+              "textures": 22,
+              "usedHeapBytes": 80615374,
+              "contextState": "ready"
+            }
+          ],
+          "historyLimit": 120,
+          "drawCalls": 415,
+          "triangles": 184576,
+          "textures": 22,
+          "geometries": 395,
+          "totalChunks": 36,
+          "visibleChunks": 4,
+          "sceneObjects": 116,
+          "activeEnemies": 46,
+          "cutscene": null,
+          "audio": {
+            "enabled": true,
+            "unlocked": true,
+            "playing": [
+              "ambient"
+            ]
+          },
+          "lastError": null,
+          "errors": [],
+          "timestamp": "2026-11-10T04:23:03.236Z"
+        }
+      }
+    },
+    {
+      "url": "http://127.0.0.1:8091/",
+      "errors": [],
+      "failedRequests": [],
+      "externalRequests": [],
+      "consoleWarnings": [
+        "THREE.WebGLRenderer: KHR_parallel_shader_compile extension not supported."
+      ],
+      "state": {
+        "flow": "PLAYING",
+        "time": 0.7000000000000001,
+        "drawCalls": 417,
+        "geometries": 459,
+        "textures": 22,
+        "canvases": [
+          "wrap",
+          "mm",
+          "hud-pixi"
+        ],
+        "player": {
+          "cls": "yo",
+          "hp": 110,
+          "x": 13,
+          "z": 15
+        },
+        "measuredDiagnostics": {
+          "version": "1.3.0-beta.4-QA",
+          "worldSize": 96,
+          "flow": "PLAYING",
+          "worldGeneration": {
+            "seed": 11,
+            "version": 2,
+            "diagnostics": {
+              "seed": 11,
+              "version": 2,
+              "frontierVegetationRemoved": 0,
+              "objectives": 47,
+              "routeRepairs": [],
+              "routeVegetationRemoved": 0,
+              "reachableCells": 7400,
+              "objects": 2462
+            }
+          },
+          "mapPosition": [
+            13,
+            0,
+            15
+          ],
+          "class": "yo",
+          "zone": "world",
+          "fps": 3,
+          "graphics": {
+            "mode": "low",
+            "fps": 3,
+            "fpsVisible": false,
+            "pixelRatio": 0.6454972243679028,
+            "frameLimit": 30,
+            "deviceProfile": {
+              "mobile": true,
+              "economy": false,
+              "initialRatio": 0.85,
+              "maxRatio": 1,
+              "pixelBudget": 600000,
+              "targetFPS": 30,
+              "hudBackend": "canvas2d"
+            },
+            "hud": {
+              "backend": "canvas2d",
+              "width": 1600,
+              "height": 900,
+              "maxFPS": 30
+            },
+            "worldLighting": {
+              "sources": 30,
+              "slots": 3,
+              "active": 3
+            },
+            "worldMaterials": {
+              "highDetail": false,
+              "changed": 0
+            },
+            "contextState": "ready",
+            "measuredFlow": "PAUSED",
+            "frameTiming": {
+              "samples": 6,
+              "meanMs": 333.45,
+              "p50Ms": 266.8,
+              "p95Ms": 433.3,
+              "maxMs": 449.9
+            },
+            "sampleAgeMs": 24
+          },
+          "device": {
+            "platform": "Linux",
+            "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36",
+            "touchPoints": 0,
+            "logicalCores": 5,
+            "viewport": [
+              1600,
+              900
+            ],
+            "devicePixelRatio": 1,
+            "webgl": {
+              "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+              "renderer": "WebKit WebGL"
+            }
+          },
+          "heap": {
+            "usedBytes": 103443501,
+            "allocatedBytes": 166938529,
+            "limitBytes": 4395630592
+          },
+          "history": [
+            {
+              "timestamp": "2026-11-10T04:23:08.729Z",
+              "flow": "TITLE",
+              "fps": 0,
+              "frameP95Ms": 316.7,
+              "pixelRatio": 0.6454972243679028,
+              "drawCalls": 0,
+              "triangles": 0,
+              "geometries": 0,
+              "textures": 0,
+              "usedHeapBytes": 59336016,
+              "contextState": "ready"
+            },
+            {
+              "timestamp": "2026-11-10T04:23:10.215Z",
+              "flow": "CHARACTER_CREATION",
+              "fps": 2,
+              "frameP95Ms": 533.3,
+              "pixelRatio": 0.6454972243679028,
+              "drawCalls": 250,
+              "triangles": 172326,
+              "geometries": 213,
+              "textures": 16,
+              "usedHeapBytes": 106202501,
+              "contextState": "ready"
+            },
+            {
+              "timestamp": "2026-11-10T04:23:11.320Z",
+              "flow": "CHARACTER_CREATION",
+              "fps": 2,
+              "frameP95Ms": 533.3,
+              "pixelRatio": 0.6454972243679028,
+              "drawCalls": 250,
+              "triangles": 172326,
+              "geometries": 213,
+              "textures": 16,
+              "usedHeapBytes": 107086749,
+              "contextState": "ready"
+            },
+            {
+              "timestamp": "2026-11-10T04:23:12.475Z",
+              "flow": "PLAYING",
+              "fps": 0,
+              "frameP95Ms": 207.8,
+              "pixelRatio": 0.6454972243679028,
+              "drawCalls": 243,
+              "triangles": 171555,
+              "geometries": 206,
+              "textures": 16,
+              "usedHeapBytes": 124165075,
+              "contextState": "ready"
+            },
+            {
+              "timestamp": "2026-11-10T04:23:13.473Z",
+              "flow": "PLAYING",
+              "fps": 0,
+              "frameP95Ms": 216.7,
+              "pixelRatio": 0.6454972243679028,
+              "drawCalls": 225,
+              "triangles": 166785,
+              "geometries": 223,
+              "textures": 18,
+              "usedHeapBytes": 125010593,
+              "contextState": "ready"
+            },
+            {
+              "timestamp": "2026-11-10T04:23:14.489Z",
+              "flow": "CUTSCENE",
+              "fps": 0,
+              "frameP95Ms": 83.3,
+              "pixelRatio": 0.6454972243679028,
+              "drawCalls": 582,
+              "triangles": 300735,
+              "geometries": 457,
+              "textures": 22,
+              "usedHeapBytes": 99704792,
+              "contextState": "ready"
+            },
+            {
+              "timestamp": "2026-11-10T04:23:15.674Z",
+              "flow": "PLAYING",
+              "fps": 0,
+              "frameP95Ms": 250,
+              "pixelRatio": 0.6454972243679028,
+              "drawCalls": 508,
+              "triangles": 191539,
+              "geometries": 457,
+              "textures": 22,
+              "usedHeapBytes": 100758781,
+              "contextState": "ready"
+            },
+            {
+              "timestamp": "2026-11-10T04:23:16.719Z",
+              "flow": "PLAYING",
+              "fps": 3,
+              "frameP95Ms": 300,
+              "pixelRatio": 0.6454972243679028,
+              "drawCalls": 452,
+              "triangles": 186787,
+              "geometries": 459,
+              "textures": 22,
+              "usedHeapBytes": 101859598,
+              "contextState": "ready"
+            },
+            {
+              "timestamp": "2026-11-10T04:23:17.753Z",
+              "flow": "PAUSED",
+              "fps": 0,
+              "frameP95Ms": 249.9,
+              "pixelRatio": 0.6454972243679028,
+              "drawCalls": 417,
+              "triangles": 184003,
+              "geometries": 459,
+              "textures": 22,
+              "usedHeapBytes": 102856806,
+              "contextState": "ready"
+            },
+            {
+              "timestamp": "2026-11-10T04:23:19.028Z",
+              "flow": "PAUSED",
+              "fps": 3,
+              "frameP95Ms": 433.3,
+              "pixelRatio": 0.6454972243679028,
+              "drawCalls": 417,
+              "triangles": 184003,
+              "geometries": 459,
+              "textures": 22,
+              "usedHeapBytes": 103392137,
+              "contextState": "ready"
+            }
+          ],
+          "historyLimit": 120,
+          "drawCalls": 417,
+          "triangles": 184003,
+          "textures": 22,
+          "geometries": 459,
+          "totalChunks": 36,
+          "visibleChunks": 4,
+          "sceneObjects": 116,
+          "activeEnemies": 46,
+          "cutscene": null,
+          "audio": {
+            "enabled": true,
+            "unlocked": true,
+            "playing": [
+              "ambient"
+            ]
+          },
+          "lastError": null,
+          "errors": [],
+          "timestamp": "2026-11-10T04:23:19.385Z"
+        }
+      }
+    },
+    {
+      "url": "http://127.0.0.1:8091/",
+      "errors": [],
+      "failedRequests": [],
+      "externalRequests": [],
+      "consoleWarnings": [
+        "THREE.WebGLRenderer: KHR_parallel_shader_compile extension not supported."
+      ],
+      "state": {
+        "flow": "PLAYING",
+        "time": 1.0335999999999999,
+        "drawCalls": 166,
+        "geometries": 237,
+        "textures": 17,
+        "canvases": [
+          "wrap",
+          "mm",
+          "hud-pixi"
+        ],
+        "player": {
+          "cls": "yo",
+          "hp": 110,
+          "x": 13.694676645263634,
+          "z": 15
+        },
+        "measuredDiagnostics": {
+          "version": "1.3.0-beta.4-QA",
+          "worldSize": 96,
+          "flow": "PLAYING",
+          "worldGeneration": {
+            "seed": 11,
+            "version": 2,
+            "diagnostics": {
+              "seed": 11,
+              "version": 2,
+              "frontierVegetationRemoved": 0,
+              "objectives": 47,
+              "routeRepairs": [],
+              "routeVegetationRemoved": 0,
+              "reachableCells": 7400,
+              "objects": 2462
+            }
+          },
+          "mapPosition": [
+            13.69,
+            0,
+            15
+          ],
+          "class": "yo",
+          "zone": "world",
+          "fps": 7,
+          "graphics": {
+            "mode": "auto",
+            "fps": 7,
+            "fpsVisible": false,
+            "pixelRatio": 0.85,
+            "frameLimit": 30,
+            "deviceProfile": {
+              "mobile": true,
+              "economy": false,
+              "initialRatio": 0.85,
+              "maxRatio": 1,
+              "pixelBudget": 600000,
+              "targetFPS": 30,
+              "hudBackend": "canvas2d"
+            },
+            "hud": {
+              "backend": "canvas2d",
+              "width": 390,
+              "height": 844,
+              "maxFPS": 30
+            },
+            "worldLighting": {
+              "sources": 30,
+              "slots": 3,
+              "active": 3
+            },
+            "worldMaterials": {
+              "highDetail": false,
+              "changed": 238
+            },
+            "contextState": "ready",
+            "measuredFlow": "PLAYING",
+            "frameTiming": {
+              "samples": 17,
+              "meanMs": 132.35,
+              "p50Ms": 133.3,
+              "p95Ms": 200.1,
+              "maxMs": 266.6
+            },
+            "sampleAgeMs": 103
+          },
+          "device": {
+            "platform": "Linux",
+            "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36",
+            "touchPoints": 1,
+            "logicalCores": 5,
+            "viewport": [
+              390,
+              844
+            ],
+            "devicePixelRatio": 1,
+            "webgl": {
+              "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+              "renderer": "WebKit WebGL"
+            }
+          },
+          "heap": {
+            "usedBytes": 102244293,
+            "allocatedBytes": 164965337,
+            "limitBytes": 4395630592
+          },
+          "history": [
+            {
+              "timestamp": "2026-11-10T04:23:24.768Z",
+              "flow": "CHARACTER_CREATION",
+              "fps": 0,
+              "frameP95Ms": 416.6,
+              "pixelRatio": 0.85,
+              "drawCalls": 132,
+              "triangles": 146821,
+              "geometries": 96,
+              "textures": 15,
+              "usedHeapBytes": 105078625,
+              "contextState": "ready"
+            },
+            {
+              "timestamp": "2026-11-10T04:23:25.818Z",
+              "flow": "PLAYING",
+              "fps": 0,
+              "frameP95Ms": 116.7,
+              "pixelRatio": 0.85,
+              "drawCalls": 135,
+              "triangles": 150239,
+              "geometries": 100,
+              "textures": 15,
+              "usedHeapBytes": 122911088,
+              "contextState": "ready"
+            },
+            {
+              "timestamp": "2026-11-10T04:23:26.835Z",
+              "flow": "PLAYING",
+              "fps": 0,
+              "frameP95Ms": 150,
+              "pixelRatio": 0.85,
+              "drawCalls": 292,
+              "triangles": 260955,
+              "geometries": 197,
+              "textures": 17,
+              "usedHeapBytes": 124910629,
+              "contextState": "ready"
+            },
+            {
+              "timestamp": "2026-11-10T04:23:28.027Z",
+              "flow": "PLAYING",
+              "fps": 7,
+              "frameP95Ms": 166.7,
+              "pixelRatio": 0.85,
+              "drawCalls": 255,
+              "triangles": 164847,
+              "geometries": 234,
+              "textures": 17,
+              "usedHeapBytes": 99907583,
+              "contextState": "ready"
+            }
+          ],
+          "historyLimit": 120,
+          "drawCalls": 166,
+          "triangles": 159743,
+          "textures": 17,
+          "geometries": 237,
+          "totalChunks": 36,
+          "visibleChunks": 4,
+          "sceneObjects": 116,
+          "activeEnemies": 46,
+          "cutscene": null,
+          "audio": {
+            "enabled": true,
+            "unlocked": true,
+            "playing": [
+              "ambient"
+            ]
+          },
+          "lastError": null,
+          "errors": [],
+          "timestamp": "2026-11-10T04:23:29.076Z"
+        }
+      }
+    },
+    {
+      "url": "http://127.0.0.1:8091/?visual=classico&stream=0&cinema=1",
+      "errors": [],
+      "failedRequests": [],
+      "externalRequests": [],
+      "consoleWarnings": [
+        "THREE.WebGLRenderer: KHR_parallel_shader_compile extension not supported."
+      ],
+      "state": {
+        "flow": "PLAYING",
+        "time": 0.7373999999999534,
+        "drawCalls": 259,
+        "geometries": 320,
+        "textures": 6,
+        "canvases": [
+          "wrap",
+          "mm",
+          "hud-pixi"
+        ],
+        "player": {
+          "cls": "dr",
+          "hp": 68,
+          "x": 13,
+          "z": 15
+        },
+        "measuredDiagnostics": {
+          "version": "1.3.0-beta.4-QA",
+          "worldSize": 96,
+          "flow": "PLAYING",
+          "worldGeneration": {
+            "seed": 11,
+            "version": 2,
+            "diagnostics": {
+              "seed": 11,
+              "version": 2,
+              "frontierVegetationRemoved": 0,
+              "objectives": 47,
+              "routeRepairs": [],
+              "routeVegetationRemoved": 0,
+              "reachableCells": 7400,
+              "objects": 2462
+            }
+          },
+          "mapPosition": [
+            13,
+            0,
+            15
+          ],
+          "class": "dr",
+          "zone": "world",
+          "fps": 6,
+          "graphics": {
+            "mode": "auto",
+            "fps": 6,
+            "fpsVisible": false,
+            "pixelRatio": 0.8068715304598785,
+            "frameLimit": 30,
+            "deviceProfile": {
+              "mobile": true,
+              "economy": false,
+              "initialRatio": 0.85,
+              "maxRatio": 1,
+              "pixelBudget": 600000,
+              "targetFPS": 30,
+              "hudBackend": "canvas2d"
+            },
+            "hud": {
+              "backend": "canvas2d",
+              "width": 1280,
+              "height": 720,
+              "maxFPS": 30
+            },
+            "worldLighting": {
+              "sources": 1,
+              "slots": 3,
+              "active": 1
+            },
+            "worldMaterials": {
+              "highDetail": false,
+              "changed": 0
+            },
+            "contextState": "ready",
+            "measuredFlow": "PLAYING",
+            "frameTiming": {
+              "samples": 9,
+              "meanMs": 177.77,
+              "p50Ms": 183.3,
+              "p95Ms": 199.9,
+              "maxMs": 200
+            },
+            "sampleAgeMs": 134
+          },
+          "device": {
+            "platform": "Linux",
+            "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36",
+            "touchPoints": 0,
+            "logicalCores": 5,
+            "viewport": [
+              1280,
+              720
+            ],
+            "devicePixelRatio": 1,
+            "webgl": {
+              "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+              "renderer": "WebKit WebGL"
+            }
+          },
+          "heap": {
+            "usedBytes": 81123016,
+            "allocatedBytes": 146815068,
+            "limitBytes": 4395630592
+          },
+          "history": [
+            {
+              "timestamp": "2026-11-10T04:23:34.046Z",
+              "flow": "CHARACTER_CREATION",
+              "fps": 0,
+              "frameP95Ms": 316.6,
+              "pixelRatio": 0.8068715304598785,
+              "drawCalls": 179,
+              "triangles": 201490,
+              "geometries": 120,
+              "textures": 5,
+              "usedHeapBytes": 94836318,
+              "contextState": "ready"
+            },
+            {
+              "timestamp": "2026-11-10T04:23:35.090Z",
+              "flow": "PLAYING",
+              "fps": 0,
+              "frameP95Ms": 149.9,
+              "pixelRatio": 0.8068715304598785,
+              "drawCalls": 146,
+              "triangles": 198136,
+              "geometries": 115,
+              "textures": 6,
+              "usedHeapBytes": 101486462,
+              "contextState": "ready"
+            },
+            {
+              "timestamp": "2026-11-10T04:23:36.292Z",
+              "flow": "CUTSCENE",
+              "fps": 0,
+              "frameP95Ms": 300.1,
+              "pixelRatio": 0.8068715304598785,
+              "drawCalls": 411,
+              "triangles": 256509,
+              "geometries": 320,
+              "textures": 6,
+              "usedHeapBytes": 78772075,
+              "contextState": "ready"
+            },
+            {
+              "timestamp": "2026-11-10T04:23:37.355Z",
+              "flow": "PLAYING",
+              "fps": 0,
+              "frameP95Ms": 183.4,
+              "pixelRatio": 0.8068715304598785,
+              "drawCalls": 374,
+              "triangles": 250509,
+              "geometries": 320,
+              "textures": 6,
+              "usedHeapBytes": 80359810,
+              "contextState": "ready"
+            }
+          ],
+          "historyLimit": 120,
+          "drawCalls": 259,
+          "triangles": 222813,
+          "textures": 6,
+          "geometries": 320,
+          "totalChunks": 36,
+          "visibleChunks": 36,
+          "sceneObjects": 153,
+          "activeEnemies": 46,
+          "cutscene": null,
+          "audio": {
+            "enabled": true,
+            "unlocked": true,
+            "playing": [
+              "ambient"
+            ]
+          },
+          "lastError": null,
+          "errors": [],
+          "timestamp": "2026-11-10T04:23:38.127Z"
+        }
+      }
+    },
+    {
+      "url": "http://127.0.0.1:8091/",
+      "errors": [],
+      "failedRequests": [],
+      "externalRequests": [],
+      "consoleWarnings": [
+        "[Hinária] Pixi indisponível; HUD DOM mantido. Error: Canvas2D indisponível\n    at qV (http://127.0.0.1:8091/game.js:3769:5838)\n    at whe (http://127.0.0.1:8091/game.js:7065:28533)\n    at TK (http://127.0.0.1:8091/game.js:7065:25019)\n    at http://127.0.0.1:8091/game.js:7065:32672\n    at async Object.phase (http://127.0.0.1:8091/game.js:1:2503)\n    at async She (http://127.0.0.1:8091/game.js:7065:32545)\n    at async http://127.0.0.1:8091/game.js:7065:36594",
+        "THREE.WebGLRenderer: KHR_parallel_shader_compile extension not supported."
+      ],
+      "state": {
+        "flow": "PLAYING",
+        "time": 0.8167000000000009,
+        "drawCalls": 408,
+        "geometries": 589,
+        "textures": 22,
+        "canvases": [
+          "wrap",
+          "mm"
+        ],
+        "player": {
+          "cls": "kn",
+          "hp": 96,
+          "x": 13,
+          "z": 15
+        },
+        "measuredDiagnostics": {
+          "version": "1.3.0-beta.4-QA",
+          "worldSize": 96,
+          "flow": "PLAYING",
+          "worldGeneration": {
+            "seed": 11,
+            "version": 2,
+            "diagnostics": {
+              "seed": 11,
+              "version": 2,
+              "frontierVegetationRemoved": 0,
+              "objectives": 47,
+              "routeRepairs": [],
+              "routeVegetationRemoved": 0,
+              "reachableCells": 7400,
+              "objects": 2462
+            }
+          },
+          "mapPosition": [
+            13,
+            0,
+            15
+          ],
+          "class": "kn",
+          "zone": "world",
+          "fps": 4,
+          "graphics": {
+            "mode": "auto",
+            "fps": 4,
+            "fpsVisible": false,
+            "pixelRatio": 0.73,
+            "frameLimit": 30,
+            "deviceProfile": {
+              "mobile": true,
+              "economy": false,
+              "initialRatio": 0.85,
+              "maxRatio": 1,
+              "pixelBudget": 600000,
+              "targetFPS": 30,
+              "hudBackend": "canvas2d"
+            },
+            "hud": null,
+            "worldLighting": {
+              "sources": 30,
+              "slots": 3,
+              "active": 3
+            },
+            "worldMaterials": {
+              "highDetail": false,
+              "changed": 238
+            },
+            "contextState": "ready",
+            "measuredFlow": "PLAYING",
+            "frameTiming": {
+              "samples": 6,
+              "meanMs": 310.58,
+              "p50Ms": 250,
+              "p95Ms": 549.9,
+              "maxMs": 550
+            },
+            "sampleAgeMs": 14
+          },
+          "device": {
+            "platform": "Linux",
+            "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36",
+            "touchPoints": 0,
+            "logicalCores": 5,
+            "viewport": [
+              1280,
+              720
+            ],
+            "devicePixelRatio": 1,
+            "webgl": {
+              "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+              "renderer": "WebKit WebGL"
+            }
+          },
+          "heap": {
+            "usedBytes": 81958897,
+            "allocatedBytes": 135842341,
+            "limitBytes": 4395630592
+          },
+          "history": [
+            {
+              "timestamp": "2026-11-10T04:23:43.591Z",
+              "flow": "CHARACTER_CREATION",
+              "fps": 0,
+              "frameP95Ms": 416.8,
+              "pixelRatio": 0.8068715304598785,
+              "drawCalls": 250,
+              "triangles": 172326,
+              "geometries": 213,
+              "textures": 16,
+              "usedHeapBytes": 86466029,
+              "contextState": "ready"
+            },
+            {
+              "timestamp": "2026-11-10T04:23:44.637Z",
+              "flow": "PLAYING",
+              "fps": 0,
+              "frameP95Ms": 183.4,
+              "pixelRatio": 0.8068715304598785,
+              "drawCalls": 225,
+              "triangles": 167312,
+              "geometries": 228,
+              "textures": 18,
+              "usedHeapBytes": 73690918,
+              "contextState": "ready"
+            },
+            {
+              "timestamp": "2026-11-10T04:23:45.960Z",
+              "flow": "CUTSCENE",
+              "fps": 0,
+              "frameP95Ms": 200,
+              "pixelRatio": 0.8068715304598785,
+              "drawCalls": 715,
+              "triangles": 312334,
+              "geometries": 589,
+              "textures": 22,
+              "usedHeapBytes": 76601001,
+              "contextState": "ready"
+            },
+            {
+              "timestamp": "2026-11-10T04:23:46.985Z",
+              "flow": "PLAYING",
+              "fps": 0,
+              "frameP95Ms": 233.3,
+              "pixelRatio": 0.8068715304598785,
+              "drawCalls": 657,
+              "triangles": 204334,
+              "geometries": 589,
+              "textures": 22,
+              "usedHeapBytes": 78416174,
+              "contextState": "ready"
+            },
+            {
+              "timestamp": "2026-11-10T04:23:48.153Z",
+              "flow": "PAUSED",
+              "fps": 0,
+              "frameP95Ms": 192.7,
+              "pixelRatio": 0.8068715304598785,
+              "drawCalls": 586,
+              "triangles": 198414,
+              "geometries": 589,
+              "textures": 22,
+              "usedHeapBytes": 80286751,
+              "contextState": "ready"
+            },
+            {
+              "timestamp": "2026-11-10T04:23:49.218Z",
+              "flow": "PLAYING",
+              "fps": 0,
+              "frameP95Ms": 250,
+              "pixelRatio": 0.8068715304598785,
+              "drawCalls": 513,
+              "triangles": 191758,
+              "geometries": 589,
+              "textures": 22,
+              "usedHeapBytes": 81262831,
+              "contextState": "ready"
+            }
+          ],
+          "historyLimit": 120,
+          "drawCalls": 408,
+          "triangles": 186446,
+          "textures": 22,
+          "geometries": 589,
+          "totalChunks": 36,
+          "visibleChunks": 4,
+          "sceneObjects": 116,
+          "activeEnemies": 46,
+          "cutscene": null,
+          "audio": {
+            "enabled": true,
+            "unlocked": true,
+            "playing": [
+              "ambient"
+            ]
+          },
+          "lastError": null,
+          "errors": [],
+          "timestamp": "2026-11-10T04:23:50.268Z"
+        }
+      }
+    }
+  ]
+}
