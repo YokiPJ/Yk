@@ -1,0 +1,23 @@
+{
+  "status": "PASS",
+  "sourceCommit": "71da43bb0d063d8019d75cd15f0ae126f7d7dae7",
+  "testedCandidateTree": "a4135d586ae08cc3c374051a27beaa887e519a30",
+  "policy": "All non-QA archive files match the browser-tested candidate; only QA evidence and patch instructions are added.",
+  "assetsVerified": 13,
+  "comparisons": [
+    {
+      "file": "HINARIA_PROJETO_1.3.0-beta.4.zip",
+      "status": "PASS",
+      "identicalNonQAEntries": 614,
+      "bytes": 43897573,
+      "sha256": "a7697d5efc4dd79095135fe9f81343cd916cef8555578a21cb08f396bd4c1fe8"
+    },
+    {
+      "file": "HINARIA_REVISAO_GERAL_1.3.0-beta.4.zip",
+      "status": "PASS",
+      "identicalNonQAEntries": 39,
+      "bytes": 568238,
+      "sha256": "49937de97f7856a94ed0046befe3a570a367c26a6c4383eb17450f8b1ae13524"
+    }
+  ]
+}

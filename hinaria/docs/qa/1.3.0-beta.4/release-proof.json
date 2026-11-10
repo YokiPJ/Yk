@@ -1,0 +1,91 @@
+{
+  "status": "published",
+  "release_id": 439951135,
+  "tag": "v1.3.0-beta.4",
+  "source_commit": "71da43bb0d063d8019d75cd15f0ae126f7d7dae7",
+  "tag_commit": "71da43bb0d063d8019d75cd15f0ae126f7d7dae7",
+  "prerelease": true,
+  "make_latest_requested": "false",
+  "url": "https://github.com/YokiPJ/Yk/releases/tag/v1.3.0-beta.4",
+  "run_url": "https://github.com/YokiPJ/Yk/actions/runs/42756962262",
+  "assets": [
+    {
+      "name": "01-vilarrubra.png",
+      "sha256": "aeadeef0f238e07bf4cc5663458a82c90dfe35c428f47ee8fec18726f1c7fae7",
+      "bytes": 963779,
+      "download_url": "https://github.com/YokiPJ/Yk/releases/download/v1.3.0-beta.4/01-vilarrubra.png"
+    },
+    {
+      "name": "02-ponte-velha.png",
+      "sha256": "5f0fa1acd663595cbbf4b1032b1cb844c3f36e91f2504801ec3c0d8b16372629",
+      "bytes": 828031,
+      "download_url": "https://github.com/YokiPJ/Yk/releases/download/v1.3.0-beta.4/02-ponte-velha.png"
+    },
+    {
+      "name": "03-clareira.png",
+      "sha256": "a7a55423d2b13ad69a1d9877b8bc5a60a532ae5e021cd35a6ef52e2fdb06b663",
+      "bytes": 861748,
+      "download_url": "https://github.com/YokiPJ/Yk/releases/download/v1.3.0-beta.4/03-clareira.png"
+    },
+    {
+      "name": "04-ruinas-ardu.png",
+      "sha256": "4591c272c83e052ae205525b50653432f9277852012d08d8c58af15c09080dc5",
+      "bytes": 777918,
+      "download_url": "https://github.com/YokiPJ/Yk/releases/download/v1.3.0-beta.4/04-ruinas-ardu.png"
+    },
+    {
+      "name": "05-caverna-sombria.png",
+      "sha256": "79c7a252484e55fa6dcec2704701d3942307519d2c3add23a9815b3a28399019",
+      "bytes": 762875,
+      "download_url": "https://github.com/YokiPJ/Yk/releases/download/v1.3.0-beta.4/05-caverna-sombria.png"
+    },
+    {
+      "name": "06-acampamento.png",
+      "sha256": "d9acef9a5666fcc2fd48e52fd63871719b66576d02354df9308f04b22281aca9",
+      "bytes": 863595,
+      "download_url": "https://github.com/YokiPJ/Yk/releases/download/v1.3.0-beta.4/06-acampamento.png"
+    },
+    {
+      "name": "HINARIA_1.3.0_BETA4_DEBUG.apk",
+      "sha256": "6429c3d2495bbc27b93f164e07e57daa859b6ae2c295ee3930f91b759bebad64",
+      "bytes": 14929420,
+      "download_url": "https://github.com/YokiPJ/Yk/releases/download/v1.3.0-beta.4/HINARIA_1.3.0_BETA4_DEBUG.apk"
+    },
+    {
+      "name": "HINARIA_PROJETO_1.3.0-beta.4.zip",
+      "sha256": "a7697d5efc4dd79095135fe9f81343cd916cef8555578a21cb08f396bd4c1fe8",
+      "bytes": 43897573,
+      "download_url": "https://github.com/YokiPJ/Yk/releases/download/v1.3.0-beta.4/HINARIA_PROJETO_1.3.0-beta.4.zip"
+    },
+    {
+      "name": "HINARIA_REVISAO_GERAL_1.3.0-beta.4.zip",
+      "sha256": "49937de97f7856a94ed0046befe3a570a367c26a6c4383eb17450f8b1ae13524",
+      "bytes": 568238,
+      "download_url": "https://github.com/YokiPJ/Yk/releases/download/v1.3.0-beta.4/HINARIA_REVISAO_GERAL_1.3.0-beta.4.zip"
+    },
+    {
+      "name": "HinariaMotion.jar",
+      "sha256": "14cd5f4f72b2e1945f97a1ff54d85b64ccdb800ecdc3b532e26f9a4f548056f3",
+      "bytes": 1466674,
+      "download_url": "https://github.com/YokiPJ/Yk/releases/download/v1.3.0-beta.4/HinariaMotion.jar"
+    },
+    {
+      "name": "MOBILE_TEST_RESULTS.json",
+      "sha256": "7130a7694ab3b0b413fd5bd6da006e967430554f989ea19afb80caff7336b833",
+      "bytes": 3293,
+      "download_url": "https://github.com/YokiPJ/Yk/releases/download/v1.3.0-beta.4/MOBILE_TEST_RESULTS.json"
+    },
+    {
+      "name": "RELEASE_NOTES.md",
+      "sha256": "d770d19341862d3c5599bd364e8b8a1d4b582dfab3423608e1bd973851f40e9a",
+      "bytes": 3349,
+      "download_url": "https://github.com/YokiPJ/Yk/releases/download/v1.3.0-beta.4/RELEASE_NOTES.md"
+    },
+    {
+      "name": "SHA256SUMS.txt",
+      "sha256": "d1b19104c95ff78eda0098a1a3b08735a9c835f247a7945925be84cf6ab334f0",
+      "bytes": 1068,
+      "download_url": "https://github.com/YokiPJ/Yk/releases/download/v1.3.0-beta.4/SHA256SUMS.txt"
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "status": "PASS",
+  "verifiedAtUTC": "2026-11-10T04:39:23.994209+00:00",
+  "releaseURL": "https://github.com/YokiPJ/Yk/releases/tag/v1.3.0-beta.4",
+  "sourceCommit": "71da43bb0d063d8019d75cd15f0ae126f7d7dae7",
+  "tagCommit": "71da43bb0d063d8019d75cd15f0ae126f7d7dae7",
+  "publishedAssetsVerified": 13,
+  "publicDownloads": [
+    {
+      "file": "HINARIA_REVISAO_GERAL_1.3.0-beta.4.zip",
+      "httpStatus": 200,
+      "bytes": 568238,
+      "sha256": "49937de97f7856a94ed0046befe3a570a367c26a6c4383eb17450f8b1ae13524",
+      "url": "https://github.com/YokiPJ/Yk/releases/download/v1.3.0-beta.4/HINARIA_REVISAO_GERAL_1.3.0-beta.4.zip"
+    },
+    {
+      "file": "HINARIA_1.3.0_BETA4_DEBUG.apk",
+      "httpStatus": 200,
+      "bytes": 14929420,
+      "sha256": "6429c3d2495bbc27b93f164e07e57daa859b6ae2c295ee3930f91b759bebad64",
+      "url": "https://github.com/YokiPJ/Yk/releases/download/v1.3.0-beta.4/HINARIA_1.3.0_BETA4_DEBUG.apk"
+    }
+  ],
+  "sourceArchivePublicHeadStatus": 200,
+  "latestStableURL": "https://github.com/YokiPJ/Yk/releases/tag/v1.2.2"
+}
